@@ -8,7 +8,7 @@
 #ifndef PROBE_H
 #define PROBE_H
 
-#include <Data.h>
+#include <BayesFilters/Data.h>
 
 #include <string>
 

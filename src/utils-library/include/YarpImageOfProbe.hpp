@@ -8,8 +8,8 @@
 #ifndef YARPIMAGEOFPROBE_H
 #define YARPIMAGEOFPROBE_H
 
-#include <Data.h>
-#include <any.h>
+#include <BayesFilters/Data.h>
+#include <BayesFilters/any.h>
 
 #include <Eigen/Dense>
 

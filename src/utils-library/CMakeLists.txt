@@ -11,6 +11,9 @@ project("UtilsLibrary")
 
 set(LIBRARY_TARGET_NAME ${PROJECT_NAME})
 
+# BayesFilters
+find_package(BayesFilters REQUIRED)
+
 # Eigen
 find_package(Eigen3 REQUIRED)
 
@@ -28,10 +31,8 @@ find_package(YARP CONFIG REQUIRED
 endif()
 
 set(${LIBRARY_TARGET_NAME}_HDR
-    include/Data.h
     include/Probe.h
     include/ProbeContainer.h
-    include/any.h
     )
 
 set(${LIBRARY_TARGET_NAME}_SRC
@@ -54,6 +55,7 @@ target_include_directories(${LIBRARY_TARGET_NAME} PUBLIC
                                                   )
 
 target_link_libraries(${LIBRARY_TARGET_NAME} PUBLIC
+                      BayesFilters::BayesFilters
                       Eigen3::Eigen
                       ${OpenCV_LIBS}
                       )

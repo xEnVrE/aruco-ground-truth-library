@@ -8,8 +8,8 @@
 #ifndef YARPVECTOROFPROBE_H
 #define YARPVECTOROFPROBE_H
 
-#include <Data.h>
-#include <any.h>
+#include <BayesFilters/Data.h>
+#include <BayesFilters/any.h>
 
 #include <Eigen/Dense>
 
