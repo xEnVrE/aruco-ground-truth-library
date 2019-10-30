@@ -59,6 +59,8 @@ protected:
 
     void set_pose(cv::Mat position, cv::Mat orientation);
 
+    void set_pose(cv::Vec3d position, cv::Vec3d orientation);
+
 private:
     cv::Ptr<cv::aruco::Dictionary> dictionary_;
 
