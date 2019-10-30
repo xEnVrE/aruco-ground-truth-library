@@ -116,7 +116,7 @@ cv::Mat ArucoMeasurement::get_camera_intrinsic() const
 
 cv::Mat ArucoMeasurement::get_camera_distortion() const
 {
-    return cam_intrinsic_;
+    return cam_distortion_;
 }
 
 
