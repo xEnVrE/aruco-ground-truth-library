@@ -143,7 +143,7 @@ void ArucoMeasurement::set_pose(cv::Mat position, cv::Mat orientation)
     /* Store estimated pose. */
     Vector3d position_eigen;
     position_eigen(0) = position.at<double>(0, 0);
-    position_eigen(2) = position.at<double>(1, 0);
+    position_eigen(1) = position.at<double>(1, 0);
     position_eigen(2) = position.at<double>(2, 0);
 
     Eigen::Matrix3d orientation_eigen;
