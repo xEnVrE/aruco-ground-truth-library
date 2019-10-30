@@ -170,7 +170,6 @@ std::pair<bool, cv::Mat> iCubCamera::get_rgb(const bool& blocking)
         return std::make_pair(false, cv::Mat());
 
     cv::Mat image = yarp::cv::toCvMat(*image_in);
-    cv::cvtColor(image, image, cv::COLOR_RGB2BGR);
 
     return std::make_pair(true, image);
 }
