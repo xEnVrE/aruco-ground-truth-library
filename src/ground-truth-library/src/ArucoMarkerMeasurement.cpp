@@ -37,8 +37,8 @@ bool ArucoMarkerMeasurement::freeze(const bfl::Data& data)
     if (ids.size() > 0)
     {
         /* Perform marker pose estimation. */
-        std::vector<cv::Mat> position;
-        std::vector<cv::Mat> orientation;
+        std::vector<cv::Vec3d> position;
+        std::vector<cv::Vec3d> orientation;
         estimatePoseSingleMarkers(inliers, marker_length_, get_camera_intrinsic(), get_camera_distortion(), orientation, position);
 
         /* Generate image for probe if setup. */
