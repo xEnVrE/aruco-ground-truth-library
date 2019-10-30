@@ -34,26 +34,31 @@ bool ArucoMarkerMeasurement::freeze(const bfl::Data& data)
     std::vector<std::vector<cv::Point2f>> inliers;
     detectMarkers(image, get_dictionary(), inliers, ids);
 
-    /* Perform marker pose estimation. */
-    std::vector<cv::Mat> position;
-    std::vector<cv::Mat> orientation;
-    estimatePoseSingleMarkers(inliers, marker_length_, get_camera_intrinsic(), get_camera_distortion(), orientation, position);
-
-    if ((position.size() != 0) && (orientation.size() != 0))
+    if (ids.size() > 0)
     {
+        /* Perform marker pose estimation. */
+        std::vector<cv::Mat> position;
+        std::vector<cv::Mat> orientation;
+        estimatePoseSingleMarkers(inliers, marker_length_, get_camera_intrinsic(), get_camera_distortion(), orientation, position);
+
         /* Generate image for probe if setup. */
         if(is_probe("image_output"))
         {
             probe_image_ = image.clone();
+            drawDetectedMarkers(probe_image_, inliers, ids);
             for(int i = 0; i < ids.size(); i++)
                 cv::aruco::drawAxis(probe_image_, get_camera_intrinsic(), get_camera_distortion(), orientation.at(i), position.at(i), 0.1);
+
             get_probe("image_output").set_data(probe_image_);
         }
 
-        /* We are expecting a single marker. */
-        set_pose(position.at(0), orientation.at(0));
+        if ((position.size() != 0) && (orientation.size() != 0))
+        {
+            set_pose(position.at(0), orientation.at(0));
+            return true;
+        }
 
-        return true;
+        return false;
     }
 
     return false;
