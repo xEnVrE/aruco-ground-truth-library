@@ -96,12 +96,6 @@ std::pair<bool, bfl::Data> ArucoMeasurement::measure(const Data& data) const
 }
 
 
-Eigen::MatrixXd ArucoMeasurement::getMeasurementMatrix() const
-{
-    throw(std::runtime_error(log_name_ + "::getOutputsize. Method not implemented."));
-}
-
-
 std::pair<std::size_t, std::size_t> ArucoMeasurement::getOutputSize() const
 {
     throw(std::runtime_error(log_name_ + "::getOutputsize. Method not implemented."));
