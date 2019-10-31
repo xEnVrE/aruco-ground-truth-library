@@ -24,7 +24,8 @@ ArucoMarkerMeasurement::~ArucoMarkerMeasurement()
 bool ArucoMarkerMeasurement::freeze(const bfl::Data& data)
 {
     /* Freeze measurements. */
-    ArucoMeasurement::freeze(data);
+    if(!ArucoMeasurement::freeze(data))
+        return false;
 
     /* Get image .*/
     cv::Mat image = get_frozen_rgb_image();
