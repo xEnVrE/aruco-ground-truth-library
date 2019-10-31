@@ -22,7 +22,7 @@
 #include <opencv2/aruco.hpp>
 
 
-class ArucoMeasurement : public bfl::LinearMeasurementModel,
+class ArucoMeasurement : public bfl::MeasurementModel,
                          public ProbeContainer
 {
 public:
