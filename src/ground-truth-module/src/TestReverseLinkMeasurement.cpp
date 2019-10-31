@@ -82,7 +82,6 @@ protected:
                 new ArucoBoardMeasurement(cv::aruco::DICT_4X4_50, n_x, n_y, marker_length, intra_marker, std::move(camera_))
             );
         }
-        // aruco->set_probe("data_output", std::move(data_probe_));
         aruco->set_probe("image_output", std::move(image_probe_));
 
         /* Reverse link measurement. */
@@ -90,6 +89,7 @@ protected:
         (
             new ReverseLinkMeasurement(std::move(aruco))
         );
+        link_measurement_->set_probe("data_output", std::move(data_probe_));
 
         return true;
     }
