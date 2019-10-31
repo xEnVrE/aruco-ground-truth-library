@@ -68,6 +68,18 @@ protected:
                 new ArucoMarkerMeasurement(cv::aruco::DICT_4X4_50, marker_length, std::move(camera_))
             );
         }
+        else if (type_ == "board")
+        {
+            const std::size_t n_x = 2;
+            const std::size_t n_y = 2;
+            const double intra_marker = 0.005;
+            const double marker_length = 0.02;
+            aruco_ = std::unique_ptr<ArucoBoardMeasurement>
+            (
+                new ArucoBoardMeasurement(cv::aruco::DICT_4X4_50, n_x, n_y, marker_length, intra_marker, std::move(camera_))
+            );
+        }
+
 
         aruco_->set_probe("data_output", std::move(data_probe_));
         aruco_->set_probe("image_output", std::move(image_probe_));
