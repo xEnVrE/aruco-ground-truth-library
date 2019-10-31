@@ -37,6 +37,10 @@ ArucoBoardMeasurement::ArucoBoardMeasurement(const int& dictionary, const std::s
 }
 
 
+ArucoBoardMeasurement::~ArucoBoardMeasurement()
+{}
+
+
 bool ArucoBoardMeasurement::freeze(const Data& data)
 {
     /* Freeze measurements. */
