@@ -17,7 +17,7 @@ find_package(Eigen3 REQUIRED)
 # OpenCV
 find_package(OpenCV REQUIRED)
 
-if (USE_ICUB_CAMERA)
+if (USE_YARP AND USE_ICUB)
 # YARP
 find_package(YARP CONFIG REQUIRED
              COMPONENTS
@@ -42,7 +42,7 @@ set(${LIBRARY_TARGET_NAME}_SRC
     src/CameraParameters.cpp
     )
 
-if (USE_YARP)
+if (USE_YARP AND USE_ICUB)
   list(APPEND ${LIBRARY_TARGET_NAME}_HDR
     include/iCubCamera.h
     )
@@ -63,7 +63,7 @@ target_link_libraries(${LIBRARY_TARGET_NAME} PUBLIC
                       ${OpenCV_LIBS}
                       )
 
-if (USE_ICUB_CAMERA)
+if (USE_YARP AND USE_ICUB)
   target_link_libraries(${LIBRARY_TARGET_NAME} PUBLIC
                         YARP::YARP_OS
                         YARP::YARP_cv
