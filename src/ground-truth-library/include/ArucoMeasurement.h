@@ -26,6 +26,8 @@ class ArucoMeasurement : public bfl::MeasurementModel,
                          public ProbeContainer
 {
 public:
+    EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+
     ArucoMeasurement(const int& dictionary, std::unique_ptr<Camera> camera);
 
     virtual ~ArucoMeasurement();
