@@ -24,12 +24,14 @@ set(${LIBRARY_TARGET_NAME}_HDR
     include/ArucoBoardMeasurement.h
     include/ArucoMarkerMeasurement.h
     include/ArucoMeasurement.h
+    include/ReverseLinkMeasurement.h
     )
 
 set(${LIBRARY_TARGET_NAME}_SRC
     src/ArucoBoardMeasurement.cpp
     src/ArucoMarkerMeasurement.cpp
     src/ArucoMeasurement.cpp
+    src/ReverseLinkMeasurement.cpp
     )
 
 
