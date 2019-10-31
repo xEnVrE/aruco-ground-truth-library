@@ -21,8 +21,6 @@
 class ArucoBoardMeasurement : public ArucoMeasurement
 {
 public:
-    EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-
     ArucoBoardMeasurement(const int& dictionary, const std::size_t number_x, const std::size_t number_y, const double& marker_side, const double& inter_marker_length, std::unique_ptr<Camera> camera);
 
     virtual ~ArucoBoardMeasurement();
