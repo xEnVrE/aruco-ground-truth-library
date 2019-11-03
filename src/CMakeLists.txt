@@ -8,7 +8,8 @@
 #===============================================================================
 
 option(USE_YARP        "Use YARP" OFF)
-option(USE_ICUB_CAMERA "Use ICUB" OFF)
+option(USE_ICUB        "Use ICUB" OFF)
+option(USE_VTK         "Use VTK" OFF)
 
 add_subdirectory(camera-library)
 add_subdirectory(utils-library)
@@ -20,4 +21,14 @@ if (USE_YARP)
   if (BUILD_MODULES)
     add_subdirectory(ground-truth-module)
   endif()
+
+endif()
+
+if (USE_VTK)
+  option(BUILD_VISUALIZATION "Build visualization tool" OFF)
+
+  if (BUILD_VISUALIZATION)
+    add_subdirectory(viz-library)
+  endif()
+
 endif()
