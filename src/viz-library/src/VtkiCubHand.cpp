@@ -16,7 +16,7 @@ using namespace Eigen;
 using namespace yarp::eigen;
 
 
-VtkiCubHand::VtkiCubHand(const std::string& robot_name, const std::string& laterality, const std::string& port_prefix)
+VtkiCubHand::VtkiCubHand(const std::string& robot_name, const std::string& laterality, const std::string& port_prefix, const bool& use_analogs)
 {
     if ((laterality != "left") && (laterality != "right"))
         throw(std::runtime_error(log_name_ + "::ctor. Invalid laterality specified."));
@@ -70,7 +70,7 @@ VtkiCubHand::VtkiCubHand(const std::string& robot_name, const std::string& later
     /* Configure fingers encoders. */
     fingers_encoders_ = std::unique_ptr<iCubFingersEncoders>
     (
-        new iCubFingersEncoders(robot_name, laterality, port_prefix + "/vtk-icub-hand", "icub-fingers-encoders")
+        new iCubFingersEncoders(robot_name, laterality, port_prefix + "/vtk-icub-hand", "icub-fingers-encoders", use_analogs)
     );
 }
 
