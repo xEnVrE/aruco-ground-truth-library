@@ -30,7 +30,7 @@ target_link_libraries(${EXE_TARGET_NAME}
                       GroundTruthLibrary
                       )
 
-install(TARGETS ${EXE_TARGET_NAME} DESTINATION bin)
+# install(TARGETS ${EXE_TARGET_NAME} DESTINATION bin)
 
 
 set(EXE_TARGET_NAME test-reverse-link-measurement)
@@ -56,7 +56,7 @@ target_link_libraries(${EXE_TARGET_NAME}
                       GroundTruthLibrary
                       )
 
-install(TARGETS ${EXE_TARGET_NAME} DESTINATION bin)
+# install(TARGETS ${EXE_TARGET_NAME} DESTINATION bin)
 
 
 set(EXE_TARGET_NAME test-visualization)
@@ -82,4 +82,4 @@ target_link_libraries(${EXE_TARGET_NAME}
                       VisualizationLibrary
                       )
 
-install(TARGETS ${EXE_TARGET_NAME} DESTINATION bin)
+# install(TARGETS ${EXE_TARGET_NAME} DESTINATION bin)
