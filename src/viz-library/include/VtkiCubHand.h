@@ -10,6 +10,7 @@
 
 #include <Eigen/Dense>
 
+#include <iCubFingersEncoders.h>
 #include <iCubForwardKinematics.h>
 #include <VtkContent.h>
 #include <VtkMeshOBJ.h>
@@ -27,7 +28,7 @@
 class VtkiCubHand : public VtkContent
 {
 public:
-    VtkiCubHand(const std::string port_prefix, const std::string laterality);
+    VtkiCubHand(const std::string& robot_name, const std::string& laterality, const std::string& port_prefix);
 
     virtual ~VtkiCubHand();
 
@@ -42,9 +43,9 @@ private:
 
     yarp::os::BufferedPort<yarp::sig::Vector> hand_pose_port_in_;
 
-    // iCubArmModel hand_model_;
-
     std::unique_ptr<iCubForwardKinematics> forward_kinematics_;
+
+    std::unique_ptr<iCubFingersEncoders> fingers_encoders_;
 
     const std::string log_name_ = "VtkiCubHand";
 };

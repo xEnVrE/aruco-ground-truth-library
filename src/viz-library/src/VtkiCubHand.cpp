@@ -7,14 +7,16 @@
 
 #include <VtkiCubHand.h>
 
+#include <unordered_map>
+
 #include <yarp/eigen/Eigen.h>
-#include <stdexcept>
+
 
 using namespace Eigen;
 using namespace yarp::eigen;
 
 
-VtkiCubHand::VtkiCubHand(const std::string port_prefix, const std::string laterality)
+VtkiCubHand::VtkiCubHand(const std::string& robot_name, const std::string& laterality, const std::string& port_prefix)
 {
     if ((laterality != "left") && (laterality != "right"))
         throw(std::runtime_error(log_name_ + "::ctor. Invalid laterality specified."));
@@ -28,7 +30,7 @@ VtkiCubHand::VtkiCubHand(const std::string port_prefix, const std::string latera
     }
 
     /* Open input port. */
-    if(!hand_pose_port_in_.open("/" + port_prefix + "/icub/hand/" + laterality + ":i"))
+    if(!hand_pose_port_in_.open("/" + port_prefix + "/vtk-icub-hand/" + laterality + "/state:i"))
         throw(std::runtime_error(log_name_ + "::ctor. Cannot open hand pose input port."));
 
     /* Add meshes of hand parts. */
@@ -62,7 +64,13 @@ VtkiCubHand::VtkiCubHand(const std::string port_prefix, const std::string latera
     /* Configure forward kinematics. */
     forward_kinematics_ = std::unique_ptr<iCubForwardKinematics>
     (
-        new iCubForwardKinematics(laterality_key + "Hand")
+        new iCubForwardKinematics(laterality + "_hand")
+    );
+
+    /* Configure fingers encoders. */
+    fingers_encoders_ = std::unique_ptr<iCubFingersEncoders>
+    (
+        new iCubFingersEncoders(robot_name, laterality, port_prefix + "/vtk-icub-hand", "icub-fingers-encoders")
     );
 }
 
@@ -88,6 +96,13 @@ bool VtkiCubHand::update_pose(const bool& blocking)
     if (pose_in == nullptr)
         return false;
 
+    bool valid_encoders = false;
+    std::unordered_map<std::string, VectorXd> encoders;
+    std::tie(valid_encoders, encoders) = fingers_encoders_->get_encoders(blocking);
+
+    if (!valid_encoders)
+        return false;
+
     VectorXd pose = toEigen(*pose_in);
     Transform<double, 3, Affine> transform;
     transform = Translation<double, 3>(pose.head<3>());
@@ -95,7 +110,7 @@ bool VtkiCubHand::update_pose(const bool& blocking)
 
     /* Palm. */
     for (auto mesh : meshes_)
-        mesh.second.set_pose(transform * forward_kinematics_->map("ee", mesh.first));
+        mesh.second.set_pose(transform * forward_kinematics_->map("ee", mesh.first, encoders));
 
     return true;
 }
