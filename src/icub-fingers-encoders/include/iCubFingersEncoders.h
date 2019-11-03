@@ -26,7 +26,7 @@
 class iCubFingersEncoders
 {
 public:
-    iCubFingersEncoders(const std::string& robot_name, const std::string& laterality, const std::string& port_prefix, const std::string& context);
+    iCubFingersEncoders(const std::string& robot_name, const std::string& laterality, const std::string& port_prefix, const std::string& context, const bool& use_analogs);
 
     virtual ~iCubFingersEncoders();
 
@@ -36,6 +36,8 @@ protected:
     std::pair<bool, yarp::sig::Vector> load_vector_double(const yarp::os::ResourceFinder& rf, const std::string key, const std::size_t size);
 
     yarp::os::Network yarp_;
+
+    const bool use_analogs_ = false;
 
     /**
      * Indicates whether the PolyDriver interface is available.
