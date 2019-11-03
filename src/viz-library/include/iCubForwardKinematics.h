@@ -23,7 +23,7 @@ public:
 
     virtual ~iCubForwardKinematics();
 
-    T map(const std::string& from, const std::string& to);
+    T map(const std::string& from, const std::string& to, const std::unordered_map<std::string, Eigen::VectorXd>& encoders);
 
 private:
     T DH(const double& d, const double& theta, const double& a, const double& alpha);

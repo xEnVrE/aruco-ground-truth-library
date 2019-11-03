@@ -11,9 +11,10 @@ using namespace Eigen;
 using Tr = Translation<double, 3>;
 using R = AngleAxisd;
 
+
 iCubForwardKinematics::iCubForwardKinematics(const std::string& part_name)
 {
-    if (part_name == "LeftHand")
+    if (part_name == "left_hand")
     {
     /* Map from end-effector to palm. */
 
@@ -267,7 +268,7 @@ iCubForwardKinematics::~iCubForwardKinematics()
 {}
 
 
-T iCubForwardKinematics::map(const std::string& from, const std::string& to)
+T iCubForwardKinematics::map(const std::string& from, const std::string& to, const std::unordered_map<std::string, Eigen::VectorXd>& encoders)
 {
     T map;
 
@@ -275,34 +276,12 @@ T iCubForwardKinematics::map(const std::string& from, const std::string& to)
         map =  maps_.at("ee").at("palm");
     else if (from == "ee")
     {
-        /* TODO: load data from encoders. */
-        double angle_thumb0 = 0.0 * M_PI / 180.0;
-        double angle_thumb1 = 0.0 * M_PI / 180.0;
-        double angle_thumb2 = 0.0 * M_PI / 180.0;
-        double angle_thumb3 = 0.0 * M_PI / 180.0;
-        double angle_index0 = 0.0 * M_PI / 180.0;
-        double angle_index1 = 0.0 * M_PI / 180.0;
-        double angle_index2 = 0.0 * M_PI / 180.0;
-        double angle_index3 = 0.0 * M_PI / 180.0;
-        double angle_middle0 = 0.0 * M_PI / 180.0;
-        double angle_middle1 = 0.0 * M_PI / 180.0;
-        double angle_middle2 = 0.0 * M_PI / 180.0;
-        double angle_middle3 = 0.0 * M_PI / 180.0;
-        double angle_ring0 = 0.0 * M_PI / 180.0;
-        double angle_ring1 = 0.0 * M_PI / 180.0;
-        double angle_ring2 = 0.0 * M_PI / 180.0;
-        double angle_ring3 = 0.0 * M_PI / 180.0;
-        double angle_little0 = 0.0 * M_PI / 180.0;
-        double angle_little1 = 0.0 * M_PI / 180.0;
-        double angle_little2 = 0.0 * M_PI / 180.0;
-        double angle_little3 = 0.0 * M_PI / 180.0;
-
         if (to.find("thumb") != to.npos)
         {
-            T thumb_0 = maps_.at("ee").at("thumb0") * R(angle_thumb0, Vector3d::UnitZ());
-            T thumb_1 = thumb_0 * maps_.at("thumb0").at("thumb1") * R(angle_thumb1, Vector3d::UnitZ());
-            T thumb_2 = thumb_1 * maps_.at("thumb1").at("thumb2") * R(angle_thumb2, Vector3d::UnitZ());
-            T thumb_3 = thumb_2 * maps_.at("thumb2").at("thumb3") * R(angle_thumb3, Vector3d::UnitZ());
+            T thumb_0 = maps_.at("ee").at("thumb0") * R(encoders.at("thumb")(0), Vector3d::UnitZ());
+            T thumb_1 = thumb_0 * maps_.at("thumb0").at("thumb1") * R(encoders.at("thumb")(1), Vector3d::UnitZ());
+            T thumb_2 = thumb_1 * maps_.at("thumb1").at("thumb2") * R(encoders.at("thumb")(2), Vector3d::UnitZ());
+            T thumb_3 = thumb_2 * maps_.at("thumb2").at("thumb3") * R(encoders.at("thumb")(3), Vector3d::UnitZ());
 
             if (to == "thumb0")
                 map = thumb_0 * maps_.at("thumb0").at("thumb0_r");
@@ -315,10 +294,10 @@ T iCubForwardKinematics::map(const std::string& from, const std::string& to)
         }
         else if (to.find("index") != to.npos)
         {
-            T index_0 = maps_.at("ee").at("index0") * R(angle_index0, Vector3d::UnitZ());
-            T index_1 = index_0 * maps_.at("index0").at("index1") * R(angle_index1, Vector3d::UnitZ());
-            T index_2 = index_1 * maps_.at("index1").at("index2") * R(angle_index2, Vector3d::UnitZ());
-            T index_3 = index_2 * maps_.at("index2").at("index3") * R(angle_index3, Vector3d::UnitZ());
+            T index_0 = maps_.at("ee").at("index0") * R(encoders.at("index")(0), Vector3d::UnitZ());
+            T index_1 = index_0 * maps_.at("index0").at("index1") * R(encoders.at("index")(1), Vector3d::UnitZ());
+            T index_2 = index_1 * maps_.at("index1").at("index2") * R(encoders.at("index")(2), Vector3d::UnitZ());
+            T index_3 = index_2 * maps_.at("index2").at("index3") * R(encoders.at("index")(3), Vector3d::UnitZ());
 
             if (to == "index0")
                 map = index_0;
@@ -331,10 +310,10 @@ T iCubForwardKinematics::map(const std::string& from, const std::string& to)
         }
         else if (to.find("middle") != to.npos)
         {
-            T middle_0 = maps_.at("ee").at("middle0") * R(angle_middle0, Vector3d::UnitZ());
-            T middle_1 = middle_0 * maps_.at("middle0").at("middle1") * R(angle_middle1, Vector3d::UnitZ());
-            T middle_2 = middle_1 * maps_.at("middle1").at("middle2") * R(angle_middle2, Vector3d::UnitZ());
-            T middle_3 = middle_2 * maps_.at("middle2").at("middle3") * R(angle_middle3, Vector3d::UnitZ());
+            T middle_0 = maps_.at("ee").at("middle0");
+            T middle_1 = middle_0 * maps_.at("middle0").at("middle1") * R(encoders.at("middle")(0), Vector3d::UnitZ());
+            T middle_2 = middle_1 * maps_.at("middle1").at("middle2") * R(encoders.at("middle")(1), Vector3d::UnitZ());
+            T middle_3 = middle_2 * maps_.at("middle2").at("middle3") * R(encoders.at("middle")(2), Vector3d::UnitZ());
 
             if (to == "middle0")
                 map = middle_0 * maps_.at("middle0").at("middle0_r");
@@ -347,10 +326,10 @@ T iCubForwardKinematics::map(const std::string& from, const std::string& to)
         }
         else if (to.find("ring") != to.npos)
         {
-            T ring_0 = maps_.at("ee").at("ring0") * R(angle_ring0, Vector3d::UnitZ());
-            T ring_1 = ring_0 * maps_.at("ring0").at("ring1") * R(angle_ring1, Vector3d::UnitZ());
-            T ring_2 = ring_1 * maps_.at("ring1").at("ring2") * R(angle_ring2, Vector3d::UnitZ());
-            T ring_3 = ring_2 * maps_.at("ring2").at("ring3") * R(angle_ring3, Vector3d::UnitZ());
+            T ring_0 = maps_.at("ee").at("ring0") * R(-1 * encoders.at("ring")(0), Vector3d::UnitZ());
+            T ring_1 = ring_0 * maps_.at("ring0").at("ring1") * R(encoders.at("ring")(1), Vector3d::UnitZ());
+            T ring_2 = ring_1 * maps_.at("ring1").at("ring2") * R(encoders.at("ring")(2), Vector3d::UnitZ());
+            T ring_3 = ring_2 * maps_.at("ring2").at("ring3") * R(encoders.at("ring")(3), Vector3d::UnitZ());
 
             if (to == "ring0")
                 map = ring_0;
@@ -363,10 +342,10 @@ T iCubForwardKinematics::map(const std::string& from, const std::string& to)
         }
         else if (to.find("little") != to.npos)
         {
-            T little_0 = maps_.at("ee").at("little0") * R(angle_little0, Vector3d::UnitZ());
-            T little_1 = little_0 * maps_.at("little0").at("little1") * R(angle_little1, Vector3d::UnitZ());
-            T little_2 = little_1 * maps_.at("little1").at("little2") * R(angle_little2, Vector3d::UnitZ());
-            T little_3 = little_2 * maps_.at("little2").at("little3") * R(angle_little3, Vector3d::UnitZ());
+            T little_0 = maps_.at("ee").at("little0") * R(-1 * encoders.at("little")(0), Vector3d::UnitZ());
+            T little_1 = little_0 * maps_.at("little0").at("little1") * R(encoders.at("little")(1), Vector3d::UnitZ());
+            T little_2 = little_1 * maps_.at("little1").at("little2") * R(encoders.at("little")(2), Vector3d::UnitZ());
+            T little_3 = little_2 * maps_.at("little2").at("little3") * R(encoders.at("little")(3), Vector3d::UnitZ());
 
             if (to == "little0")
                 map = little_0 * maps_.at("little0").at("little0_r");
