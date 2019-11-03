@@ -8,7 +8,6 @@
 #===============================================================================
 
 option(USE_YARP        "Use YARP" OFF)
-option(USE_ICUB        "Use ICUB" OFF)
 option(USE_VTK         "Use VTK" OFF)
 
 add_subdirectory(camera-library)
@@ -22,6 +21,10 @@ if (USE_YARP)
     add_subdirectory(ground-truth-module)
   endif()
 
+endif()
+
+if (USE_YARP AND USE_ICUB)
+  add_subdirectory(icub-fingers-encoders)
 endif()
 
 if (USE_VTK)
