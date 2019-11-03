@@ -20,7 +20,7 @@ find_package(Eigen3 REQUIRED)
 find_package(VTK REQUIRED)
 include(${VTK_USE_FILE})
 
-if (USE_YARP AND USE_ICUB)
+if (USE_YARP)
 # YARP
 find_package(YARP CONFIG REQUIRED
              COMPONENTS
@@ -30,9 +30,6 @@ find_package(YARP CONFIG REQUIRED
              eigen
              sig
              )
-
-# ICUB
-find_package(ICUB REQUIRED)
 endif()
 
 set(${LIBRARY_TARGET_NAME}_HDR
@@ -108,12 +105,12 @@ target_link_libraries(${LIBRARY_TARGET_NAME}
 
 if (USE_YARP AND USE_ICUB)
   target_link_libraries(${LIBRARY_TARGET_NAME} PUBLIC
+                        iCubFingersEncoders
                         YARP::YARP_OS
                         YARP::YARP_cv
                         YARP::YARP_dev
                         YARP::YARP_eigen
                         YARP::YARP_init
                         YARP::YARP_sig
-                        ${ICUB_LIBARIES}
                         )
 endif()
