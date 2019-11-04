@@ -28,7 +28,7 @@
 class VtkiCubHand : public VtkContent
 {
 public:
-    VtkiCubHand(const std::string& robot_name, const std::string& laterality, const std::string& port_prefix, const bool& use_analogs);
+    VtkiCubHand(const std::string& robot_name, const std::string& laterality, const std::string& port_prefix, const bool& use_analogs, const std::tuple<double, double, double>& color);
 
     virtual ~VtkiCubHand();
 
