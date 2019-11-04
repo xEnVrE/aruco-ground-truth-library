@@ -5,32 +5,90 @@
  * GPL-2+ license. See the accompanying LICENSE file for details.
  */
 
+#include <iCubCamera.h>
+#include <YarpCamera.h>
+
 #include <VtkContainer.h>
 #include <VtkContent.h>
+#include <VtkPointCloud.h>
 #include <VtkiCubHand.h>
 
-#include <cstdlib>
+#include <iostream>
+#include <string>
+
 
 int main(int argc, char** argv)
 {
-    if (argc != 3)
+    if (argc != 7)
     {
-        std::cout << "Synopsis: test-visualization <robot_name> <use_analogs>" << std::endl;
+        std::cout << "Synopsis: test-visualization <robot_name> <use_analogs> <hand_fk> <hand_aruco> <point_cloud> <camera>" << std::endl;
         return EXIT_FAILURE;
     }
-    std::string robot_name = std::string(argv[1]);
     bool use_analogs = false;
+    bool show_hand_fk = false;
+    bool show_hand_aruco = false;
+    bool show_point_cloud = false;
+
+    std::string robot_name = std::string(argv[1]);
     if (std::string(argv[2]) == "true")
         use_analogs = true;
-
+    if (std::string(argv[3]) == "true")
+        show_hand_fk = true;
+    if (std::string(argv[4]) == "true")
+        show_hand_aruco = true;
+    if (std::string(argv[5]) == "true")
+        show_point_cloud = true;
+    std::string camera_name = std::string(argv[6]);
 
     VtkContainer container(30, 600, 600);
 
-    std::unique_ptr<VtkContent> hand = std::unique_ptr<VtkiCubHand>
-    (
-        new VtkiCubHand(robot_name, "left", "test-visualization", use_analogs)
-    );
-    container.add_content("hand", std::move(hand));
+    /* Show hand according to forward kinematics. */
+    if (show_hand_fk)
+    {
+        std::unique_ptr<VtkContent> hand = std::unique_ptr<VtkiCubHand>
+        (
+            new VtkiCubHand(robot_name, "left", "test-visualization/hand_fk", use_analogs)
+        );
+        container.add_content("hand_fk", std::move(hand));
+    }
+
+    /* Show hand according to aruco markers. */
+    if (show_hand_aruco)
+    {
+        std::unique_ptr<VtkContent> hand = std::unique_ptr<VtkiCubHand>
+        (
+            new VtkiCubHand(robot_name, "left", "test-visualization/hand_aruco", use_analogs)
+        );
+        container.add_content("hand_aruco", std::move(hand));
+    }
+
+    /* Show point cloud. */
+    if (show_point_cloud)
+    {
+        std::unique_ptr<Camera> camera;
+        if (camera_name == "iCubCamera")
+            camera = std::unique_ptr<iCubCamera>
+            (
+                new iCubCamera("right", "test-visualization", "", "")
+            );
+        else if (camera_name == "YarpCamera")
+            camera = std::unique_ptr<YarpCamera>
+            (
+                new YarpCamera("test-visualization", 320, 240, 308.585174560547, 154.746704101562, 308.361328125, 117.926162719727)
+            );
+        else
+        {
+            std::cout << "Error: camera name not recognized." << std::endl;
+            return EXIT_FAILURE;
+        }
+
+        std::unique_ptr<VtkPointCloud> pc = std::unique_ptr<VtkPointCloud>
+        (
+            new VtkPointCloud(std::move(camera))
+        );
+        container.add_content("point_cloud", std::move(pc));
+    }
+
     container.run();
 
     return EXIT_SUCCESS;
