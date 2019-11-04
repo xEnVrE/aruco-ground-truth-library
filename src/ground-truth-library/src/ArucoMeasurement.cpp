@@ -140,18 +140,20 @@ void ArucoMeasurement::set_pose(cv::Mat position, cv::Mat orientation)
     position_eigen(1) = position.at<double>(1, 0);
     position_eigen(2) = position.at<double>(2, 0);
 
-    Eigen::Matrix3d orientation_eigen;
+    Matrix3d orientation_eigen;
     cv::Mat orientation_matrix;
     cv::Rodrigues(orientation, orientation_matrix);
     cv::cv2eigen(orientation_matrix, orientation_eigen);
 
     pose_ = Translation<double, 3>(position_eigen);
     pose_.rotate(orientation_eigen);
+    pose_w_camera_ = camera_pose_ * pose_;
 
-    pose_ = camera_pose_ * pose_;
+    if(is_probe("pose"))
+        get_probe("pose").set_data(pose_);
 
-    if(is_probe("data_output"))
-        get_probe("data_output").set_data(pose_);
+    if(is_probe("pose_w_camera"))
+        get_probe("pose_w_camera").set_data(pose_w_camera_);
 }
 
 
@@ -163,16 +165,18 @@ void ArucoMeasurement::set_pose(cv::Vec3d position, cv::Vec3d orientation)
     position_eigen(1) = position(1);
     position_eigen(2) = position(2);
 
-    Eigen::Matrix3d orientation_eigen;
+    Matrix3d orientation_eigen;
     cv::Mat orientation_matrix;
     cv::Rodrigues(orientation, orientation_matrix);
     cv::cv2eigen(orientation_matrix, orientation_eigen);
 
     pose_ = Translation<double, 3>(position_eigen);
     pose_.rotate(orientation_eigen);
+    pose_w_camera_ = camera_pose_ * pose_;
 
-    pose_ = camera_pose_ * pose_;
+    if(is_probe("pose"))
+        get_probe("pose").set_data(pose_);
 
-    if(is_probe("data_output"))
-        get_probe("data_output").set_data(pose_);
+    if(is_probe("pose_w_camera"))
+        get_probe("pose_w_camera").set_data(pose_w_camera_);
 }

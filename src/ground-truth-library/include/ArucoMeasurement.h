@@ -80,6 +80,8 @@ private:
 
     Eigen::Transform<double, 3, Eigen::Affine> pose_;
 
+    Eigen::Transform<double, 3, Eigen::Affine> pose_w_camera_;
+
     bool valid_pose_ = false;
 
     /* Frozen quantities. */
