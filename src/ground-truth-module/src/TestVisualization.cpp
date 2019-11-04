@@ -55,11 +55,20 @@ int main(int argc, char** argv)
     /* Show hand according to aruco markers. */
     if (show_hand_aruco)
     {
-        std::unique_ptr<VtkContent> hand = std::unique_ptr<VtkiCubHand>
+        /* 'hand_left' is used to show the estimate of the left hand using the left camera. */
+        std::unique_ptr<VtkContent> hand_left = std::unique_ptr<VtkiCubHand>
         (
-            new VtkiCubHand(robot_name, "left", "test-visualization/hand_aruco", use_analogs, {220.0 / 255.0, 100 / 255.0, 100.0 / 255.0})
+            new VtkiCubHand(robot_name, "left", "test-visualization/hand_aruco_left", use_analogs, {220.0 / 255.0, 100 / 255.0, 100.0 / 255.0})
         );
-        container.add_content("hand_aruco", std::move(hand));
+
+	/* 'hand_right' is used to show the estimate of the left hand using the right camera. */
+        std::unique_ptr<VtkContent> hand_right = std::unique_ptr<VtkiCubHand>
+        (
+            new VtkiCubHand(robot_name, "left", "test-visualization/hand_aruco_right", use_analogs, {220.0 / 255.0, 100 / 255.0, 200.0 / 255.0})
+        );
+
+        container.add_content("hand_aruco_left", std::move(hand_left));
+        container.add_content("hand_aruco_right", std::move(hand_right));
     }
 
     /* Show point cloud. */
