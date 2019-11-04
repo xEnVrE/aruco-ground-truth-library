@@ -42,7 +42,11 @@ private:
 
     Eigen::Transform<double, 3, Eigen::Affine> pose_;
 
+    Eigen::Transform<double, 3, Eigen::Affine> pose_w_camera_;
+
     Eigen::Transform<double, 3, Eigen::Affine> reverse_transform_;
+
+    Eigen::Transform<double, 3, Eigen::Affine> camera_pose_;
 
     bool valid_pose_ = false;
 

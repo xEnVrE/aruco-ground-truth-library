@@ -91,14 +91,19 @@ bool ReverseLinkMeasurement::freeze(const Data& data)
     /* Get the measure. */
     Data pose_data;
     std::tie(valid_pose_, pose_data) = aruco_measurement_->measure();
-    pose_ = any::any_cast<Transform<double, 3, Affine>>(pose_data);
+    std::pair<Transform<double, 3, Affine>, Transform<double, 3, Affine>> poses = any::any_cast<std::pair<Transform<double, 3, Affine>, Transform<double, 3, Affine>>>(pose_data);
+    camera_pose_ = poses.first;
 
     /* Transform the pose. */
-    pose_ = pose_ * reverse_transform_;
+    pose_ = poses.second * reverse_transform_;
+    pose_w_camera_ = camera_pose_ * pose_;
 
     /* Set data for probe. */
-    if(is_probe("data_output"))
-        get_probe("data_output").set_data(pose_);
+    if(is_probe("pose"))
+        get_probe("pose").set_data(pose_);
+
+    if(is_probe("pose_w_camera"))
+        get_probe("pose_w_camera").set_data(pose_w_camera_);
 
     return valid_pose_;
 }
