@@ -92,7 +92,7 @@ std::pair<bool, Data> ArucoMeasurement::innovation(const Data& predicted_measure
 
 std::pair<bool, bfl::Data> ArucoMeasurement::measure(const Data& data) const
 {
-    return std::make_pair(valid_pose_, pose_);
+    return std::make_pair(valid_pose_, std::make_pair(camera_pose_, pose_));
 }
 
 
