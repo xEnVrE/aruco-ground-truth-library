@@ -17,7 +17,7 @@ public:
 
     virtual void add_to_renderer(vtkRenderer& renderer) = 0;
 
-    virtual bool update_pose(const bool& blocking) = 0;
+    virtual bool update(const bool& blocking) = 0;
 
 private:
     const std::string log_name_ = "VtkContent";

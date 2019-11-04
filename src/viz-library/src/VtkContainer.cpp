@@ -78,5 +78,5 @@ void VtkContainer::run()
 void VtkContainer::update()
 {
     for (auto& content : contents_)
-        content.second->update_pose(true);
+        content.second->update(true);
 }
