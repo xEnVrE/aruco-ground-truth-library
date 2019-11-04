@@ -7,6 +7,8 @@
 #
 #===============================================================================
 
+option(USE_SUPERIMPOSE "Use SuperimposeMesh" OFF)
+
 project("VisualizationLibrary")
 
 set(LIBRARY_TARGET_NAME ${PROJECT_NAME})
@@ -22,6 +24,11 @@ find_package(OpenCV REQUIRED)
 # VTK
 find_package(VTK REQUIRED)
 include(${VTK_USE_FILE})
+
+if (USE_SUPERIMPOSE)
+  # Superimposemesh
+  find_package(SuperimposeMesh 0.11.100 REQUIRED)
+endif()
 
 if (USE_YARP)
 # YARP
@@ -54,6 +61,16 @@ set(${LIBRARY_TARGET_NAME}_SRC
     src/VtkUpdateHandler.cpp
     src/vtkOBJResource.cpp
     )
+
+if (USE_SUPERIMPOSE AND USE_YARP AND USE_ICUB)
+  list(APPEND ${LIBRARY_TARGET_NAME}_HDR
+    include/SIiCubHand.h
+    )
+
+  list(APPEND ${LIBRARY_TARGET_NAME}_SRC
+    src/SIiCubHand.cpp
+    )
+endif()
 
 if (USE_YARP AND USE_ICUB)
   list(APPEND ${LIBRARY_TARGET_NAME}_HDR
