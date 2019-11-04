@@ -121,6 +121,8 @@ iCubCamera::iCubCamera(const std::string& laterality, const std::string& port_pr
         std::string err = log_name_ + "::ctor. Error: cannot open depth input port.";
         throw(std::runtime_error(err));
     }
+
+    Camera::initialize();
 }
 
 
