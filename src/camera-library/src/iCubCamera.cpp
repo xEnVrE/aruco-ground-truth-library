@@ -191,3 +191,9 @@ std::pair<bool, MatrixXf> iCubCamera::get_depth(const bool& blocking)
 
     return std::make_pair(true, depth);
 }
+
+
+bool iCubCamera::step_frame()
+{
+    return true;
+}
