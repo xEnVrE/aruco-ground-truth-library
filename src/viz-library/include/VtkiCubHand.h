@@ -34,7 +34,7 @@ public:
 
     void add_to_renderer(vtkRenderer& renderer) override;
 
-    bool update_pose(const bool& blocking) override;
+    bool update(const bool& blocking) override;
 
 private:
     yarp::os::Network yarp_;

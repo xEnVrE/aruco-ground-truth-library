@@ -89,7 +89,7 @@ void VtkiCubHand::add_to_renderer(vtkRenderer& renderer)
 }
 
 
-bool VtkiCubHand::update_pose(const bool& blocking)
+bool VtkiCubHand::update(const bool& blocking)
 {
     yarp::sig::Vector* pose_in = hand_pose_port_in_.read(blocking);
 
