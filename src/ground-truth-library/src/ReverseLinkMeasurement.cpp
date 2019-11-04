@@ -118,7 +118,7 @@ std::pair<bool, Data> ReverseLinkMeasurement::innovation(const Data& predicted_m
 
 std::pair<bool, bfl::Data> ReverseLinkMeasurement::measure(const Data& data) const
 {
-    return std::make_pair(valid_pose_, pose_);
+    return std::make_pair(valid_pose_, std::make_pair(camera_pose_, pose_));
 }
 
 
