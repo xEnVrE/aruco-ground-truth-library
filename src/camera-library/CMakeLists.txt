@@ -42,6 +42,16 @@ set(${LIBRARY_TARGET_NAME}_SRC
     src/CameraParameters.cpp
     )
 
+if (USE_YARP)
+  list(APPEND ${LIBRARY_TARGET_NAME}_HDR
+    include/YarpCamera.h
+    )
+
+  list(APPEND ${LIBRARY_TARGET_NAME}_SRC
+    src/YarpCamera.cpp
+    )
+endif()
+
 if (USE_YARP AND USE_ICUB)
   list(APPEND ${LIBRARY_TARGET_NAME}_HDR
     include/iCubCamera.h
