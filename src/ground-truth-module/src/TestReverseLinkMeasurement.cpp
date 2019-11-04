@@ -52,9 +52,14 @@ protected:
         );
 
         /* Probes .*/
-        data_probe_ = std::unique_ptr<YarpVectorOfProbe<double, Eigen::Transform<double, 3, Eigen::Affine>>>
+        pose_probe_ = std::unique_ptr<YarpVectorOfProbe<double, Eigen::Transform<double, 3, Eigen::Affine>>>
         (
-            new YarpVectorOfProbe<double, Eigen::Transform<double, 3, Eigen::Affine>>("/test-aruco-measurement/" + laterality_ + "/data:o")
+            new YarpVectorOfProbe<double, Eigen::Transform<double, 3, Eigen::Affine>>("/test-aruco-measurement/" + laterality_ + "/pose:o")
+        );
+
+        pose_w_camera_probe_ = std::unique_ptr<YarpVectorOfProbe<double, Eigen::Transform<double, 3, Eigen::Affine>>>
+        (
+            new YarpVectorOfProbe<double, Eigen::Transform<double, 3, Eigen::Affine>>("/test-aruco-measurement/" + laterality_ + "/pose_w_camera:o")
         );
 
         image_probe_ = std::unique_ptr<YarpImageOfProbe<yarp::sig::PixelRgb>>
@@ -90,7 +95,8 @@ protected:
         (
             new ReverseLinkMeasurement(std::move(aruco))
         );
-        link_measurement_->set_probe("data_output", std::move(data_probe_));
+        link_measurement_->set_probe("pose", std::move(pose_probe_));
+        link_measurement_->set_probe("pose_w_camera", std::move(pose_w_camera_probe_));
 
         return true;
     }
@@ -117,7 +123,9 @@ private:
 
     std::unique_ptr<iCubCamera> camera_;
 
-    std::unique_ptr<YarpVectorOfProbe<double, Eigen::Transform<double, 3, Eigen::Affine>>> data_probe_;
+    std::unique_ptr<YarpVectorOfProbe<double, Eigen::Transform<double, 3, Eigen::Affine>>> pose_probe_;
+
+    std::unique_ptr<YarpVectorOfProbe<double, Eigen::Transform<double, 3, Eigen::Affine>>> pose_w_camera_probe_;
 
     std::unique_ptr<YarpImageOfProbe<yarp::sig::PixelRgb>> image_probe_;
 };
