@@ -8,12 +8,13 @@
 #include <VtkMeshOBJ.h>
 #include <MeshResources.h>
 
+#include <vtkProperty.h>
 #include <vtkTransform.h>
 
 using namespace Eigen;
 
 
-VtkMeshOBJ::VtkMeshOBJ(const std::string& mesh_path, const bool& use_mesh_resources)
+VtkMeshOBJ::VtkMeshOBJ(const std::string& mesh_path, const bool& use_mesh_resources, const std::tuple<double, double, double>& color)
 {
     /* Initialize mesh reader. */
     reader_ = vtkSmartPointer<vtkOBJResource>::New();
@@ -37,6 +38,7 @@ VtkMeshOBJ::VtkMeshOBJ(const std::string& mesh_path, const bool& use_mesh_resour
     /* Initialize actor. */
     mesh_actor_ = vtkSmartPointer<vtkActor>::New();
     mesh_actor_->SetMapper(mapper_);
+    mesh_actor_->GetProperty()->SetColor(std::get<0>(color), std::get<1>(color), std::get<2>(color));
 }
 
 

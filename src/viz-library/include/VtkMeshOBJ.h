@@ -21,7 +21,7 @@
 class VtkMeshOBJ
 {
 public:
-    VtkMeshOBJ(const std::string& mesh_path, const bool& use_mesh_resources);
+    VtkMeshOBJ(const std::string& mesh_path, const bool& use_mesh_resources, const std::tuple<double, double, double>& color);
 
     virtual ~VtkMeshOBJ();
 
