@@ -79,6 +79,7 @@ target_include_directories(${EXE_TARGET_NAME}
 
 target_link_libraries(${EXE_TARGET_NAME}
                       PRIVATE
+                      CameraLibrary
                       VisualizationLibrary
                       )
 

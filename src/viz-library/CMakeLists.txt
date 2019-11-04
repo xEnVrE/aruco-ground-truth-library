@@ -16,6 +16,9 @@ include(CMakeRC)
 # Eigen
 find_package(Eigen3 REQUIRED)
 
+# OpenCV
+find_package(OpenCV REQUIRED)
+
 # VTK
 find_package(VTK REQUIRED)
 include(${VTK_USE_FILE})
@@ -37,6 +40,7 @@ set(${LIBRARY_TARGET_NAME}_HDR
     include/VtkContainer.h
     include/VtkContent.h
     include/VtkMeshOBJ.h
+    include/VtkPointCloud.h
     include/VtkUpdateHandler.h
     include/vtkOBJResource.h
     )
@@ -46,6 +50,7 @@ set(${LIBRARY_TARGET_NAME}_SRC
     src/VtkContainer.cpp
     src/VtkContent.cpp
     src/VtkMeshOBJ.cpp
+    src/VtkPointCloud.cpp
     src/VtkUpdateHandler.cpp
     src/vtkOBJResource.cpp
     )
@@ -98,6 +103,8 @@ target_include_directories(${LIBRARY_TARGET_NAME} PUBLIC
 target_link_libraries(${LIBRARY_TARGET_NAME}
                       PUBLIC
                       Eigen3::Eigen
+                      CameraLibrary
+                      ${OpenCV_LIBS}
                       ${VTK_LIBRARIES}
                       PRIVATE
                       VisualizationLibrary::RCShader
