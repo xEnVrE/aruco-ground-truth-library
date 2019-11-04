@@ -47,7 +47,7 @@ int main(int argc, char** argv)
     {
         std::unique_ptr<VtkContent> hand = std::unique_ptr<VtkiCubHand>
         (
-            new VtkiCubHand(robot_name, "left", "test-visualization/hand_fk", use_analogs)
+            new VtkiCubHand(robot_name, "left", "test-visualization/hand_fk", use_analogs, {100.0 / 255.0, 160 / 255.0, 255.0 / 255.0})
         );
         container.add_content("hand_fk", std::move(hand));
     }
@@ -57,7 +57,7 @@ int main(int argc, char** argv)
     {
         std::unique_ptr<VtkContent> hand = std::unique_ptr<VtkiCubHand>
         (
-            new VtkiCubHand(robot_name, "left", "test-visualization/hand_aruco", use_analogs)
+            new VtkiCubHand(robot_name, "left", "test-visualization/hand_aruco", use_analogs, {220.0 / 255.0, 100 / 255.0, 100.0 / 255.0})
         );
         container.add_content("hand_aruco", std::move(hand));
     }
