@@ -28,8 +28,9 @@
 class ReverseArucoMeasurement : public bfl::FilteringAlgorithm
 {
 public:
-    ReverseArucoMeasurement(const std::string& type) :
-        type_(type)
+    ReverseArucoMeasurement(const std::string& type, const std::string& laterality) :
+        type_(type),
+        laterality_(laterality)
     {}
 
 
@@ -47,18 +48,18 @@ protected:
         /* Camera. */
         camera_ = std::unique_ptr<iCubCamera>
         (
-            new iCubCamera("right", "test-aruco-measurement", "", "")
+            new iCubCamera(laterality_, "test-aruco-measurement/" + laterality_, "", "")
         );
 
         /* Probes .*/
         data_probe_ = std::unique_ptr<YarpVectorOfProbe<double, Eigen::Transform<double, 3, Eigen::Affine>>>
         (
-            new YarpVectorOfProbe<double, Eigen::Transform<double, 3, Eigen::Affine>>("/test-aruco-measurement/data:o")
+            new YarpVectorOfProbe<double, Eigen::Transform<double, 3, Eigen::Affine>>("/test-aruco-measurement/" + laterality_ + "/data:o")
         );
 
         image_probe_ = std::unique_ptr<YarpImageOfProbe<yarp::sig::PixelRgb>>
         (
-            new YarpImageOfProbe<yarp::sig::PixelRgb>("/test-aruco-measurement/image:o")
+            new YarpImageOfProbe<yarp::sig::PixelRgb>("/test-aruco-measurement/" + laterality_ + "/image:o")
         );
 
         /* aruco measurement. */
@@ -110,6 +111,8 @@ protected:
 private:
     const std::string type_;
 
+    const std::string laterality_;
+
     std::unique_ptr<ReverseLinkMeasurement> link_measurement_;
 
     std::unique_ptr<iCubCamera> camera_;
@@ -122,17 +125,18 @@ private:
 
 int main(int argc, char** argv)
 {
-    if (argc != 2)
+    if (argc != 3)
     {
-        std::cout << "Synopsis: test-aruco-measurement <type>"  << std::endl;
+        std::cout << "Synopsis: test-aruco-measurement <type> <laterality>"  << std::endl;
         std::cout << "          <type> can be 'marker' or 'board'"  << std::endl;
 
         return EXIT_FAILURE;
     }
 
     const std::string type = std::string(argv[1]);
+    const std::string laterality = std::string(argv[2]);
 
-    ReverseArucoMeasurement test(type);
+    ReverseArucoMeasurement test(type, laterality);
     test.boot();
     test.run();
     if (!test.wait())
