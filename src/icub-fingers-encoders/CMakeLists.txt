@@ -20,9 +20,9 @@ find_package(ICUB REQUIRED)
 # YARP
 find_package(YARP CONFIG REQUIRED
                   COMPONENTS
-                  OS
                   dev
                   math
+                  os
                   REQUIRED)
 
 set(${LIBRARY_TARGET_NAME}_HDR include/iCubFingersEncoders.h)
@@ -39,7 +39,7 @@ target_link_libraries(${LIBRARY_TARGET_NAME} PUBLIC
                                              Eigen3::Eigen
                                              YARP::YARP_dev
                                              YARP::YARP_math
-                                             YARP::YARP_OS
+                                             YARP::YARP_os
                                              ${ICUB_LIBRARIES}
                                              )
 

@@ -34,10 +34,10 @@ if (USE_YARP)
 # YARP
 find_package(YARP CONFIG REQUIRED
              COMPONENTS
-             OS
              cv
              dev
              eigen
+             os
              sig
              )
 endif()
@@ -130,11 +130,11 @@ target_link_libraries(${LIBRARY_TARGET_NAME}
 if (USE_YARP AND USE_ICUB)
   target_link_libraries(${LIBRARY_TARGET_NAME} PUBLIC
                         iCubFingersEncoders
-                        YARP::YARP_OS
                         YARP::YARP_cv
                         YARP::YARP_dev
                         YARP::YARP_eigen
                         YARP::YARP_init
+                        YARP::YARP_os
                         YARP::YARP_sig
                         )
 endif()

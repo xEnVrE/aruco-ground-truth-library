@@ -23,9 +23,9 @@ find_package(OpenCV REQUIRED)
 if (USE_YARP)
 find_package(YARP CONFIG REQUIRED
              COMPONENTS
-             OS
              cv
              eigen
+             os
              sig
              )
 endif()
@@ -60,10 +60,11 @@ target_link_libraries(${LIBRARY_TARGET_NAME} PUBLIC
                       ${OpenCV_LIBS}
                       )
 if (USE_YARP)
-target_link_libraries(${LIBRARY_TARGET_NAME} PUBLIC
-                      YARP::YARP_init
-                      YARP::YARP_OS
-                      YARP::YARP_eigen
+  target_link_libraries(${LIBRARY_TARGET_NAME} PUBLIC
                       YARP::YARP_cv
+                      YARP::YARP_eigen
+                      YARP::YARP_init
+                      YARP::YARP_os
+                      YARP::YARP_sig
                       )
 endif()

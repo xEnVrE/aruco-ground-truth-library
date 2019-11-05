@@ -21,10 +21,10 @@ if (USE_YARP AND USE_ICUB)
 # YARP
 find_package(YARP CONFIG REQUIRED
              COMPONENTS
-             OS
              cv
              dev
              eigen
+             os
              sig
              )
 
@@ -75,10 +75,10 @@ target_link_libraries(${LIBRARY_TARGET_NAME} PUBLIC
 
 if (USE_YARP AND USE_ICUB)
   target_link_libraries(${LIBRARY_TARGET_NAME} PUBLIC
-                        YARP::YARP_OS
                         YARP::YARP_cv
                         YARP::YARP_dev
                         YARP::YARP_eigen
+                        YARP::YARP_os
                         YARP::YARP_sig
                         ${ICUB_LIBARIES}
                         )
