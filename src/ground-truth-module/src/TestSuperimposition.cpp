@@ -46,7 +46,7 @@ protected:
         /* Probes .*/
         image_probe_ = std::unique_ptr<YarpImageOfProbe<yarp::sig::PixelRgb>>
         (
-            new YarpImageOfProbe<yarp::sig::PixelRgb>("/test-superimposition/image:o")
+            new YarpImageOfProbe<yarp::sig::PixelRgb>("/test-superimposition/" + camera_laterality_ +"_camera/image:o")
         );
 
         /* Rendering engine. */
