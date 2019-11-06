@@ -31,7 +31,7 @@ SIiCubHand::SIiCubHand(const std::string& robot_name, const std::string& lateral
     }
 
     /* Open input port. */
-    if(!hand_pose_port_in_.open("/" + port_prefix + "/vtk-icub-hand/" + laterality + "/state:i"))
+    if(!hand_pose_port_in_.open("/" + port_prefix + "/" + laterality + "/state:i"))
         throw(std::runtime_error(log_name_ + "::ctor. Cannot open hand pose input port."));
 
     /* Load meshes. */
