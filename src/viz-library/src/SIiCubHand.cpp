@@ -99,6 +99,18 @@ SIiCubHand::SIiCubHand(const std::string& robot_name, const std::string& lateral
         new SICAD(meshes_, parameters.width, parameters.height, parameters.fx, parameters.fy, parameters.cx, parameters.cy)
     );
     renderer_->setOglToCam({1.0, 0.0, 0.0, static_cast<float>(M_PI)});
+
+    /* Configure forward kinematics. */
+    forward_kinematics_ = std::unique_ptr<iCubForwardKinematics>
+    (
+        new iCubForwardKinematics(laterality + "_hand")
+    );
+
+    /* Configure fingers encoders. */
+    fingers_encoders_ = std::unique_ptr<iCubFingersEncoders>
+    (
+        new iCubFingersEncoders(robot_name, laterality, port_prefix, "icub-fingers-encoders", use_analogs)
+    );
 }
 
 
