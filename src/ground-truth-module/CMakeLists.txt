@@ -84,3 +84,33 @@ target_link_libraries(${EXE_TARGET_NAME}
                       )
 
 # install(TARGETS ${EXE_TARGET_NAME} DESTINATION bin)
+
+find_package(OpenCV REQUIRED)
+
+set(EXE_TARGET_NAME test-superimposition)
+
+set(${EXE_TARGET_NAME}_HDR
+    )
+
+set(${EXE_TARGET_NAME}_SRC
+    src/TestSuperimposition.cpp
+    )
+
+add_executable(${EXE_TARGET_NAME}
+               ${${EXE_TARGET_NAME}_HDR}
+               ${${EXE_TARGET_NAME}_SRC}
+               )
+
+target_include_directories(${EXE_TARGET_NAME}
+                           PRIVATE
+                           )
+
+target_link_libraries(${EXE_TARGET_NAME}
+                      PRIVATE
+                      CameraLibrary
+                      UtilsLibrary
+                      VisualizationLibrary
+                      ${OpenCV_LIBS}
+                      )
+
+# install(TARGETS ${EXE_TARGET_NAME} DESTINATION bin)
