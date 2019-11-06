@@ -138,3 +138,9 @@ if (USE_YARP AND USE_ICUB)
                         YARP::YARP_sig
                         )
 endif()
+
+if (USE_SUPERIMPOSE)
+  target_link_libraries(${LIBRARY_TARGET_NAME} PUBLIC
+                       SI::SuperimposeMesh
+                       )
+endif()
