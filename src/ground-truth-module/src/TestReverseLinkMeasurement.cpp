@@ -8,9 +8,11 @@
 #include <ArucoMeasurement.h>
 #include <ArucoBoardMeasurement.h>
 #include <ArucoMarkerMeasurement.h>
-#include <ReverseLinkMeasurement.h>
+#include <ThreePointReverseLinkMeasurement.h>
 
 #include <BayesFilters/FilteringAlgorithm.h>
+
+#include <Eigen/Dense>
 
 #include <iCubCamera.h>
 
@@ -20,9 +22,7 @@
 #include <opencv2/aruco.hpp>
 
 #include <cstdlib>
-#include <stdexcept>
 #include <string>
-#include "ReverseLinkMeasurement.h"
 
 
 class ReverseArucoMeasurement : public bfl::FilteringAlgorithm
@@ -42,8 +42,10 @@ public:
 protected:
     bool initialization() override
     {
-        if ((type_ != "marker") && (type_ != "board"))
+        if ((type_ != "marker") && (type_ != "board_0") && (type_ != "board_1"))
             throw(std::runtime_error("ReverseArucoMeasurement::initialization. Error: unknown type " + type_ + "."));
+
+        const std::string port_prefix = "test-aruco-measurement/" + type_ + "/" + laterality_ + "/";
 
         /* Camera. */
         camera_ = std::unique_ptr<iCubCamera>
@@ -54,17 +56,17 @@ protected:
         /* Probes .*/
         pose_probe_ = std::unique_ptr<YarpVectorOfProbe<double, Eigen::Transform<double, 3, Eigen::Affine>>>
         (
-            new YarpVectorOfProbe<double, Eigen::Transform<double, 3, Eigen::Affine>>("/test-aruco-measurement/" + laterality_ + "/pose:o")
+            new YarpVectorOfProbe<double, Eigen::Transform<double, 3, Eigen::Affine>>(port_prefix + "pose:o")
         );
 
         pose_w_camera_probe_ = std::unique_ptr<YarpVectorOfProbe<double, Eigen::Transform<double, 3, Eigen::Affine>>>
         (
-            new YarpVectorOfProbe<double, Eigen::Transform<double, 3, Eigen::Affine>>("/test-aruco-measurement/" + laterality_ + "/pose_w_camera:o")
+            new YarpVectorOfProbe<double, Eigen::Transform<double, 3, Eigen::Affine>>(port_prefix + "pose_w_camera:o")
         );
 
         image_probe_ = std::unique_ptr<YarpImageOfProbe<yarp::sig::PixelRgb>>
         (
-            new YarpImageOfProbe<yarp::sig::PixelRgb>("/test-aruco-measurement/" + laterality_ + "/image:o")
+            new YarpImageOfProbe<yarp::sig::PixelRgb>(port_prefix + "image:o")
         );
 
         /* aruco measurement. */
@@ -77,12 +79,19 @@ protected:
                 new ArucoMarkerMeasurement(cv::aruco::DICT_4X4_50, marker_length, std::move(camera_))
             );
         }
-        else if (type_ == "board")
+        else if ((type_ == "board_0") || (type_ == "board_1"))
         {
             const std::size_t n_x = 2;
             const std::size_t n_y = 2;
             const double intra_marker = 0.005;
             const double marker_length = 0.02;
+
+            if (type_ == "board_1")
+            {
+                const std::size_t n_x = 2;
+                const std::size_t n_y = 1;
+            }
+
             aruco = std::unique_ptr<ArucoBoardMeasurement>
             (
                 new ArucoBoardMeasurement(cv::aruco::DICT_4X4_50, n_x, n_y, marker_length, intra_marker, std::move(camera_))
@@ -90,10 +99,21 @@ protected:
         }
         aruco->set_probe("image_output", std::move(image_probe_));
 
-        /* Reverse link measurement. */
-        link_measurement_ = std::unique_ptr<ReverseLinkMeasurement>
+        /* Three point reverse link measurement. */
+        Eigen::Vector3d point_0(-0.0303521, 0.0243051, 0.0389612);
+        Eigen::Vector3d point_1(-0.0303521, -0.0256949, 0.0389612);
+        Eigen::Vector3d point_2(0.0196458, 0.0243051, 0.0384987);
+        Eigen::Vector3d corner_offset(0.0025, 0.0025, 0.0);
+        if (type_ == "board_1")
+        {
+            point_0 = Eigen::Vector3d(-0.0437343, 0.000461959, -0.00474314);
+            point_1 = Eigen::Vector3d(-0.0437343, 0.0254620, -0.00474314);
+            point_2 = Eigen::Vector3d(0.00626574, 0.000461959, -0.00474314);
+        }
+
+        link_measurement_ = std::unique_ptr<ThreePointReverseLinkMeasurement>
         (
-            new ReverseLinkMeasurement(std::move(aruco))
+            new ThreePointReverseLinkMeasurement(point_0, point_1, point_2, corner_offset, std::move(aruco))
         );
         link_measurement_->set_probe("pose", std::move(pose_probe_));
         link_measurement_->set_probe("pose_w_camera", std::move(pose_w_camera_probe_));
@@ -136,7 +156,7 @@ int main(int argc, char** argv)
     if (argc != 3)
     {
         std::cout << "Synopsis: test-aruco-measurement <type> <laterality>"  << std::endl;
-        std::cout << "          <type> can be 'marker' or 'board'"  << std::endl;
+        std::cout << "          <type> can be 'marker', 'board_0' or 'board_1'"  << std::endl;
 
         return EXIT_FAILURE;
     }
