@@ -55,10 +55,12 @@ endif()
 if (USE_YARP AND USE_ICUB)
   list(APPEND ${LIBRARY_TARGET_NAME}_HDR
     include/iCubCamera.h
+    include/iCubCameraRelative.h
     )
 
   list(APPEND ${LIBRARY_TARGET_NAME}_SRC
     src/iCubCamera.cpp
+    src/iCubCameraRelative.cpp
     )
 endif()
 
