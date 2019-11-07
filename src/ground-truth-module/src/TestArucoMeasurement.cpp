@@ -76,7 +76,7 @@ protected:
             const double marker_length = 0.02;
             aruco_ = std::unique_ptr<ArucoBoardMeasurement>
             (
-                new ArucoBoardMeasurement(cv::aruco::DICT_4X4_50, n_x, n_y, marker_length, intra_marker, std::move(camera_))
+                new ArucoBoardMeasurement(cv::aruco::DICT_4X4_50, 0, n_x, n_y, marker_length, intra_marker, std::move(camera_))
             );
         }
 

@@ -83,6 +83,7 @@ protected:
         {
             std::size_t n_x = 2;
             std::size_t n_y = 2;
+            std::size_t dictionary_offset = 0;
             const double intra_marker = 0.005;
             const double marker_length = 0.02;
 
@@ -90,11 +91,12 @@ protected:
             {
                 n_x = 1;
                 n_y = 2;
+                dictionary_offset = 4;
             }
 
             aruco = std::unique_ptr<ArucoBoardMeasurement>
             (
-                new ArucoBoardMeasurement(cv::aruco::DICT_4X4_50, n_x, n_y, marker_length, intra_marker, std::move(camera_))
+                new ArucoBoardMeasurement(cv::aruco::DICT_4X4_50, dictionary_offset, n_x, n_y, marker_length, intra_marker, std::move(camera_))
             );
         }
         aruco->set_probe("image_output", std::move(image_probe_));
