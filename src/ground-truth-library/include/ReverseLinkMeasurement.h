@@ -13,6 +13,8 @@
 
 #include <BayesFilters/MeasurementModel.h>
 
+#include <Eigen/Dense>
+
 #include <memory>
 #include <string>
 
@@ -36,6 +38,11 @@ public:
     std::pair<bool, bfl::Data> measure(const bfl::Data& data = bfl::Data()) const override;
 
     std::pair<std::size_t, std::size_t> getOutputSize() const override;
+
+protected:
+    void initialize();
+
+    virtual Eigen::Transform<double, 3, Eigen::Affine> evaluate_reverse_transform() = 0;
 
 private:
     std::unique_ptr<ArucoMeasurement> aruco_measurement_;
