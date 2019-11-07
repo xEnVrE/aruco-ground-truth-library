@@ -45,28 +45,28 @@ protected:
         if ((type_ != "marker") && (type_ != "board_0") && (type_ != "board_1"))
             throw(std::runtime_error("ReverseArucoMeasurement::initialization. Error: unknown type " + type_ + "."));
 
-        const std::string port_prefix = "test-aruco-measurement/" + type_ + "/" + laterality_ + "/";
+        const std::string port_prefix = "test-aruco-measurement/" + type_ + "/" + laterality_;
 
         /* Camera. */
         camera_ = std::unique_ptr<iCubCamera>
         (
-            new iCubCamera(laterality_, "test-aruco-measurement/" + laterality_, "", "")
+            new iCubCamera(laterality_, port_prefix, "", "")
         );
 
         /* Probes .*/
         pose_probe_ = std::unique_ptr<YarpVectorOfProbe<double, Eigen::Transform<double, 3, Eigen::Affine>>>
         (
-            new YarpVectorOfProbe<double, Eigen::Transform<double, 3, Eigen::Affine>>(port_prefix + "pose:o")
+            new YarpVectorOfProbe<double, Eigen::Transform<double, 3, Eigen::Affine>>("/" + port_prefix + "/pose:o")
         );
 
         pose_w_camera_probe_ = std::unique_ptr<YarpVectorOfProbe<double, Eigen::Transform<double, 3, Eigen::Affine>>>
         (
-            new YarpVectorOfProbe<double, Eigen::Transform<double, 3, Eigen::Affine>>(port_prefix + "pose_w_camera:o")
+            new YarpVectorOfProbe<double, Eigen::Transform<double, 3, Eigen::Affine>>("/" + port_prefix + "/pose_w_camera:o")
         );
 
         image_probe_ = std::unique_ptr<YarpImageOfProbe<yarp::sig::PixelRgb>>
         (
-            new YarpImageOfProbe<yarp::sig::PixelRgb>(port_prefix + "image:o")
+            new YarpImageOfProbe<yarp::sig::PixelRgb>("/" + port_prefix + "/image:o")
         );
 
         /* aruco measurement. */
