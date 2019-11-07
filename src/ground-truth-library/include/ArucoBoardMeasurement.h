@@ -21,7 +21,7 @@
 class ArucoBoardMeasurement : public ArucoMeasurement
 {
 public:
-    ArucoBoardMeasurement(const int& dictionary, const std::size_t number_x, const std::size_t number_y, const double& marker_side, const double& inter_marker_length, std::unique_ptr<Camera> camera);
+    ArucoBoardMeasurement(const int& dictionary, const std::size_t dictionary_offset, const std::size_t number_x, const std::size_t number_y, const double& marker_side, const double& inter_marker_length, std::unique_ptr<Camera> camera);
 
     virtual ~ArucoBoardMeasurement();
 
