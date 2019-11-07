@@ -140,26 +140,7 @@ iCubCamera::~iCubCamera()
 
 std::pair<bool, Transform<double, 3, Affine>> iCubCamera::get_pose(const bool& blocking)
 {
-    /* TODO: implement pose retrieval using encoders. */
-
-    Transform<double, 3, Affine> pose;
-
-    yarp::sig::Vector position_yarp;
-    yarp::sig::Vector orientation_yarp;
-
-    bool ok = false;
-    if (laterality_ == "left")
-        ok = gaze_control_->getLeftEyePose(position_yarp, orientation_yarp);
-    else if (laterality_ == "right")
-        ok = gaze_control_->getRightEyePose(position_yarp, orientation_yarp);
-
-    if (!ok)
-        return std::make_pair(false, Transform<double, 3, Affine>());
-
-    pose = Translation<double, 3>(toEigen(position_yarp));
-    pose.rotate(AngleAxisd(orientation_yarp(3), toEigen(orientation_yarp).head<3>()));
-
-    return std::make_pair(true, pose);
+    return get_laterality_pose(laterality_, blocking);
 }
 
 
@@ -196,4 +177,41 @@ std::pair<bool, MatrixXf> iCubCamera::get_depth(const bool& blocking)
 bool iCubCamera::step_frame()
 {
     return true;
+}
+
+
+std::pair<bool, Eigen::Transform<double, 3, Eigen::Affine>> iCubCamera::get_laterality_pose(const std::string& laterality, const bool& blocking)
+{
+    Transform<double, 3, Affine> pose;
+
+    yarp::sig::Vector position_yarp;
+    yarp::sig::Vector orientation_yarp;
+
+    bool ok = getLateralityEyePose(laterality, position_yarp, orientation_yarp);
+
+    if (!ok)
+        return std::make_pair(false, Transform<double, 3, Affine>());
+
+    pose = Translation<double, 3>(toEigen(position_yarp));
+    pose.rotate(AngleAxisd(orientation_yarp(3), toEigen(orientation_yarp).head<3>()));
+
+    return std::make_pair(true, pose);
+}
+
+
+std::string iCubCamera::get_laterality()
+{
+    return laterality_;
+}
+
+
+bool iCubCamera::getLateralityEyePose(const std::string& laterality, yarp::sig::Vector& position, yarp::sig::Vector& orientation)
+{
+    if ((laterality != "left") && (laterality != "right"))
+        return false;
+
+    if (laterality == "left")
+        return gaze_control_->getLeftEyePose(position, orientation);
+
+    return gaze_control_->getRightEyePose(position, orientation);
 }

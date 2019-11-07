@@ -43,7 +43,14 @@ public:
 
     bool step_frame() override;
 
+protected:
+    std::pair<bool, Eigen::Transform<double, 3, Eigen::Affine>> get_laterality_pose(const std::string& laterality, const bool& blocking);
+
+    std::string get_laterality();
+
 private:
+    bool getLateralityEyePose(const std::string& laterality, yarp::sig::Vector& position, yarp::sig::Vector& orientation);
+
     yarp::os::Network yarp_;
 
     const std::string laterality_;
