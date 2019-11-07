@@ -114,3 +114,29 @@ target_link_libraries(${EXE_TARGET_NAME}
                       )
 
 # install(TARGETS ${EXE_TARGET_NAME} DESTINATION bin)
+
+
+set(EXE_TARGET_NAME test-camera)
+
+set(${EXE_TARGET_NAME}_HDR
+    )
+
+set(${EXE_TARGET_NAME}_SRC
+    src/TestCamera.cpp
+    )
+
+add_executable(${EXE_TARGET_NAME}
+               ${${EXE_TARGET_NAME}_HDR}
+               ${${EXE_TARGET_NAME}_SRC}
+               )
+
+target_include_directories(${EXE_TARGET_NAME}
+                           PRIVATE
+                           )
+
+target_link_libraries(${EXE_TARGET_NAME}
+                      PRIVATE
+                      CameraLibrary
+                      )
+
+# install(TARGETS ${EXE_TARGET_NAME} DESTINATION bin)
