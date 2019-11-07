@@ -19,9 +19,10 @@
 
 int main(int argc, char** argv)
 {
-    if (argc != 7)
+    if ((argc < 6) || ((std::string(argv[5]) == "true") && (argc != 7)))
     {
-        std::cout << "Synopsis: test-visualization <robot_name> <use_analogs> <hand_fk> <hand_aruco> <point_cloud> <camera>" << std::endl;
+        std::cout << "Synopsis: test-visualization <robot_name> <use_analogs> <hand_fk> <hand_aruco> <point_cloud> [<camera>]" << std::endl;
+        std::cout << "          Camera name <camera> is required only if <point_cloud> = true." << std::endl;
         return EXIT_FAILURE;
     }
     bool use_analogs = false;
@@ -38,7 +39,9 @@ int main(int argc, char** argv)
         show_hand_aruco = true;
     if (std::string(argv[5]) == "true")
         show_point_cloud = true;
-    std::string camera_name = std::string(argv[6]);
+    std::string camera_name = "";
+    if (show_point_cloud)
+        camera_name = std::string(argv[6]);
 
     VtkContainer container(30, 600, 600);
 
