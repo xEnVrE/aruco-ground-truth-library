@@ -80,6 +80,7 @@ if (USE_YARP AND USE_ICUB)
                         YARP::YARP_cv
                         YARP::YARP_dev
                         YARP::YARP_eigen
+                        YARP::YARP_init
                         YARP::YARP_os
                         YARP::YARP_sig
                         ${ICUB_LIBARIES}
