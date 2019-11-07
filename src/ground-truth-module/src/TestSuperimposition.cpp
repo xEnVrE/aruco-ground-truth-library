@@ -21,11 +21,12 @@
 class TestSuperimposition : public bfl::FilteringAlgorithm
 {
 public:
-    TestSuperimposition(const std::string& robot_name, const std::string& camera_laterality, const std::string& hand_laterality, const bool use_analogs) :
+    TestSuperimposition(const std::string& robot_name, const std::string& camera_laterality, const std::string& hand_laterality, const bool use_analogs, const bool use_camera_pose) :
         robot_name_(robot_name),
         camera_laterality_(camera_laterality),
         hand_laterality_(hand_laterality),
-        use_analogs_(use_analogs)
+        use_analogs_(use_analogs),
+        use_camera_pose_(use_camera_pose)
     {}
 
 
@@ -38,7 +39,7 @@ protected:
     bool initialization() override
     {
         /* Camera. */
-        camera_ = std::unique_ptr<iCubCamera>
+        camera_ = std::shared_ptr<iCubCamera>
         (
             new iCubCamera(camera_laterality_, "test-superimposition/" + camera_laterality_ + "_camera", "", "")
         );
@@ -52,7 +53,7 @@ protected:
         /* Rendering engine. */
         hand_ = std::unique_ptr<SIiCubHand>
         {
-            new SIiCubHand(robot_name_, hand_laterality_, "test-superimposition/" + camera_laterality_ +"_camera/si-icub-hand", use_analogs_, *camera_)
+            new SIiCubHand(robot_name_, hand_laterality_, "test-superimposition/" + camera_laterality_ +"_camera/si-icub-hand", use_analogs_, use_camera_pose_, camera_)
         };
 
 
@@ -101,13 +102,15 @@ protected:
 private:
     const std::string type_;
 
-    std::unique_ptr<iCubCamera> camera_;
+    std::shared_ptr<iCubCamera> camera_;
 
     std::unique_ptr<SIiCubHand> hand_;
 
     std::unique_ptr<YarpImageOfProbe<yarp::sig::PixelRgb>> image_probe_;
 
     const bool use_analogs_ = false;
+
+    const bool use_camera_pose_ = false;
 
     const std::string camera_laterality_;
 
@@ -121,9 +124,9 @@ private:
 
 int main(int argc, char** argv)
 {
-    if (argc != 4)
+    if (argc != 5)
     {
-        std::cout << "Synopsis: test-superimposition <robot_name> <camera_laterality> <use_analogs>"  << std::endl;
+        std::cout << "Synopsis: test-superimposition <robot_name> <camera_laterality> <use_analogs> <use_camera_pose>"  << std::endl;
 
         return EXIT_FAILURE;
     }
@@ -131,8 +134,9 @@ int main(int argc, char** argv)
     const std::string robot_name = std::string(argv[1]);
     const std::string camera_laterality = std::string(argv[2]);
     const bool use_analogs = (std::string(argv[3]) == "true");
+    const bool use_camera_pose = (std::string(argv[4]) == "true");
 
-    TestSuperimposition test(robot_name, camera_laterality, "left", use_analogs);
+    TestSuperimposition test(robot_name, camera_laterality, "left", use_analogs, use_camera_pose);
     test.boot();
     test.run();
     if (!test.wait())
