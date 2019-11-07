@@ -17,7 +17,9 @@ using namespace Eigen;
 using namespace yarp::eigen;
 
 
-SIiCubHand::SIiCubHand(const std::string& robot_name, const std::string& laterality, const std::string& port_prefix, const bool& use_analogs, const Camera& camera)
+SIiCubHand::SIiCubHand(const std::string& robot_name, const std::string& laterality, const std::string& port_prefix, const bool& use_analogs, const bool& use_camera_pose, std::shared_ptr<Camera> camera) :
+    use_camera_pose_(use_camera_pose),
+    camera_(camera)
 {
     if ((laterality != "left") && (laterality != "right"))
         throw(std::runtime_error(log_name_ + "::ctor. Invalid laterality specified."));
@@ -91,7 +93,7 @@ SIiCubHand::SIiCubHand(const std::string& robot_name, const std::string& lateral
 
     /* Get camera parameters. */
     CameraParameters parameters;
-    std::tie(std::ignore, parameters) = camera.get_parameters();
+    std::tie(std::ignore, parameters) = camera_->get_parameters();
 
     /* Initialize rendering engine. */
     renderer_ = std::unique_ptr<SICAD>
@@ -144,10 +146,25 @@ std::pair<bool, cv::Mat> SIiCubHand::render_image(const bool& blocking)
         poses.emplace(mesh.first, transform_to_vector(transform * forward_kinematics_->map("ee", mesh.first, encoders)));
 
 
-    double cam_x [4] = {0.0, 0.0, 0.0};
+    double cam_x [3] = {0.0, 0.0, 0.0};
     double cam_o [4] = {1.0, 0.0, 0.0, 0.0};
     cv::Mat render_image;
-    renderer_->superimpose(poses, cam_x, cam_o, render_image);
+    if (use_camera_pose_)
+    {
+        bool valid_pose = false;
+        Transform<double, 3, Affine> pose;
+        std::tie(valid_pose, pose) = camera_->get_pose(true);
+        if (!valid_pose)
+            std::make_pair(false, cv::Mat());
+
+        VectorXd axis_angle(4);
+        AngleAxisd angle_axis(pose.rotation());
+        axis_angle.head<3>() = angle_axis.axis();
+        axis_angle(3) = angle_axis.angle();
+        renderer_->superimpose(poses, pose.translation().data(), axis_angle.data(), render_image);
+    }
+    else
+        renderer_->superimpose(poses, cam_x, cam_o, render_image);
 
     return std::make_pair(true, render_image);
 }

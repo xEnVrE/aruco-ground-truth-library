@@ -28,7 +28,7 @@
 class SIiCubHand
 {
 public:
-    SIiCubHand(const std::string& robot_name, const std::string& laterality, const std::string& port_prefix, const bool& use_analogs, const Camera& camera);
+    SIiCubHand(const std::string& robot_name, const std::string& laterality, const std::string& port_prefix, const bool& use_analogs, const bool& use_camera_pose, std::shared_ptr<Camera> camera);
 
     virtual ~SIiCubHand();
 
@@ -48,6 +48,10 @@ private:
     std::unique_ptr<iCubForwardKinematics> forward_kinematics_;
 
     std::unique_ptr<iCubFingersEncoders> fingers_encoders_;
+
+    std::shared_ptr<Camera> camera_;
+
+    const bool use_camera_pose_ = false;
 
     const std::string log_name_ = "SIiCubHand";
 };
