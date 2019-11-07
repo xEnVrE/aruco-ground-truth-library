@@ -81,15 +81,15 @@ protected:
         }
         else if ((type_ == "board_0") || (type_ == "board_1"))
         {
-            const std::size_t n_x = 2;
-            const std::size_t n_y = 2;
+            std::size_t n_x = 2;
+            std::size_t n_y = 2;
             const double intra_marker = 0.005;
             const double marker_length = 0.02;
 
             if (type_ == "board_1")
             {
-                const std::size_t n_x = 2;
-                const std::size_t n_y = 1;
+                n_x = 1;
+                n_y = 2;
             }
 
             aruco = std::unique_ptr<ArucoBoardMeasurement>
