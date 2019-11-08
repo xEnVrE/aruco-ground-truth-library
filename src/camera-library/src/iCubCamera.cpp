@@ -17,7 +17,7 @@
 #include <yarp/sig/Image.h>
 
 using namespace Eigen;
-// using namespace iCub::iKin;
+using namespace iCub::iKin;
 using namespace yarp::cv;
 using namespace yarp::eigen;
 using namespace yarp::os;
@@ -47,57 +47,97 @@ iCubCamera::iCubCamera(const std::string& laterality, const std::string& port_pr
     properties.put("local", "/" + port_prefix + "/gazecontroller");
 
     /* Open driver. */
-    bool ok = driver_gaze_.open(properties);
-    if (!ok)
+    bool ok = driver_gaze_.open(properties) && driver_gaze_.view(gaze_control_) && (gaze_control_ != nullptr);
+
+    if (ok)
     {
-        std::string err = log_name_ + "::ctor. Cannot open GazeController driver.";
-        throw(std::runtime_error(err));
-    }
+        /* Retrieve camera parameters. */
+        Bottle info;
+        std::string key;
+        gaze_control_->getInfo(info);
 
-    /* Try to retrieve the required view. */
-    ok = driver_gaze_.view(gaze_control_) && (gaze_control_ != nullptr);
-    if (!ok)
+        key = "camera_width_" + laterality_;
+        if (info.find(key).isNull())
+        {
+            std::string err = log_name_ + "::ctor. Error: cannot load iCub " + laterality_ + " camera width.";
+            throw(std::runtime_error(err));
+        }
+        parameters_.width = info.find(key).asInt();
+
+        key = "camera_height_" + laterality_;
+        if (info.find(key).isNull())
+        {
+            std::string err = log_name_ + "::ctor. Error: cannot load iCub " + laterality_ + " camera height.";
+            throw(std::runtime_error(err));
+        }
+        parameters_.height = info.find(key).asInt();
+
+        key = "camera_intrinsics_" + laterality_;
+        if (info.find(key).isNull())
+        {
+            std::string err = log_name_ + "::ctor. Error: cannot load iCub " + laterality_ + " camera intrinsic parameters.";
+            throw(std::runtime_error(err));
+        }
+        Bottle *list = info.find(key).asList();
+        parameters_.fx = list->get(0).asDouble();
+        parameters_.cx = list->get(2).asDouble();
+        parameters_.fy = list->get(5).asDouble();
+        parameters_.cy = list->get(6).asDouble();
+
+        parameters_.set_initialized();
+    }
+    else
     {
-        std::string err = log_name_ + "::ctor. Cannot open GazeController view.";
-        throw(std::runtime_error(err));
+        /* Stick to encoders .*/
+        use_driver_gaze_ = false;
+
+        const std::string robot_name = "icub";
+
+        /* TODO: take parameters from a configuration file. */
+        parameters_.width = 0.0;
+        parameters_.height = 0.0;
+        parameters_.fx = 0.0;
+        parameters_.cx = 0.0;
+        parameters_.fy = 0.0;
+        parameters_.cy = 0.0;
+        parameters_.set_initialized();
+
+        /* Configure torso. */
+        Property properties;
+        properties.put("device", "remote_controlboard");
+        properties.put("local", "/" + port_prefix + "/torso:i");
+        properties.put("remote", "/" + robot_name + "/torso");
+        ok = drv_torso_.open(properties) && drv_torso_.view(itorso_) && (itorso_ != nullptr);
+        if (!ok)
+        {
+            std::string err = log_name_ + "::ctor. Error: cannot open remote control board for torso.";
+            throw(std::runtime_error(err));
+        }
+
+        /* Configure head. */
+        properties.put("local", "/" + port_prefix + "/head:i");
+        properties.put("remote", "/" + robot_name + "/head");
+        ok = drv_head_.open(properties) && drv_head_.view(ihead_) && (ihead_ != nullptr);
+        if (!ok)
+        {
+            std::string err = log_name_ + "::ctor. Error: cannot open remote control board for head.";
+            throw(std::runtime_error(err));
+        }
+
+        /* Configure forward kinematics. */
+        left_eye_kinematics_ = iCubEye("left_v2");
+        right_eye_kinematics_ = iCubEye("right_v2");
+
+        left_eye_kinematics_.setAllConstraints(false);
+        right_eye_kinematics_.setAllConstraints(false);
+
+        left_eye_kinematics_.releaseLink(0);
+        left_eye_kinematics_.releaseLink(1);
+        left_eye_kinematics_.releaseLink(2);
+        right_eye_kinematics_.releaseLink(0);
+        right_eye_kinematics_.releaseLink(1);
+        right_eye_kinematics_.releaseLink(2);
     }
-
-    //TODO: add configuration retrieval from a configuration file in case of driver failure
-
-    /* Retrieve camera parameters. */
-    Bottle info;
-    std::string key;
-    gaze_control_->getInfo(info);
-
-    key = "camera_width_" + laterality_;
-    if (info.find(key).isNull())
-    {
-        std::string err = log_name_ + "::ctor. Error: cannot load iCub " + laterality_ + " camera width.";
-        throw(std::runtime_error(err));
-    }
-    parameters_.width = info.find(key).asInt();
-
-    key = "camera_height_" + laterality_;
-    if (info.find(key).isNull())
-    {
-        std::string err = log_name_ + "::ctor. Error: cannot load iCub " + laterality_ + " camera height.";
-        throw(std::runtime_error(err));
-    }
-    parameters_.height = info.find(key).asInt();
-
-    key = "camera_intrinsics_" + laterality_;
-    if (info.find(key).isNull())
-    {
-        std::string err = log_name_ + "::ctor. Error: cannot load iCub " + laterality_ + " camera intrinsic parameters.";
-        throw(std::runtime_error(err));
-    }
-    Bottle *list = info.find(key).asList();
-    parameters_.fx = list->get(0).asDouble();
-    parameters_.cx = list->get(2).asDouble();
-    parameters_.fy = list->get(5).asDouble();
-    parameters_.cy = list->get(6).asDouble();
-
-    parameters_.set_initialized();
 
     /* Log parameters. */
     std::cout << log_name_ + "::ctor. Camera parameters:" << std::endl;
@@ -106,7 +146,6 @@ iCubCamera::iCubCamera(const std::string& laterality, const std::string& port_pr
     std::cout << log_name_ + "    - fx: " << parameters_.fx << std::endl;
     std::cout << log_name_ + "    - fy: " << parameters_.fy << std::endl;
     std::cout << log_name_ + "    - cx: " << parameters_.cx << std::endl;
-
 
     /* Open rgb input port. */
     if (!(port_rgb_.open("/" + port_prefix + "/rgbImage:i")))
@@ -129,7 +168,13 @@ iCubCamera::iCubCamera(const std::string& laterality, const std::string& port_pr
 iCubCamera::~iCubCamera()
 {
     /* Close driver. */
-    driver_gaze_.close();
+    if (use_driver_gaze_)
+        driver_gaze_.close();
+    else
+    {
+        drv_torso_.close();
+        drv_head_.close();
+    }
 
     /* Close ports. */
     port_rgb_.close();
@@ -208,10 +253,54 @@ std::string iCubCamera::get_laterality()
 bool iCubCamera::getLateralityEyePose(const std::string& laterality, yarp::sig::Vector& position, yarp::sig::Vector& orientation)
 {
     if ((laterality != "left") && (laterality != "right"))
-        return false;
+            return false;
 
-    if (laterality == "left")
-        return gaze_control_->getLeftEyePose(position, orientation);
+    if (use_driver_gaze_)
+    {
+        if (laterality == "left")
+            return gaze_control_->getLeftEyePose(position, orientation);
+        else
+            return gaze_control_->getRightEyePose(position, orientation);
+    }
+    else
+    {
+        yarp::sig::Vector torso_encoders_(3);
+        yarp::sig::Vector head_encoders_(6);
 
-    return gaze_control_->getRightEyePose(position, orientation);
+        if (!itorso_->getEncoders(torso_encoders_.data()))
+            return false;
+
+        if (!ihead_->getEncoders(head_encoders_.data()))
+            return false;
+
+        yarp::sig::Vector chain_joints(8);
+        chain_joints(0) = torso_encoders_(2);
+        chain_joints(1) = torso_encoders_(1);
+        chain_joints(2) = torso_encoders_(0);
+        chain_joints(3) = head_encoders_(0);
+        chain_joints(4) = head_encoders_(1);
+        chain_joints(5) = head_encoders_(2);
+        chain_joints(6) = head_encoders_(3);
+
+        double version = head_encoders_(4);
+        double vergence = head_encoders_(5);
+
+        if (laterality == "left")
+            chain_joints(7) = version + vergence / 2.0;
+        else
+            chain_joints(7) = version - vergence / 2.0;
+
+        yarp::sig::Vector pose;
+        if (laterality == "left")
+            pose = left_eye_kinematics_.EndEffPose(chain_joints * M_PI / 180.0);
+        else
+            pose = right_eye_kinematics_.EndEffPose(chain_joints * M_PI / 180.0);
+
+        position.resize(3);
+        orientation.resize(4);
+        position = pose.subVector(0, 2);
+        orientation = pose.subVector(3, 6);
+
+        return true;
+    }
 }

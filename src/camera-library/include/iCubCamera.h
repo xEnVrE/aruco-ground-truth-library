@@ -12,7 +12,7 @@
 
 #include <Eigen/Dense>
 
-// #include <iCub/iKin/iKinFwd.h>
+#include <iCub/iKin/iKinFwd.h>
 
 #include <opencv2/opencv.hpp>
 
@@ -69,13 +69,19 @@ private:
 
     yarp::dev::IGazeControl* gaze_control_;
 
-    /* Fallback interface with ports. */
+    /* Fallback interface with encoders. */
 
-    // yarp::os::BufferedPort<yarp::os::Bottle> port_encoder_head_;
+    yarp::dev::PolyDriver drv_torso_;
 
-    // yarp::os::BufferedPort<yarp::os::Bottle> port_encoder_torso_;
+    yarp::dev::IEncoders *itorso_;
 
-    // iCub::iKin::iCubEye icub_eye_kinematics_;
+    yarp::dev::PolyDriver drv_head_;
+
+    yarp::dev::IEncoders *ihead_;
+
+    iCub::iKin::iCubEye left_eye_kinematics_;
+
+    iCub::iKin::iCubEye right_eye_kinematics_;
 
     const std::string log_name_ = "iCubCamera";
 };
