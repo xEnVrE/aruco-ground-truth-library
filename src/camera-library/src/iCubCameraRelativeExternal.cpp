@@ -17,10 +17,10 @@ iCubCameraRelativeExternal::iCubCameraRelativeExternal(const std::string& latera
     iCubCameraRelative(laterality, port_prefix, fallback_context_name, fallback_configuration_name)
 {
     if(!reference_pose_left_in_.open("/" + port_prefix + "/reference_left/pose:i"))
-        throw(std::runtime_error(log_name_ + "::ctor. Cannot open hand pose input port."));
+        throw(std::runtime_error(log_name_ + "::ctor. Cannot open left reference input port."));
 
     if(!reference_pose_right_in_.open("/" + port_prefix + "/reference_right/pose:i"))
-        throw(std::runtime_error(log_name_ + "::ctor. Cannot open hand pose input port."));
+        throw(std::runtime_error(log_name_ + "::ctor. Cannot open right reference input port."));
 }
 
 
