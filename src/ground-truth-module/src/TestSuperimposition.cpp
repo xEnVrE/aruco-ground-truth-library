@@ -41,28 +41,31 @@ public:
 protected:
     bool initialization() override
     {
+        const std::string relative_postfix = use_relative_camera_ ? "_relative" : "";
+        const std::string port_prefix = "test-superimposition/" + camera_laterality_ + "_camera" + relative_postfix;
+
         /* Camera. */
         if (use_relative_camera_)
             camera_ = std::shared_ptr<iCubCamera>
             (
-                new iCubCameraRelative(camera_laterality_, "test-superimposition/" + camera_laterality_ + "_camera", "", "")
+                new iCubCameraRelative(camera_laterality_, port_prefix, "", "")
             );
         else
             camera_ = std::shared_ptr<iCubCamera>
             (
-                new iCubCamera(camera_laterality_, "test-superimposition/" + camera_laterality_ + "_camera", "", "")
+                new iCubCamera(camera_laterality_, port_prefix, "", "")
             );
 
         /* Probes .*/
         image_probe_ = std::unique_ptr<YarpImageOfProbe<yarp::sig::PixelRgb>>
         (
-            new YarpImageOfProbe<yarp::sig::PixelRgb>("/test-superimposition/" + camera_laterality_ +"_camera/image:o")
+            new YarpImageOfProbe<yarp::sig::PixelRgb>("/" + port_prefix + "/image:o")
         );
 
         /* Rendering engine. */
         hand_ = std::unique_ptr<SIiCubHand>
         {
-            new SIiCubHand(robot_name_, hand_laterality_, "test-superimposition/" + camera_laterality_ +"_camera/si-icub-hand", use_analogs_, use_camera_pose_, camera_)
+            new SIiCubHand(robot_name_, hand_laterality_, port_prefix + "/si-icub-hand", use_analogs_, use_camera_pose_, camera_)
         };
 
 
