@@ -8,6 +8,7 @@
 #include <Camera.h>
 #include <iCubCamera.h>
 #include <iCubCameraRelative.h>
+#include <iCubCameraRelativeExternal.h>
 #include <YarpCamera.h>
 
 #include <Eigen/Dense>
@@ -17,9 +18,9 @@
 
 int main(int argc, char** argv)
 {
-    if (argc != 5)
+    if (argc != 6)
     {
-        std::cout << "Synopsis: test-camera <robot_name> <camera_name> <laterality> <relative>"  << std::endl;
+        std::cout << "Synopsis: test-camera <robot_name> <camera_name> <laterality> <relative> <external>"  << std::endl;
         std::cout << "          <camera_name> can be {iCubCamera}"  << std::endl;
 
         return EXIT_FAILURE;
@@ -29,15 +30,24 @@ int main(int argc, char** argv)
     const std::string camera_name = std::string(argv[2]);
     const std::string laterality = std::string(argv[3]);
     const bool relative = (std::string(argv[4]) == "true");
+    const bool external = (std::string(argv[5]) == "true");
 
     std::unique_ptr<Camera> camera;
     if (camera_name == "iCubCamera")
     {
         if (relative)
-            camera = std::unique_ptr<iCubCamera>
-            (
-                new iCubCameraRelative(laterality, "test-camera", "", "")
-            );
+        {
+	    if(external)
+	        camera = std::unique_ptr<iCubCamera>
+                (
+                    new iCubCameraRelativeExternal(laterality, "test-camera", "", "")
+                );
+	    else
+	        camera = std::unique_ptr<iCubCamera>
+                (
+                    new iCubCameraRelative(laterality, "test-camera", "", "")
+                );
+	}
         else
             camera = std::unique_ptr<iCubCamera>
             (
