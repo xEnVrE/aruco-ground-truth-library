@@ -94,12 +94,22 @@ iCubCamera::iCubCamera(const std::string& laterality, const std::string& port_pr
         const std::string robot_name = "icub";
 
         /* TODO: take parameters from a configuration file. */
-        parameters_.width = 0.0;
-        parameters_.height = 0.0;
-        parameters_.fx = 0.0;
-        parameters_.cx = 0.0;
-        parameters_.fy = 0.0;
-        parameters_.cy = 0.0;
+        parameters_.width = 640.0;
+        parameters_.height = 480.0;
+	if (laterality == "left")
+	{
+            parameters_.fx = 468.672;
+            parameters_.cx = 323.045;
+            parameters_.fy = 467.73;
+            parameters_.cy = 245.784;
+	}
+	else
+	{
+            parameters_.fx = 468.488;
+            parameters_.cx = 301.274;
+            parameters_.fy = 467.427;
+            parameters_.cy = 245.503;
+	}
         parameters_.set_initialized();
 
         /* Configure torso. */
