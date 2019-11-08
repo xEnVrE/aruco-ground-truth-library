@@ -62,8 +62,8 @@ std::pair<bool, Eigen::Transform<double, 3, Eigen::Affine>> iCubCameraRelativeEx
         return std::make_pair(false, Eigen::Transform<double, 3, Eigen::Affine>());
 
     Eigen::Transform<double, 3, Eigen::Affine> reference_left;
-    reference_left = Translation<double, 3>(toEigen(*reference_right_in).head<3>());
-    AngleAxisd rotation_left(toEigen(*reference_right_in)(6), toEigen(*reference_right_in).segment<3>(3));
+    reference_left = Translation<double, 3>(toEigen(*reference_left_in).head<3>());
+    AngleAxisd rotation_left(toEigen(*reference_left_in)(6), toEigen(*reference_left_in).segment<3>(3));
     reference_left.rotate(rotation_left);
 
     Eigen::Transform<double, 3, Eigen::Affine> reference_right;
