@@ -85,6 +85,6 @@ if (USE_YARP AND USE_ICUB)
                         YARP::YARP_init
                         YARP::YARP_os
                         YARP::YARP_sig
-                        ${ICUB_LIBARIES}
+                        ${ICUB_LIBRARIES}
                         )
 endif()
