@@ -15,6 +15,7 @@
 #include <Eigen/Dense>
 
 #include <iCubCamera.h>
+#include <iCubCameraRelative.h>
 
 #include <YarpImageOfProbe.hpp>
 #include <YarpVectorOfProbe.hpp>
@@ -28,9 +29,10 @@
 class ReverseArucoMeasurement : public bfl::FilteringAlgorithm
 {
 public:
-    ReverseArucoMeasurement(const std::string& type, const std::string& laterality) :
+    ReverseArucoMeasurement(const std::string& type, const std::string& laterality, const bool& use_relative_camera) :
         type_(type),
-        laterality_(laterality)
+        laterality_(laterality),
+	use_relative_camera_(use_relative_camera)
     {}
 
 
@@ -45,13 +47,20 @@ protected:
         if ((type_ != "marker") && (type_ != "board_0") && (type_ != "board_1"))
             throw(std::runtime_error("ReverseArucoMeasurement::initialization. Error: unknown type " + type_ + "."));
 
-        const std::string port_prefix = "test-aruco-measurement/" + type_ + "/" + laterality_;
+	const std::string relative_postfix = use_relative_camera_ ? "_relative" : "";
+        const std::string port_prefix = "test-aruco-measurement/" + type_ + "/" + laterality_ + relative_postfix;
 
         /* Camera. */
-        camera_ = std::unique_ptr<iCubCamera>
-        (
-            new iCubCamera(laterality_, port_prefix, "", "")
-        );
+	if (use_relative_camera_)
+	    camera_ = std::unique_ptr<iCubCameraRelative>
+            (
+                new iCubCameraRelative(laterality_, port_prefix, "", "")
+            );
+	else
+	    camera_ = std::unique_ptr<iCubCamera>
+            (
+                new iCubCamera(laterality_, port_prefix, "", "")
+            );
 
         /* Probes .*/
         pose_probe_ = std::unique_ptr<YarpVectorOfProbe<double, Eigen::Transform<double, 3, Eigen::Affine>>>
@@ -141,6 +150,8 @@ private:
 
     const std::string laterality_;
 
+    const bool& use_relative_camera_ = false;
+
     std::unique_ptr<ReverseLinkMeasurement> link_measurement_;
 
     std::unique_ptr<iCubCamera> camera_;
@@ -155,9 +166,9 @@ private:
 
 int main(int argc, char** argv)
 {
-    if (argc != 3)
+    if (argc != 4)
     {
-        std::cout << "Synopsis: test-aruco-measurement <type> <laterality>"  << std::endl;
+        std::cout << "Synopsis: test-aruco-measurement <type> <laterality> <use_relative_camera>"  << std::endl;
         std::cout << "          <type> can be 'marker', 'board_0' or 'board_1'"  << std::endl;
 
         return EXIT_FAILURE;
@@ -165,8 +176,9 @@ int main(int argc, char** argv)
 
     const std::string type = std::string(argv[1]);
     const std::string laterality = std::string(argv[2]);
+    const bool use_relative_camera = (std::string(argv[3]) == "true");
 
-    ReverseArucoMeasurement test(type, laterality);
+    ReverseArucoMeasurement test(type, laterality, use_relative_camera);
     test.boot();
     test.run();
     if (!test.wait())
