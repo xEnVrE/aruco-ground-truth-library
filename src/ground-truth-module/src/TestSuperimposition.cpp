@@ -7,7 +7,9 @@
 
 #include <BayesFilters/FilteringAlgorithm.h>
 
+#include <Camera.h>
 #include <iCubCamera.h>
+#include <iCubCameraRelative.h>
 
 #include <SIiCubHand.h>
 
@@ -21,12 +23,13 @@
 class TestSuperimposition : public bfl::FilteringAlgorithm
 {
 public:
-    TestSuperimposition(const std::string& robot_name, const std::string& camera_laterality, const std::string& hand_laterality, const bool use_analogs, const bool use_camera_pose) :
+    TestSuperimposition(const std::string& robot_name, const std::string& hand_laterality, const bool use_analogs, const std::string& camera_laterality, const bool& use_camera_pose, const bool& use_relative_camera) :
         robot_name_(robot_name),
-        camera_laterality_(camera_laterality),
         hand_laterality_(hand_laterality),
         use_analogs_(use_analogs),
-        use_camera_pose_(use_camera_pose)
+        camera_laterality_(camera_laterality),
+        use_camera_pose_(use_camera_pose),
+        use_relative_camera_(use_relative_camera)
     {}
 
 
@@ -39,10 +42,16 @@ protected:
     bool initialization() override
     {
         /* Camera. */
-        camera_ = std::shared_ptr<iCubCamera>
-        (
-            new iCubCamera(camera_laterality_, "test-superimposition/" + camera_laterality_ + "_camera", "", "")
-        );
+        if (use_relative_camera_)
+            camera_ = std::shared_ptr<iCubCamera>
+            (
+                new iCubCameraRelative(camera_laterality_, "test-superimposition/" + camera_laterality_ + "_camera", "", "")
+            );
+        else
+            camera_ = std::shared_ptr<iCubCamera>
+            (
+                new iCubCamera(camera_laterality_, "test-superimposition/" + camera_laterality_ + "_camera", "", "")
+            );
 
         /* Probes .*/
         image_probe_ = std::unique_ptr<YarpImageOfProbe<yarp::sig::PixelRgb>>
@@ -102,7 +111,7 @@ protected:
 private:
     const std::string type_;
 
-    std::shared_ptr<iCubCamera> camera_;
+    std::shared_ptr<Camera> camera_;
 
     std::unique_ptr<SIiCubHand> hand_;
 
@@ -111,6 +120,8 @@ private:
     const bool use_analogs_ = false;
 
     const bool use_camera_pose_ = false;
+
+    const bool use_relative_camera_ = false;
 
     const std::string camera_laterality_;
 
@@ -124,19 +135,21 @@ private:
 
 int main(int argc, char** argv)
 {
-    if (argc != 5)
+    if (argc != 6)
     {
-        std::cout << "Synopsis: test-superimposition <robot_name> <camera_laterality> <use_analogs> <use_camera_pose>"  << std::endl;
+        std::cout << "Synopsis: test-superimposition <robot_name> <use_analogs> <camera_laterality> <use_camera_pose> <use_relative_camera>"  << std::endl;
 
         return EXIT_FAILURE;
     }
 
     const std::string robot_name = std::string(argv[1]);
-    const std::string camera_laterality = std::string(argv[2]);
-    const bool use_analogs = (std::string(argv[3]) == "true");
+    const bool use_analogs = (std::string(argv[2]) == "true");
+    const std::string camera_laterality = std::string(argv[3]);
     const bool use_camera_pose = (std::string(argv[4]) == "true");
+    const bool use_relative_camera = (std::string(argv[5]) == "true");
 
-    TestSuperimposition test(robot_name, camera_laterality, "left", use_analogs, use_camera_pose);
+
+    TestSuperimposition test(robot_name, "left", use_analogs, camera_laterality, use_camera_pose, use_relative_camera);
     test.boot();
     test.run();
     if (!test.wait())
