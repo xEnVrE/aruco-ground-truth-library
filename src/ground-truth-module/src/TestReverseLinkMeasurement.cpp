@@ -190,7 +190,9 @@ int main(int argc, char** argv)
     const std::string type = std::string(argv[1]);
     const std::string laterality = std::string(argv[2]);
     const bool use_relative_camera = (std::string(argv[3]) == "true");
-    const bool use_external_reference = (std::string(argv[4]) == "true");
+    bool use_external_reference = false;
+    if (use_relative_camera)
+       use_external_reference = (std::string(argv[4]) == "true");
 
     ReverseArucoMeasurement test(type, laterality, use_relative_camera, use_external_reference);
     test.boot();
