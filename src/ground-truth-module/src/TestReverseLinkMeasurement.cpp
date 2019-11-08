@@ -16,6 +16,7 @@
 
 #include <iCubCamera.h>
 #include <iCubCameraRelative.h>
+#include <iCubCameraRelativeExternal.h>
 
 #include <YarpImageOfProbe.hpp>
 #include <YarpVectorOfProbe.hpp>
@@ -29,10 +30,11 @@
 class ReverseArucoMeasurement : public bfl::FilteringAlgorithm
 {
 public:
-    ReverseArucoMeasurement(const std::string& type, const std::string& laterality, const bool& use_relative_camera) :
+    ReverseArucoMeasurement(const std::string& type, const std::string& laterality, const bool& use_relative_camera, const bool& use_external_reference) :
         type_(type),
         laterality_(laterality),
-	use_relative_camera_(use_relative_camera)
+        use_relative_camera_(use_relative_camera),
+        use_external_reference_(use_external_reference)
     {}
 
 
@@ -47,17 +49,25 @@ protected:
         if ((type_ != "marker") && (type_ != "board_0") && (type_ != "board_1"))
             throw(std::runtime_error("ReverseArucoMeasurement::initialization. Error: unknown type " + type_ + "."));
 
-	const std::string relative_postfix = use_relative_camera_ ? "_relative" : "";
+        const std::string relative_postfix = use_relative_camera_ ? "_relative" : "";
         const std::string port_prefix = "test-aruco-measurement/" + type_ + "/" + laterality_ + relative_postfix;
 
         /* Camera. */
-	if (use_relative_camera_)
-	    camera_ = std::unique_ptr<iCubCameraRelative>
-            (
-                new iCubCameraRelative(laterality_, port_prefix, "", "")
-            );
-	else
-	    camera_ = std::unique_ptr<iCubCamera>
+        if (use_relative_camera_)
+        {
+            if (use_external_reference_)
+                camera_ = std::unique_ptr<iCubCameraRelativeExternal>
+                (
+                    new iCubCameraRelativeExternal(laterality_, port_prefix, "", "")
+                );
+            else
+                camera_ = std::unique_ptr<iCubCameraRelative>
+                (
+                    new iCubCameraRelative(laterality_, port_prefix, "", "")
+                );
+        }
+        else
+            camera_ = std::unique_ptr<iCubCamera>
             (
                 new iCubCamera(laterality_, port_prefix, "", "")
             );
@@ -152,6 +162,8 @@ private:
 
     const bool& use_relative_camera_ = false;
 
+    const bool& use_external_reference_ = false;
+
     std::unique_ptr<ReverseLinkMeasurement> link_measurement_;
 
     std::unique_ptr<iCubCamera> camera_;
@@ -166,10 +178,11 @@ private:
 
 int main(int argc, char** argv)
 {
-    if (argc != 4)
+    if ((argc < 4) || ((std::string(argv[3]) == "true") && argc != 5))
     {
-        std::cout << "Synopsis: test-aruco-measurement <type> <laterality> <use_relative_camera>"  << std::endl;
+        std::cout << "Synopsis: test-aruco-measurement <type> <laterality> <use_relative_camera> [<use_external_reference>]"  << std::endl;
         std::cout << "          <type> can be 'marker', 'board_0' or 'board_1'"  << std::endl;
+        std::cout << "          <use_external_reference> is required if <use_relative_camera> = true"  << std::endl;
 
         return EXIT_FAILURE;
     }
@@ -177,8 +190,9 @@ int main(int argc, char** argv)
     const std::string type = std::string(argv[1]);
     const std::string laterality = std::string(argv[2]);
     const bool use_relative_camera = (std::string(argv[3]) == "true");
+    const bool use_external_reference = (std::string(argv[4]) == "true");
 
-    ReverseArucoMeasurement test(type, laterality, use_relative_camera);
+    ReverseArucoMeasurement test(type, laterality, use_relative_camera, use_external_reference);
     test.boot();
     test.run();
     if (!test.wait())
