@@ -34,9 +34,9 @@ std::pair<bool, Eigen::Transform<double, 3, Eigen::Affine>> iCubCameraRelative::
     /* Evaluate the relative pose between the two cameras. */
     Eigen::Transform<double, 3, Eigen::Affine> pose_relative;
     if (get_laterality() == "left")
-        pose_relative = pose_left.inverse() * pose_right;
-    else
         pose_relative = pose_right.inverse() * pose_left;
+    else
+        pose_relative = pose_left.inverse() * pose_right;
 
     return std::make_pair(true, pose_relative);
 }
