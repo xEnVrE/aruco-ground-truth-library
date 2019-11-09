@@ -96,20 +96,20 @@ iCubCamera::iCubCamera(const std::string& laterality, const std::string& port_pr
         /* TODO: take parameters from a configuration file. */
         parameters_.width = 640.0;
         parameters_.height = 480.0;
-	if (laterality == "left")
-	{
+        if (laterality_ == "left")
+        {
             parameters_.fx = 468.672;
             parameters_.cx = 323.045;
             parameters_.fy = 467.73;
             parameters_.cy = 245.784;
-	}
-	else
-	{
+        }
+        else
+        {
             parameters_.fx = 468.488;
             parameters_.cx = 301.274;
             parameters_.fy = 467.427;
             parameters_.cy = 245.503;
-	}
+        }
         parameters_.set_initialized();
 
         /* Configure torso. */
@@ -175,11 +175,19 @@ iCubCamera::iCubCamera(const std::string& laterality, const std::string& port_pr
 }
 
 
+iCubCamera::iCubCamera(const std::string& data_path, const std::size_t& width, const double& height, const double& fx, const double& cx, const double& fy, const double& cy, const bool& load_encoders_data) :
+    Camera(data_path, width, height, fx, cx, fy, cy),
+    load_encoders_data_(load_encoders_data)
+{
+    Camera::initialize();
+}
+
+
 iCubCamera::~iCubCamera()
 {
     /* Close driver. */
     if (use_driver_gaze_)
-        driver_gaze_.close();
+      driver_gaze_.close();
     else
     {
         drv_torso_.close();
@@ -201,6 +209,9 @@ std::pair<bool, Transform<double, 3, Affine>> iCubCamera::get_pose(const bool& b
 
 std::pair<bool, cv::Mat> iCubCamera::get_rgb(const bool& blocking)
 {
+    if (is_offline())
+        return Camera::get_rgb_offline();
+
     ImageOf<PixelRgb>* image_in;
     image_in = port_rgb_.read(blocking);
 
@@ -215,7 +226,9 @@ std::pair<bool, cv::Mat> iCubCamera::get_rgb(const bool& blocking)
 
 std::pair<bool, MatrixXf> iCubCamera::get_depth(const bool& blocking)
 {
-    // Get image
+    if (is_offline())
+        return Camera::get_depth_offline();
+
     ImageOf<PixelFloat>* image_in;
     image_in = port_depth_.read(blocking);
 
@@ -226,6 +239,42 @@ std::pair<bool, MatrixXf> iCubCamera::get_depth(const bool& blocking)
     Map<Eigen::Matrix<float, Dynamic, Dynamic, Eigen::RowMajor>> depth(image.ptr<float>(), image.rows, image.cols);
 
     return std::make_pair(true, depth);
+}
+
+
+std::size_t iCubCamera::get_auxiliary_data_size()
+{
+    /* Auxiliary data are torso (3) and head (6) encoders. */
+    if (load_encoders_data_)
+        return 3 + 6;
+
+    return 0;
+}
+
+
+std::pair<bool, Eigen::VectorXd> iCubCamera::get_auxiliary_data(const bool& blocking)
+{
+    if (is_offline())
+        return Camera::get_auxiliary_data_offline();
+
+    /* Gaze driver do not provides additional information from encoders. */
+    if (use_driver_gaze_)
+        return std::make_pair(false, VectorXd());
+
+    yarp::sig::Vector torso_encoders_(3);
+    yarp::sig::Vector head_encoders_(6);
+
+    if (!itorso_->getEncoders(torso_encoders_.data()))
+        return std::make_pair(false, VectorXd());
+
+    if (!ihead_->getEncoders(head_encoders_.data()))
+        return std::make_pair(false, VectorXd());
+
+    VectorXd encoders(9);
+    encoders.head<3>() = toEigen(torso_encoders_);
+    encoders.tail<6>() = toEigen(head_encoders_);
+
+    return std::make_pair(true, encoders);
 }
 
 

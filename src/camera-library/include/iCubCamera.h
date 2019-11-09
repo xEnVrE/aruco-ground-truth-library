@@ -33,6 +33,8 @@ public:
 
     iCubCamera(const std::string& laterality, const std::string& port_context, const std::string& fallback_context_name, const std::string& fallback_configuration_name);
 
+    iCubCamera(const std::string& data_path, const std::size_t& width, const double& height, const double& fx, const double& cx, const double& fy, const double& cy, const bool& load_encoders_data);
+
     ~iCubCamera();
 
     std::pair<bool, Eigen::Transform<double, 3, Eigen::Affine>> get_pose(const bool& blocking) override;
@@ -40,6 +42,10 @@ public:
     std::pair<bool, cv::Mat> get_rgb(const bool& blocking) override;
 
     std::pair<bool, Eigen::MatrixXf> get_depth(const bool& blocking) override;
+
+    std::size_t get_auxiliary_data_size() override;
+
+    std::pair<bool, Eigen::VectorXd> get_auxiliary_data(const bool& blocking) override;
 
     bool step_frame() override;
 
@@ -82,6 +88,11 @@ private:
     iCub::iKin::iCubEye left_eye_kinematics_;
 
     iCub::iKin::iCubEye right_eye_kinematics_;
+
+    /* Offline interface. */
+    bool load_encoders_data_ = false;
+
+    /* Log name to be used in messages printed by the class. */
 
     const std::string log_name_ = "iCubCamera";
 };
