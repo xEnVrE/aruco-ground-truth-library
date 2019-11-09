@@ -101,7 +101,7 @@ bool Camera::enable_log(const std::string& path)
     if (log_path_.back() != '/')
         log_path_ += "/";
 
-    log_.open(path);
+    log_.open(path + "data.txt");
 
     log_index_ = 0;
 
