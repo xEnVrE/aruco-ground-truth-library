@@ -63,7 +63,7 @@ bool Camera::set_frame(const std::size_t& index)
 }
 
 
-std::size_t Camera::get_auxiliary_data_size()
+std::size_t Camera::get_auxiliary_data_size() const
 {
     return 0;
 }
@@ -93,7 +93,7 @@ std::pair<bool, MatrixXd> Camera::get_deprojection_matrix() const
 }
 
 
-bool Camera::is_offline()
+bool Camera::is_offline() const
 {
     return offline_mode_;
 }

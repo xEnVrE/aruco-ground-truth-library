@@ -39,7 +39,7 @@ public:
 
     virtual std::pair<bool, Eigen::MatrixXf> get_depth(const bool& blocking) = 0;
 
-    virtual std::size_t get_auxiliary_data_size();
+    virtual std::size_t get_auxiliary_data_size() const;
 
     virtual std::pair<bool, Eigen::VectorXd> get_auxiliary_data(const bool& blocking);
 
@@ -47,7 +47,7 @@ public:
 
     virtual std::pair<bool, Eigen::MatrixXd> get_deprojection_matrix() const;
 
-    virtual bool is_offline();
+    virtual bool is_offline() const;
 
     virtual bool enable_log(const std::string& path);
 
