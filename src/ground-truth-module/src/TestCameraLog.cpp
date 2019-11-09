@@ -23,9 +23,9 @@ int main(int argc, char** argv)
         return EXIT_FAILURE;
     }
 
-    const std::string camera_name = std::string(argv[2]);
-    const std::string laterality = std::string(argv[3]);
-    const std::size_t number_of_frames = std::stoi(argv[4]);
+    const std::string camera_name = std::string(argv[1]);
+    const std::string laterality = std::string(argv[2]);
+    const std::size_t number_of_frames = std::stoi(argv[3]);
 
     std::unique_ptr<Camera> camera;
     if (camera_name == "iCubCamera")
@@ -43,18 +43,20 @@ int main(int argc, char** argv)
 
     /* Enable log. */
     camera->enable_log(".");
+    std::cout << "Logger enabled." << std::endl;
 
     for (std::size_t i = 0; i < number_of_frames; i++)
     {
-        std::this_thread::sleep_for(std::chrono::seconds(5));
+        std::cout << "Logging frame no. " << i << std::endl;
 
         camera->log_frame();
 
-        std::cout << "Logging frame no. " << i << std::endl;
+        std::this_thread::sleep_for(std::chrono::seconds(3));
     }
 
     /* Stop log. */
     camera->stop_log();
+    std::cout << "Logger stopped." << std::endl;
 
     return EXIT_SUCCESS;
 }
