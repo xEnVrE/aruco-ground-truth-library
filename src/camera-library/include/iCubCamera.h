@@ -43,7 +43,7 @@ public:
 
     std::pair<bool, Eigen::MatrixXf> get_depth(const bool& blocking) override;
 
-    std::size_t get_auxiliary_data_size() override;
+    std::size_t get_auxiliary_data_size() const override;
 
     std::pair<bool, Eigen::VectorXd> get_auxiliary_data(const bool& blocking) override;
 

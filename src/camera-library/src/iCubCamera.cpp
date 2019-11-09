@@ -245,7 +245,7 @@ std::pair<bool, MatrixXf> iCubCamera::get_depth(const bool& blocking)
 }
 
 
-std::size_t iCubCamera::get_auxiliary_data_size()
+std::size_t iCubCamera::get_auxiliary_data_size() const
 {
     /* Auxiliary data are torso (3) and head (6) encoders. */
     if (load_encoders_data_)
