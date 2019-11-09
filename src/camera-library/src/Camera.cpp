@@ -161,7 +161,7 @@ bool Camera::log_frame(const bool& log_depth)
          << angle.format(full_precision);
 
     if (is_aux_data)
-        log_ << aux_data.transpose().format(full_precision);
+        log_ << " " << aux_data.transpose().format(full_precision);
 
     log_ << std::endl;
 
