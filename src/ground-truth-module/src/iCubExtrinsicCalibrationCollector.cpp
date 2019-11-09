@@ -65,7 +65,7 @@ int main(int argc, char** argv)
         prefix += "calib";
     std::string postfix = "";
     if (robot_name == "icub")
-        prefix += "/out";
+        postfix += "/out";
     if (!Network::connect(prefix + "/left" + postfix, "/icub-extr-calib-collector/left-camera/rgbImage:i", "tcp"))
     {
         std::cout << "Cannot connect camcalib output to left camera driver." << std::endl;
