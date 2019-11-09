@@ -14,11 +14,15 @@
 
 #include <opencv2/opencv.hpp>
 
+#include <fstream>
 #include <string>
+
 
 class Camera
 {
 public:
+    Camera();
+
     virtual ~Camera();
 
     virtual bool reset();
@@ -35,11 +39,35 @@ public:
 
     virtual std::pair<bool, Eigen::MatrixXf> get_depth(const bool& blocking) = 0;
 
+    virtual std::size_t get_auxiliary_data_size();
+
+    virtual std::pair<bool, Eigen::VectorXd> get_auxiliary_data(const bool& blocking);
+
     virtual std::pair<bool, CameraParameters> get_parameters() const;
 
     virtual std::pair<bool, Eigen::MatrixXd> get_deprojection_matrix() const;
 
+    virtual bool is_offline();
+
+    virtual bool enable_log(const std::string& path);
+
+    virtual void stop_log();
+
+    virtual bool log_frame(const bool& log_depth = false);
+
 protected:
+    Camera(const std::string& data_path, const std::size_t& width, const double& height, const double& fx, const double& cx, const double& fy, const double& cy);
+
+    virtual std::pair<bool, Eigen::Transform<double, 3, Eigen::Affine>> get_pose_offline();
+
+    virtual std::pair<bool, cv::Mat> get_rgb_offline();
+
+    virtual std::pair<bool, Eigen::MatrixXf> get_depth_offline();
+
+    virtual std::pair<bool, Eigen::VectorXd> get_auxiliary_data_offline();
+
+    virtual std::pair<bool, Eigen::MatrixXd> read_data_from_file();
+
     virtual bool initialize();
 
     virtual bool evaluate_deprojection_matrix();
@@ -49,6 +77,28 @@ protected:
     Eigen::MatrixXd deprojection_matrix_;
 
     bool deprojection_matrix_initialized_ = false;
+
+    /* Data logging on file. */
+
+    std::ofstream log_;
+
+    std::string log_path_;
+
+    std::size_t log_index_ = 0;
+
+    /* Offline interface. */
+
+    const bool offline_mode_ = false;
+
+    std::string data_path_;
+
+    std::ifstream data_in_;
+
+    Eigen::MatrixXd data_;
+
+    std::size_t frame_index_ = 0;
+
+    /* Log name to be used in messages printed by the class. */
 
     const std::string log_name_ = "Camera";
 };
