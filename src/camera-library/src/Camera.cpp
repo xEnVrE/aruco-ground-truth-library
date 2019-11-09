@@ -234,11 +234,13 @@ std::pair<bool, MatrixXf> Camera::get_depth_offline()
 
     /* Load image size .*/
     std::size_t dims[2];
-    std::fread(dims, sizeof(dims), 1, in);
+    if (std::fread(dims, sizeof(dims), 1, in) != 1)
+        return std::make_pair(false, MatrixXf());
 
     /* Load image. */
     float float_image_raw[dims[0] * dims[1]];
-    std::fread(float_image_raw, sizeof(float), dims[0] * dims[1], in);
+    if (std::fread(float_image_raw, sizeof(float), dims[0] * dims[1], in) != dims[0] * dims[1])
+        return std::make_pair(false, MatrixXf());
 
     /* Store image. */
     MatrixXf float_image(dims[1], dims[0]);
