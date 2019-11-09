@@ -38,7 +38,7 @@ bool Camera::step_frame()
     if (is_offline())
     {
         if ((frame_index_ + 1) > data_.cols())
-            frame_index_ = data_.cols() - 1;
+            return false;
     }
 
     return true;
