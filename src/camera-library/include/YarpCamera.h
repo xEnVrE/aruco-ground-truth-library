@@ -35,8 +35,6 @@ public:
 
     std::pair<bool, Eigen::MatrixXf> get_depth(const bool& blocking) override;
 
-    bool step_frame() override;
-
 private:
     yarp::os::Network yarp_;
 

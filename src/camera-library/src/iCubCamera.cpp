@@ -281,12 +281,6 @@ std::pair<bool, Eigen::VectorXd> iCubCamera::get_auxiliary_data(const bool& bloc
 }
 
 
-bool iCubCamera::step_frame()
-{
-    return true;
-}
-
-
 std::pair<bool, Eigen::Transform<double, 3, Eigen::Affine>> iCubCamera::get_laterality_pose(const std::string& laterality, const bool& blocking)
 {
     Transform<double, 3, Affine> pose;

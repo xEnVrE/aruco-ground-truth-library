@@ -47,8 +47,6 @@ public:
 
     std::pair<bool, Eigen::VectorXd> get_auxiliary_data(const bool& blocking) override;
 
-    bool step_frame() override;
-
 protected:
     std::pair<bool, Eigen::Transform<double, 3, Eigen::Affine>> get_laterality_pose(const std::string& laterality, const bool& blocking);
 

@@ -105,9 +105,3 @@ std::pair<bool, MatrixXf> YarpCamera::get_depth(const bool& blocking)
 
     return std::make_pair(true, depth);
 }
-
-
-bool YarpCamera::step_frame()
-{
-    return true;
-}
