@@ -172,6 +172,7 @@ bool Camera::log_frame(const bool& log_depth)
 
 
 Camera::Camera(const std::string& data_path, const std::size_t& width, const double& height, const double& fx, const double& cx, const double& fy, const double& cy) :
+    data_path_(data_path),
     offline_mode_(true)
 {
     /* Set intrinsic parameters. */
@@ -183,7 +184,7 @@ Camera::Camera(const std::string& data_path, const std::size_t& width, const dou
     parameters_.cy = cy;
     parameters_.set_initialized();
 
-    /* Open file. */
+    /* Fix data path. */
     if (data_path_.back() != '/')
         data_path_ += '/';
 }
@@ -326,9 +327,9 @@ bool Camera::initialize()
     if (is_offline())
     {
         bool valid_data = false;
-        std::tie(valid_data, data_) = read_data_from_file();;
+        std::tie(valid_data, data_) = read_data_from_file();
         if (!valid_data)
-            throw(std::runtime_error(log_name_ + "::initialize. Cannot load offline data from" + data_path_));
+            throw(std::runtime_error(log_name_ + "::initialize. Cannot load offline data from " + data_path_));
     }
 
     return ok;
