@@ -25,7 +25,8 @@ Camera::~Camera()
 
 bool Camera::reset()
 {
-    frame_index_ = 0;
+    if (is_offline())
+        frame_index_ = 0;
 
     return true;
 }
@@ -33,10 +34,10 @@ bool Camera::reset()
 
 bool Camera::step_frame()
 {
-    frame_index_++;
-
     if (is_offline())
     {
+        frame_index_++;
+
         if ((frame_index_ + 1) > data_.cols())
             return false;
     }
@@ -47,7 +48,10 @@ bool Camera::step_frame()
 
 std::size_t Camera::get_frame() const
 {
-    return frame_index_;
+    if (is_offline())
+        return frame_index_;
+
+    return -1;
 }
 
 
