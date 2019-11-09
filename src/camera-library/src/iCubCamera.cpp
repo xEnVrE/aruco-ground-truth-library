@@ -203,6 +203,9 @@ iCubCamera::~iCubCamera()
 
 std::pair<bool, Transform<double, 3, Affine>> iCubCamera::get_pose(const bool& blocking)
 {
+    if (is_offline())
+        return Camera::get_pose_offline();
+
     return get_laterality_pose(laterality_, blocking);
 }
 
