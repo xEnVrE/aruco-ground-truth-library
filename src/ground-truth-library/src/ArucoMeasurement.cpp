@@ -62,6 +62,10 @@ bool ArucoMeasurement::freeze(const Data& data)
     /* Reset pose validity. */
     valid_pose_ = false;
 
+    /* Step frame in case of an offline camera. */
+    if (!camera_->step_frame())
+        return false;
+
     /* Freeze camera image. */
     bool valid_rgb = false;
     std::tie(valid_rgb, camera_rgb_image_) = camera_->get_rgb(true);
