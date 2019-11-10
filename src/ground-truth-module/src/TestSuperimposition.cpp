@@ -48,12 +48,12 @@ protected:
         if (use_relative_camera_)
             camera_ = std::shared_ptr<iCubCamera>
             (
-                new iCubCameraRelative(camera_laterality_, port_prefix, "", "")
+                new iCubCameraRelative(robot_name_, camera_laterality_, port_prefix, "", "")
             );
         else
             camera_ = std::shared_ptr<iCubCamera>
             (
-                new iCubCamera(camera_laterality_, port_prefix, "", "")
+                new iCubCamera(robot_name_, camera_laterality_, port_prefix, "", "")
             );
 
         /* Probes .*/

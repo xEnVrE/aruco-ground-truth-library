@@ -58,18 +58,18 @@ protected:
             if (use_external_reference_)
                 camera_ = std::unique_ptr<iCubCameraRelativeExternal>
                 (
-                    new iCubCameraRelativeExternal(laterality_, port_prefix, "", "")
+                    new iCubCameraRelativeExternal("icub", laterality_, port_prefix, "", "")
                 );
             else
                 camera_ = std::unique_ptr<iCubCameraRelative>
                 (
-                    new iCubCameraRelative(laterality_, port_prefix, "", "")
+                    new iCubCameraRelative("icub", laterality_, port_prefix, "", "")
                 );
         }
         else
             camera_ = std::unique_ptr<iCubCamera>
             (
-                new iCubCamera(laterality_, port_prefix, "", "")
+                new iCubCamera("icub", laterality_, port_prefix, "", "")
             );
 
         /* Probes .*/

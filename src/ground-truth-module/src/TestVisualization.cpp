@@ -81,7 +81,7 @@ int main(int argc, char** argv)
         if (camera_name == "iCubCamera")
             camera = std::unique_ptr<iCubCamera>
             (
-                new iCubCamera("right", "test-visualization", "", "")
+                new iCubCamera(robot_name, "right", "test-visualization", "", "")
             );
         else if (camera_name == "YarpCamera")
             camera = std::unique_ptr<YarpCamera>

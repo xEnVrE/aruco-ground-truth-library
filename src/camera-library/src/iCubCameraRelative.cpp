@@ -8,8 +8,8 @@
 #include <iCubCameraRelative.h>
 
 
-iCubCameraRelative::iCubCameraRelative(const std::string& laterality, const std::string& port_context, const std::string& fallback_context_name, const std::string& fallback_configuration_name) :
-    iCubCamera(laterality, port_context, fallback_context_name, fallback_configuration_name)
+iCubCameraRelative::iCubCameraRelative(const std::string& robot_name, const std::string& laterality, const std::string& port_context, const std::string& fallback_context_name, const std::string& fallback_configuration_name) :
+    iCubCamera(robot_name, laterality, port_context, fallback_context_name, fallback_configuration_name)
 {}
 
 

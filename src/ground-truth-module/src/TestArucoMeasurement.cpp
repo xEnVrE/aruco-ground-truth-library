@@ -45,7 +45,7 @@ protected:
         /* Camera. */
         camera_ = std::unique_ptr<iCubCamera>
         (
-            new iCubCamera("right", "test-aruco-measurement", "", "")
+            new iCubCamera("icub", "right", "test-aruco-measurement", "", "")
         );
 
         /* Probes .*/

@@ -40,18 +40,18 @@ int main(int argc, char** argv)
 	    if(external)
 	        camera = std::unique_ptr<iCubCamera>
                 (
-                    new iCubCameraRelativeExternal(laterality, "test-camera", "", "")
+                    new iCubCameraRelativeExternal(robot_name, laterality, "test-camera", "", "")
                 );
 	    else
 	        camera = std::unique_ptr<iCubCamera>
                 (
-                    new iCubCameraRelative(laterality, "test-camera", "", "")
+                    new iCubCameraRelative(robot_name, laterality, "test-camera", "", "")
                 );
 	}
         else
             camera = std::unique_ptr<iCubCamera>
             (
-                new iCubCamera(laterality, "test-camera", "", "")
+                new iCubCamera(robot_name, laterality, "test-camera", "", "")
             );
     }
     else

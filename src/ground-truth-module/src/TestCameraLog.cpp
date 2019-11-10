@@ -32,7 +32,7 @@ int main(int argc, char** argv)
     {
         camera = std::unique_ptr<iCubCamera>
         (
-            new iCubCamera(laterality, "test-camera-log", "", "")
+            new iCubCamera("icub", laterality, "test-camera-log", "", "")
         );
     }
     else

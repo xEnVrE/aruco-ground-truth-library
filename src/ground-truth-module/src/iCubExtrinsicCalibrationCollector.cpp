@@ -19,6 +19,7 @@ using namespace yarp::dev;
 using namespace yarp::os;
 using namespace yarp::sig;
 
+
 int main(int argc, char** argv)
 {
     if (argc != 2)
@@ -56,8 +57,8 @@ int main(int argc, char** argv)
     }
 
     /* Cameras. */
-    iCubCamera left_camera("left", "icub-extr-calib-collector/left-camera", "", "");
-    iCubCamera right_camera("left", "icub-extr-calib-collector/right-camera", "", "");
+    iCubCamera left_camera(robot_name, "left", "icub-extr-calib-collector/left-camera", "", "");
+    iCubCamera right_camera(robot_name, "right", "icub-extr-calib-collector/right-camera", "", "");
 
     /* Connections for cameras. */
     std::string prefix = "/" + robot_name + "/cam";

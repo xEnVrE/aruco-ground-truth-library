@@ -15,7 +15,7 @@ class iCubCameraRelativeExternal : public iCubCameraRelative
 {
 public:
 
-    iCubCameraRelativeExternal(const std::string& laterality, const std::string& port_prefix, const std::string& fallback_context_name, const std::string& fallback_configuration_name);
+    iCubCameraRelativeExternal(const std::string& robot_name, const std::string& laterality, const std::string& port_prefix, const std::string& fallback_context_name, const std::string& fallback_configuration_name);
 
     ~iCubCameraRelativeExternal();
 

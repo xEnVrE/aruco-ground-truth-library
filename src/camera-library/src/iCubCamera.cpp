@@ -24,7 +24,7 @@ using namespace yarp::os;
 using namespace yarp::sig;
 
 
-iCubCamera::iCubCamera(const std::string& laterality, const std::string& port_prefix, const std::string& fallback_context_name, const std::string& fallback_configuration_name) :
+iCubCamera::iCubCamera(const std::string& robot_name, const std::string& laterality, const std::string& port_prefix, const std::string& fallback_context_name, const std::string& fallback_configuration_name) :
     laterality_(laterality)
 {
     /* Check YARP network. */
@@ -90,8 +90,6 @@ iCubCamera::iCubCamera(const std::string& laterality, const std::string& port_pr
     {
         /* Stick to encoders .*/
         use_driver_gaze_ = false;
-
-        const std::string robot_name = "icub";
 
         /* TODO: take parameters from a configuration file. */
         parameters_.width = 640.0;

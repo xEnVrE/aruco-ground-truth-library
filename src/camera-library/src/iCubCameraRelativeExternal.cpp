@@ -13,8 +13,8 @@ using namespace Eigen;
 using namespace yarp::eigen;
 
 
-iCubCameraRelativeExternal::iCubCameraRelativeExternal(const std::string& laterality, const std::string& port_prefix, const std::string& fallback_context_name, const std::string& fallback_configuration_name) :
-    iCubCameraRelative(laterality, port_prefix, fallback_context_name, fallback_configuration_name)
+iCubCameraRelativeExternal::iCubCameraRelativeExternal(const std::string& robot_name, const std::string& laterality, const std::string& port_prefix, const std::string& fallback_context_name, const std::string& fallback_configuration_name) :
+    iCubCameraRelative(robot_name, laterality, port_prefix, fallback_context_name, fallback_configuration_name)
 {
     if(!reference_pose_left_in_.open("/" + port_prefix + "/reference_left/pose:i"))
         throw(std::runtime_error(log_name_ + "::ctor. Cannot open left reference input port."));
