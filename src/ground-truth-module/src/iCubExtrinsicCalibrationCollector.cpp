@@ -93,15 +93,20 @@ int main(int argc, char** argv)
     const double vergence_max = 24.0;
     const double stride = 2.0;
 
-    /* Number of combinations .*/
-    std::size_t total = std::abs(tilt_min - tilt_max) / stride * std::abs(version_min - version_max) / stride * std::abs(vergence_min - vergence_max) / stride;
-
     /* Joints to be moved .*/
     yarp::sig::VectorOf<int> joints(3);
     joints(0) = 3; /* Tilt. */
     joints(1) = 4; /* Version. */
     joints(2) = 5; /* Vergence. */
 
+    /* Number of combinations .*/
+    std::size_t total = 0;
+    for (double tilt = tilt_min; tilt < tilt_max; tilt += stride)
+        for (double version = version_min; version < version_max; version += stride)
+            for (double vergence = vergence_min; vergence < vergence_max; vergence += stride)
+                total++;
+
+    /* Collect data. */
     std::size_t counter = 0;
     for (double tilt = tilt_min; tilt < tilt_max; tilt += stride)
         for (double version = version_min; version < version_max; version += stride)
