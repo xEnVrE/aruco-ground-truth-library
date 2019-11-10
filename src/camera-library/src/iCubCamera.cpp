@@ -175,7 +175,7 @@ iCubCamera::iCubCamera(const std::string& laterality, const std::string& port_pr
 }
 
 
-iCubCamera::iCubCamera(const std::string& data_path, const std::size_t& width, const double& height, const double& fx, const double& cx, const double& fy, const double& cy, const bool& load_encoders_data) :
+iCubCamera::iCubCamera(const std::string& data_path, const std::size_t& width, const size_t& height, const double& fx, const double& cx, const double& fy, const double& cy, const bool& load_encoders_data) :
     Camera(data_path, width, height, fx, cx, fy, cy),
     load_encoders_data_(load_encoders_data)
 {

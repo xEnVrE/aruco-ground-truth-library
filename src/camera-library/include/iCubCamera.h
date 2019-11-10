@@ -33,7 +33,7 @@ public:
 
     iCubCamera(const std::string& laterality, const std::string& port_context, const std::string& fallback_context_name, const std::string& fallback_configuration_name);
 
-    iCubCamera(const std::string& data_path, const std::size_t& width, const double& height, const double& fx, const double& cx, const double& fy, const double& cy, const bool& load_encoders_data);
+    iCubCamera(const std::string& data_path, const std::size_t& width, const std::size_t& height, const double& fx, const double& cx, const double& fy, const double& cy, const bool& load_encoders_data);
 
     ~iCubCamera();
 
