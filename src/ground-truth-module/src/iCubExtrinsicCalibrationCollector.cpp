@@ -86,11 +86,11 @@ int main(int argc, char** argv)
 
     /* Define ranges for head joints (in degrees). */
     const double tilt_min = -12.0;
-    const double tilt_max = 14.0;
+    const double tilt_max = 10.0;
     const double version_min = -15.0;
     const double version_max = 15.0;
     const double vergence_min = 0.0;
-    const double vergence_max = 20.0;
+    const double vergence_max = 24.0;
     const double stride = 2.0;
 
     /* Number of combinations .*/
