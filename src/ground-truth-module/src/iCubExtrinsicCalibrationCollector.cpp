@@ -75,7 +75,7 @@ int main(int argc, char** argv)
     }
     if (!Network::connect(prefix + "/right" + postfix, "/icub-extr-calib-collector/right-camera/rgbImage:i", "tcp"))
     {
-        std::cout << "Cannot connect camcalib output to left camera driver." << std::endl;
+        std::cout << "Cannot connect camcalib output to right camera driver." << std::endl;
 
         return EXIT_FAILURE;
     }
