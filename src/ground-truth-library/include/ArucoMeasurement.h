@@ -28,7 +28,7 @@ class ArucoMeasurement : public bfl::MeasurementModel,
 public:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 
-    ArucoMeasurement(const int& dictionary, std::unique_ptr<Camera> camera);
+    ArucoMeasurement(const int& dictionary, std::shared_ptr<Camera> camera);
 
     virtual ~ArucoMeasurement();
 
@@ -66,7 +66,7 @@ private:
 
     /* Camera. */
 
-    std::unique_ptr<Camera> camera_;
+    std::shared_ptr<Camera> camera_;
 
     cv::Mat cam_intrinsic_;
 

@@ -11,7 +11,7 @@ using namespace bfl;
 using namespace cv::aruco;
 
 
-ArucoMarkerMeasurement::ArucoMarkerMeasurement(const int& dictionary, const double& marker_length, std::unique_ptr<Camera> camera) :
+ArucoMarkerMeasurement::ArucoMarkerMeasurement(const int& dictionary, const double& marker_length, std::shared_ptr<Camera> camera) :
     ArucoMeasurement(dictionary, std::move(camera)),
     marker_length_(marker_length)
 {}

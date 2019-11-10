@@ -17,7 +17,7 @@ using namespace bfl;
 using namespace cv::aruco;
 
 
-ArucoMeasurement::ArucoMeasurement(const int& dictionary, std::unique_ptr<Camera> camera) :
+ArucoMeasurement::ArucoMeasurement(const int& dictionary, std::shared_ptr<Camera> camera) :
     camera_(std::move(camera))
 {
     /* Setup dictionary. */

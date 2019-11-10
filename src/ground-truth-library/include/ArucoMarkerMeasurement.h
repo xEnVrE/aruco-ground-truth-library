@@ -16,7 +16,7 @@
 class ArucoMarkerMeasurement : public ArucoMeasurement
 {
 public:
-    ArucoMarkerMeasurement(const int& dictionary, const double& marker_length, std::unique_ptr<Camera> camera);
+    ArucoMarkerMeasurement(const int& dictionary, const double& marker_length, std::shared_ptr<Camera> camera);
 
     virtual ~ArucoMarkerMeasurement();
 
