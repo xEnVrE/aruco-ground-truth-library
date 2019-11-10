@@ -96,7 +96,7 @@ protected:
 
     Eigen::MatrixXd data_;
 
-    std::size_t frame_index_ = 0;
+    int frame_index_ = -1;
 
     /* Log name to be used in messages printed by the class. */
 

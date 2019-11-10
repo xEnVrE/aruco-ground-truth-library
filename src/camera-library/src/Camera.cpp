@@ -26,7 +26,7 @@ Camera::~Camera()
 bool Camera::reset()
 {
     if (is_offline())
-        frame_index_ = 0;
+        frame_index_ = -1;
 
     return true;
 }
