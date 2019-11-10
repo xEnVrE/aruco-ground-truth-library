@@ -101,16 +101,16 @@ int main(int argc, char** argv)
 
     /* Number of combinations .*/
     std::size_t total = 0;
-    for (double tilt = tilt_min; tilt < tilt_max; tilt += stride)
-        for (double version = version_min; version < version_max; version += stride)
-            for (double vergence = vergence_min; vergence < vergence_max; vergence += stride)
+    for (double tilt = tilt_min; tilt <= tilt_max; tilt += stride)
+        for (double version = version_min; version <= version_max; version += stride)
+            for (double vergence = vergence_min; vergence <= vergence_max; vergence += stride)
                 total++;
 
     /* Collect data. */
     std::size_t counter = 0;
-    for (double tilt = tilt_min; tilt < tilt_max; tilt += stride)
-        for (double version = version_min; version < version_max; version += stride)
-            for (double vergence = vergence_min; vergence < vergence_max; vergence += stride)
+    for (double tilt = tilt_min; tilt <= tilt_max; tilt += stride)
+        for (double version = version_min; version <= version_max; version += stride)
+            for (double vergence = vergence_min; vergence <= vergence_max; vergence += stride)
             {
                 /* Info. */
                 std::cout << "Progress: " << counter <<  "/" << total << std::endl;
