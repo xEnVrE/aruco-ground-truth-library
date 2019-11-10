@@ -28,6 +28,8 @@ bool Camera::reset()
     if (is_offline())
         frame_index_ = -1;
 
+    status_ = true;
+
     return true;
 }
 
@@ -39,7 +41,11 @@ bool Camera::step_frame()
         frame_index_++;
 
         if ((frame_index_ + 1) > data_.cols())
+        {
+            status_ = false;
+
             return false;
+        }
     }
 
     return true;
@@ -90,6 +96,12 @@ std::pair<bool, MatrixXd> Camera::get_deprojection_matrix() const
         return std::make_pair(false, MatrixXd());
 
     return std::make_pair(true, deprojection_matrix_);
+}
+
+
+bool Camera::get_status()
+{
+    return status_;
 }
 
 

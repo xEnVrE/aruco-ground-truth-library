@@ -47,6 +47,8 @@ public:
 
     virtual std::pair<bool, Eigen::MatrixXd> get_deprojection_matrix() const;
 
+    virtual bool get_status();
+
     virtual bool is_offline() const;
 
     virtual bool enable_log(const std::string& path);
@@ -77,6 +79,8 @@ protected:
     Eigen::MatrixXd deprojection_matrix_;
 
     bool deprojection_matrix_initialized_ = false;
+
+    bool status_ = true;
 
     /* Data logging on file. */
 
