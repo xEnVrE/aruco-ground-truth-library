@@ -8,8 +8,9 @@
 #include <VtkContainer.h>
 #include <VtkUpdateHandler.h>
 
-VtkContainer::VtkContainer(const int& period, const int& width, const int& height) :
-    period_(period)
+VtkContainer::VtkContainer(const int& period, const int& width, const int& height, const bool& blocking) :
+    period_(period),
+    blocking_(blocking)
 {
     /* Configure axes. */
     axes_ = vtkSmartPointer<vtkAxesActor>::New();
@@ -78,5 +79,5 @@ void VtkContainer::run()
 void VtkContainer::update()
 {
     for (auto& content : contents_)
-        content.second->update(true);
+        content.second->update(blocking_);
 }

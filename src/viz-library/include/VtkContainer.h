@@ -24,7 +24,7 @@
 class VtkContainer
 {
 public:
-    VtkContainer(const int& period, const int& width, const int& height);
+    VtkContainer(const int& period, const int& width, const int& height, const bool& blocking);
 
     virtual ~VtkContainer();
 
@@ -50,6 +50,8 @@ private:
     vtkSmartPointer<vtkRenderWindow> render_window_;
 
     vtkSmartPointer<vtkRenderWindowInteractor> render_window_interactor_;
+
+    const bool blocking_;
 
     const int period_;
 };
