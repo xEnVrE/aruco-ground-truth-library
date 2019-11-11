@@ -1,3 +1,4 @@
+
 /*
  * Copyright (C) 2019 Istituto Italiano di Tecnologia (IIT)
  *
@@ -67,6 +68,13 @@ int main(int argc, char** argv)
     /* Eigen precision format .*/
     Eigen::IOFormat full_precision(Eigen::FullPrecision);
 
+    /* Poses in root frame  in first frame. */
+    Eigen::Transform<double, 3, Eigen::Affine> pose_root_left_0;
+    Eigen::Transform<double, 3, Eigen::Affine> pose_root_right_0;
+
+    /* Total number of processed frames. */
+    std::size_t counter = 0;
+
     while (cam_left->get_status() && cam_right->get_status())
     {
         /* Estimate poses using AruCo. The Aruco measurement entity will also step the camera frame. */
@@ -84,6 +92,38 @@ int main(int argc, char** argv)
             std::tie(std::ignore, data_right) = aruco_right.measure();
             std::pair<Eigen::Transform<double, 3, Eigen::Affine>, Eigen::Transform<double, 3, Eigen::Affine>> pair_right =
                 bfl::any::any_cast<std::pair<Eigen::Transform<double, 3, Eigen::Affine>, Eigen::Transform<double, 3, Eigen::Affine>>>(data_right);
+
+            /* Check if aruco estimate is valid by comparing with the estimate of the marker in the first frame.
+               This comparison is sound as the marker is not moving in the root frame.
+               This assumes that, if any, issues in the pose of the left/right eye w.r.t. the root frame do not depend
+               on the specific configuration of the eyes, i.e. are systematic. */
+            if (counter == 0)
+            {
+                pose_root_left_0 = pair_left.first * pair_left.second;
+                pose_root_right_0 = pair_right.first * pair_right.second;
+            }
+            else
+            {
+                Eigen::Transform<double, 3, Eigen::Affine> pose_root_left = pair_left.first * pair_left.second;
+                Eigen::Transform<double, 3, Eigen::Affine> pose_root_right = pair_right.first * pair_right.second;
+
+                Eigen::Transform<double, 3, Eigen::Affine> delta_left = pose_root_left_0 * pose_root_left.inverse();
+                Eigen::Transform<double, 3, Eigen::Affine> delta_right = pose_root_right_0 * pose_root_right.inverse();
+
+                Eigen::AngleAxisd axis_angle_left(delta_left.rotation());
+                Eigen::AngleAxisd axis_angle_right(delta_right.rotation());
+
+                const double thr = 3.0 * M_PI / 180.0;
+
+                if ((std::abs(axis_angle_left.angle()) > thr) || (std::abs(axis_angle_right.angle()) > thr))
+                {
+                    std::cout << "Detected wrong estimate from Aruco. Skipping frame " << counter << "." << std::endl;
+
+                    counter++;
+
+                    continue;
+                }
+            }
 
             /* Evaluate extrinsic matrix according to camera poses. */
             Eigen::Transform<double, 3, Eigen::Affine> extrinsic = pair_left.first.inverse() * pair_right.first;
@@ -125,6 +165,9 @@ int main(int argc, char** argv)
                    << extrinsic_offset_rotation.axis().transpose().format(full_precision) << " "
                    << extrinsic_offset_angle.format(full_precision) << std::endl;
         }
+
+        /* Increment counter. */
+        counter++;
     }
 
     /* Close file. */
