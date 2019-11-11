@@ -9,6 +9,8 @@
 
 #include <iostream>
 
+#include <unsupported/Eigen/MatrixFunctions>
+
 #include <yarp/cv/Cv.h>
 #include <yarp/eigen/Eigen.h>
 #include <yarp/os/LogStream.h>
@@ -24,8 +26,9 @@ using namespace yarp::os;
 using namespace yarp::sig;
 
 
-iCubCamera::iCubCamera(const std::string& robot_name, const std::string& laterality, const std::string& port_prefix, const std::string& fallback_context_name, const std::string& fallback_configuration_name) :
-    laterality_(laterality)
+iCubCamera::iCubCamera(const std::string& robot_name, const std::string& laterality, const std::string& port_prefix, const std::string& fallback_context_name, const std::string& fallback_configuration_name, const bool& use_calibration, const std::string& calibration_path) :
+    laterality_(laterality),
+    use_calibration_(use_calibration)
 {
     /* Check YARP network. */
     if (!yarp_.checkNetwork())
@@ -147,6 +150,14 @@ iCubCamera::iCubCamera(const std::string& robot_name, const std::string& lateral
         right_eye_kinematics_.releaseLink(2);
     }
 
+    /* Load calibration if requested. */
+    if (use_calibration_)
+        if (!load_calibration_model(calibration_path))
+        {
+            std::string err = log_name_ + "::ctor. Error: cannot load calibration model.";
+            throw(std::runtime_error(err));
+        }
+
     /* Log parameters. */
     std::cout << log_name_ + "::ctor. Camera parameters:" << std::endl;
     std::cout << log_name_ + "    - width: " << parameters_.width << std::endl;
@@ -173,10 +184,19 @@ iCubCamera::iCubCamera(const std::string& robot_name, const std::string& lateral
 }
 
 
-iCubCamera::iCubCamera(const std::string& data_path, const std::size_t& width, const size_t& height, const double& fx, const double& cx, const double& fy, const double& cy, const bool& load_encoders_data) :
+iCubCamera::iCubCamera(const std::string& data_path, const std::size_t& width, const size_t& height, const double& fx, const double& cx, const double& fy, const double& cy, const bool& load_encoders_data, const bool& use_calibration, const std::string& calibration_path) :
     Camera(data_path, width, height, fx, cx, fy, cy),
-    load_encoders_data_(load_encoders_data)
+    load_encoders_data_(load_encoders_data),
+    use_calibration_(use_calibration)
 {
+    /* Load calibration if requested. */
+    if (use_calibration_)
+        if (!load_calibration_model(calibration_path))
+        {
+            std::string err = log_name_ + "::ctor. Error: cannot load calibration model.";
+            throw(std::runtime_error(err));
+        }
+
     Camera::initialize();
 }
 
@@ -201,10 +221,44 @@ iCubCamera::~iCubCamera()
 
 std::pair<bool, Transform<double, 3, Affine>> iCubCamera::get_pose(const bool& blocking)
 {
-    if (is_offline())
-        return Camera::get_pose_offline();
+    bool valid_pose = false;
+    Transform<double, 3, Affine> pose;
 
-    return get_laterality_pose(laterality_, blocking);
+    if (is_offline())
+        std::tie(valid_pose, pose) = Camera::get_pose_offline();
+    else
+        std::tie(valid_pose, pose) = get_laterality_pose(laterality_, blocking);
+
+    if (!valid_pose)
+        return std::make_pair(false, Transform<double, 3, Affine>());
+
+    if (get_laterality() == "right" && use_calibration_ && ((ihead_ != nullptr) || (load_encoders_data_)))
+    {
+        /* If calibration was loaded and eye encoders are available, correct pose of right eye. */
+
+        /* Set input. */
+        bool valid_input = false;
+        Eigen::VectorXd head_encoders(6);
+        std::tie(valid_input, head_encoders) = get_auxiliary_data(true);
+
+        if (valid_input)
+        {
+            yarp::sig::Vector input(3);
+            toEigen(input) = head_encoders.tail<3>() * M_PI / 180.0;
+
+            /* Get prediction. */
+            yarp::sig::Vector prediction = calibration_.predict(input).getPrediction();
+
+            /* Convert to SE3. */
+            Eigen::Transform<double, 3, Eigen::Affine> output = exp_map(yarp::eigen::toEigen(prediction));
+
+            pose = pose * output;
+        }
+        else
+            std::cout << log_name_ + "::get_pose. Warning: extrinsic calibration is enabled, however the eye encoders cannot be retrieved." << std::endl;
+    }
+
+    return std::make_pair(true, pose);
 }
 
 
@@ -363,4 +417,45 @@ bool iCubCamera::getLateralityEyePose(const std::string& laterality, yarp::sig::
 
         return true;
     }
+}
+
+
+Eigen::Transform<double, 3, Eigen::Affine> iCubCamera::exp_map(const Eigen::VectorXd& se3)
+{
+    Eigen::Transform<double, 3, Eigen::Affine> SE3;
+
+    Eigen::Matrix3d log_R = Eigen::Matrix3d::Zero();
+    log_R(0, 1) = -1.0 * se3(5);
+    log_R(0, 2) = se3(4);
+    log_R(1, 0) = se3(5);
+    log_R(1, 2) = -1.0 * se3(3);
+    log_R(2, 0) = -1.0 * se3(4);
+    log_R(2, 1) = se3(3);
+
+    double theta = se3.tail<3>().norm() + std::numeric_limits<double>::epsilon();
+    Eigen::Matrix3d V = Eigen::Matrix3d::Identity() + (1 - std::cos(theta)) / (theta * theta) * log_R + (theta - std::sin(theta)) / (std::pow(theta, 3)) * log_R * log_R;
+
+    SE3 = Eigen::Translation<double, 3>(V * se3.head<3>());
+    SE3.rotate(log_R.exp());
+
+    return SE3;
+}
+
+
+bool iCubCamera::load_calibration_model(const std::string& model_path)
+{
+    std::ifstream model_in;
+    model_in.open(model_path);
+    if (!model_in.is_open())
+        return false;
+
+    Bottle model;
+    std::stringstream ss;
+    ss << model_in.rdbuf();
+    model.fromString(ss.str());
+    model_in.close();
+
+    calibration_.readBottle(model);
+
+    return true;
 }

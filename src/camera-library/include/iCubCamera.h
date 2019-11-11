@@ -13,6 +13,7 @@
 #include <Eigen/Dense>
 
 #include <iCub/iKin/iKinFwd.h>
+#include <iCub/learningMachine/LSSVMLearner.h>
 
 #include <opencv2/opencv.hpp>
 
@@ -31,9 +32,9 @@ class iCubCamera : public Camera
 {
 public:
 
-    iCubCamera(const std::string& robot_name, const std::string& laterality, const std::string& port_context, const std::string& fallback_context_name, const std::string& fallback_configuration_name);
+    iCubCamera(const std::string& robot_name, const std::string& laterality, const std::string& port_context, const std::string& fallback_context_name, const std::string& fallback_configuration_name, const bool& use_calibration = false, const std::string& calibration_path = "");
 
-    iCubCamera(const std::string& data_path, const std::size_t& width, const std::size_t& height, const double& fx, const double& cx, const double& fy, const double& cy, const bool& load_encoders_data);
+    iCubCamera(const std::string& data_path, const std::size_t& width, const std::size_t& height, const double& fx, const double& cx, const double& fy, const double& cy, const bool& load_encoders_data, const bool& use_calibration = false, const std::string& calibration_path = "");
 
     ~iCubCamera();
 
@@ -56,6 +57,10 @@ protected:
 
 private:
     bool getLateralityEyePose(const std::string& laterality, yarp::sig::Vector& position, yarp::sig::Vector& orientation);
+
+    Eigen::Transform<double, 3, Eigen::Affine> exp_map(const Eigen::VectorXd& se3);
+
+    bool load_calibration_model(const std::string& model_path);
 
     yarp::os::Network yarp_;
 
@@ -88,6 +93,11 @@ private:
     iCub::iKin::iCubEye left_eye_kinematics_;
 
     iCub::iKin::iCubEye right_eye_kinematics_;
+
+    /* Extrinsic calibration. */
+    bool use_calibration_ = false;
+
+    iCub::learningmachine::LSSVMLearner calibration_;
 
     /* Offline interface. */
     bool load_encoders_data_ = false;
