@@ -184,8 +184,9 @@ iCubCamera::iCubCamera(const std::string& robot_name, const std::string& lateral
 }
 
 
-iCubCamera::iCubCamera(const std::string& data_path, const std::size_t& width, const size_t& height, const double& fx, const double& cx, const double& fy, const double& cy, const bool& load_encoders_data, const bool& use_calibration, const std::string& calibration_path) :
+iCubCamera::iCubCamera(const std::string& data_path, const std::string& laterality, const std::size_t& width, const size_t& height, const double& fx, const double& cx, const double& fy, const double& cy, const bool& load_encoders_data, const bool& use_calibration, const std::string& calibration_path) :
     Camera(data_path, width, height, fx, cx, fy, cy),
+    laterality_(laterality),
     load_encoders_data_(load_encoders_data),
     use_calibration_(use_calibration)
 {
