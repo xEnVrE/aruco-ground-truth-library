@@ -17,12 +17,21 @@ public:
 
     iCubCameraRelative(const std::string& robot_name, const std::string& laterality, const std::string& port_context, const std::string& fallback_context_name, const std::string& fallback_configuration_name);
 
+    iCubCameraRelative(const std::string& laterality, const std::string& data_path_left, const std::string& data_path_right, const std::size_t& width, const std::size_t& height, const double& fx_l, const double& cx_l, const double& fy_l, const double& cy_l, const double& fx_r, const double& cx_r, const double& fy_r, const double& cy_r, const bool& load_encoders_data);
+
     ~iCubCameraRelative();
+
+    bool step_frame() override;
+
+    bool set_frame(const std::size_t& index) override;
 
     std::pair<bool, Eigen::Transform<double, 3, Eigen::Affine>> get_pose(const bool& blocking) override;
 
 private:
     const std::string log_name_ = "iCubCameraRelative";
+
+    /* In case of offline mode, we need a second Camera to read the data of the second camera. */
+    std::unique_ptr<iCubCamera> relative_camera_;
 };
 
 #endif /* ICUBCAMERARELATIVE_H */
