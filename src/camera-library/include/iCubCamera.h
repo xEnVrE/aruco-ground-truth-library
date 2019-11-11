@@ -52,12 +52,14 @@ protected:
 
     std::string get_laterality();
 
+    void set_laterality(const std::string& laterality);
+
 private:
     bool getLateralityEyePose(const std::string& laterality, yarp::sig::Vector& position, yarp::sig::Vector& orientation);
 
     yarp::os::Network yarp_;
 
-    const std::string laterality_;
+    std::string laterality_;
 
     bool use_driver_gaze_ = true;
 

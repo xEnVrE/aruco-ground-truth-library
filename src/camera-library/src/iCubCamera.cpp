@@ -304,6 +304,12 @@ std::string iCubCamera::get_laterality()
 }
 
 
+void iCubCamera::set_laterality(const std::string& laterality)
+{
+    laterality_ = laterality;
+}
+
+
 bool iCubCamera::getLateralityEyePose(const std::string& laterality, yarp::sig::Vector& position, yarp::sig::Vector& orientation)
 {
     if ((laterality != "left") && (laterality != "right"))
