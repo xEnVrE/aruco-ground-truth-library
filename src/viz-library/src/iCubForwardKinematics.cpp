@@ -362,6 +362,24 @@ T iCubForwardKinematics::map(const std::string& from, const std::string& to, con
 }
 
 
+T iCubForwardKinematics::map(const std::string& from, const std::string& to)
+{
+    std::unordered_map<std::string, Eigen::VectorXd> zeroed_encoders;
+
+    /* Assume zeroed configuration for fingers. */
+    VectorXd zero_4 = VectorXd::Zero(4);
+    VectorXd zero_middle = VectorXd::Zero(3);
+
+    zeroed_encoders["thumb"] = zero_4;
+    zeroed_encoders["index"] = zero_4;
+    zeroed_encoders["middle"] = zero_middle;
+    zeroed_encoders["ring"] = zero_4;
+    zeroed_encoders["little"] = zero_4;
+
+    return map(from, to, zeroed_encoders);
+}
+
+
 T iCubForwardKinematics::DH(const double& d, const double& theta, const double& a, const double& alpha)
 {
     T dh;
