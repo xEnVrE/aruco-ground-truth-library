@@ -293,3 +293,73 @@ target_link_libraries(${EXE_TARGET_NAME}
                       )
 
 # install(TARGETS ${EXE_TARGET_NAME} DESTINATION bin)
+
+
+set(EXE_TARGET_NAME icub-extr-calib-train)
+
+find_package(YARP CONFIG REQUIRED
+             COMPONENTS
+             eigen
+             sig
+             )
+find_package(ICUB REQUIRED)
+
+set(${EXE_TARGET_NAME}_HDR
+    )
+
+set(${EXE_TARGET_NAME}_SRC
+    src/iCubExtrinsicCalibrationTrain.cpp
+    )
+
+add_executable(${EXE_TARGET_NAME}
+               ${${EXE_TARGET_NAME}_HDR}
+               ${${EXE_TARGET_NAME}_SRC}
+               )
+
+target_include_directories(${EXE_TARGET_NAME}
+                           PRIVATE
+                           )
+
+target_link_libraries(${EXE_TARGET_NAME}
+                      PRIVATE
+                      YARP::YARP_eigen
+                      YARP::YARP_sig
+                      ${ICUB_LIBRARIES}
+                      )
+
+# install(TARGETS ${EXE_TARGET_NAME} DESTINATION bin)
+
+
+set(EXE_TARGET_NAME test-trained-model)
+
+find_package(YARP CONFIG REQUIRED
+             COMPONENTS
+             eigen
+             sig
+             )
+find_package(ICUB REQUIRED)
+
+set(${EXE_TARGET_NAME}_HDR
+    )
+
+set(${EXE_TARGET_NAME}_SRC
+    src/TestTrainedModel.cpp
+    )
+
+add_executable(${EXE_TARGET_NAME}
+               ${${EXE_TARGET_NAME}_HDR}
+               ${${EXE_TARGET_NAME}_SRC}
+               )
+
+target_include_directories(${EXE_TARGET_NAME}
+                           PRIVATE
+                           )
+
+target_link_libraries(${EXE_TARGET_NAME}
+                      PRIVATE
+                      YARP::YARP_eigen
+                      YARP::YARP_sig
+                      ${ICUB_LIBRARIES}
+                      )
+
+# install(TARGETS ${EXE_TARGET_NAME} DESTINATION bin)
