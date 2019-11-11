@@ -63,7 +63,10 @@ std::size_t Camera::get_frame() const
 
 bool Camera::set_frame(const std::size_t& index)
 {
-    frame_index_ = index;
+    if (int(index) < 0)
+        frame_index_ = -1;
+    else
+        frame_index_ = index;
 
     return true;
 }
