@@ -113,7 +113,7 @@ int main(int argc, char** argv)
                 Eigen::AngleAxisd axis_angle_left(delta_left.rotation());
                 Eigen::AngleAxisd axis_angle_right(delta_right.rotation());
 
-                const double thr = 3.0 * M_PI / 180.0;
+                const double thr = 2.0 * M_PI / 180.0;
 
                 if ((std::abs(axis_angle_left.angle()) > thr) || (std::abs(axis_angle_right.angle()) > thr))
                 {
