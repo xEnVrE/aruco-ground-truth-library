@@ -8,12 +8,12 @@
 #include <iCubCameraRelative.h>
 
 
-iCubCameraRelative::iCubCameraRelative(const std::string& robot_name, const std::string& laterality, const std::string& port_context, const std::string& fallback_context_name, const std::string& fallback_configuration_name) :
-    iCubCamera(robot_name, laterality, port_context, fallback_context_name, fallback_configuration_name)
+iCubCameraRelative::iCubCameraRelative(const std::string& robot_name, const std::string& laterality, const std::string& port_context, const std::string& fallback_context_name, const std::string& fallback_configuration_name, const bool& use_calibration, const std::string& calibration_path) :
+    iCubCamera(robot_name, laterality, port_context, fallback_context_name, fallback_configuration_name, use_calibration, calibration_path)
 {}
 
 
-iCubCameraRelative::iCubCameraRelative(const std::string& laterality, const std::string& data_path_left, const std::string& data_path_right, const std::size_t& width, const std::size_t& height, const double& fx_l, const double& cx_l, const double& fy_l, const double& cy_l, const double& fx_r, const double& cx_r, const double& fy_r, const double& cy_r, const bool& load_encoders_data) :
+iCubCameraRelative::iCubCameraRelative(const std::string& laterality, const std::string& data_path_left, const std::string& data_path_right, const std::size_t& width, const std::size_t& height, const double& fx_l, const double& cx_l, const double& fy_l, const double& cy_l, const double& fx_r, const double& cx_r, const double& fy_r, const double& cy_r, const bool& load_encoders_data, const bool& use_calibration, const std::string& calibration_path) :
     iCubCamera(data_path_left, width, height, fx_l, cx_l, fy_l, cy_l, load_encoders_data)
 {
     /* Set laterality. */
@@ -22,7 +22,7 @@ iCubCameraRelative::iCubCameraRelative(const std::string& laterality, const std:
     /* Initialize right camera. */
     relative_camera_= std::unique_ptr<iCubCamera>
     (
-        new iCubCamera(data_path_right, width, height, fx_r, cx_r, fy_r, cy_r, load_encoders_data)
+        new iCubCamera(data_path_right, width, height, fx_r, cx_r, fy_r, cy_r, load_encoders_data, use_calibration, calibration_path)
     );
 }
 
