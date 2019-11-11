@@ -16,7 +16,8 @@ using namespace Eigen;
 using namespace yarp::eigen;
 
 
-VtkiCubHand::VtkiCubHand(const std::string& robot_name, const std::string& laterality, const std::string& port_prefix, const bool& use_analogs, const std::tuple<double, double, double>& color)
+VtkiCubHand::VtkiCubHand(const std::string& robot_name, const std::string& laterality, const std::string& port_prefix, const bool& use_fingers, const bool& use_analogs, const std::tuple<double, double, double>& color) :
+    use_fingers_(use_fingers)
 {
     if ((laterality != "left") && (laterality != "right"))
         throw(std::runtime_error(log_name_ + "::ctor. Invalid laterality specified."));
@@ -68,10 +69,13 @@ VtkiCubHand::VtkiCubHand(const std::string& robot_name, const std::string& later
     );
 
     /* Configure fingers encoders. */
-    fingers_encoders_ = std::unique_ptr<iCubFingersEncoders>
-    (
-        new iCubFingersEncoders(robot_name, laterality, port_prefix + "/vtk-icub-hand", "icub-fingers-encoders", use_analogs)
-    );
+    if (use_fingers_)
+    {
+        fingers_encoders_ = std::unique_ptr<iCubFingersEncoders>
+        (
+            new iCubFingersEncoders(robot_name, laterality, port_prefix + "/vtk-icub-hand", "icub-fingers-encoders", use_analogs)
+        );
+    }
 }
 
 
@@ -96,12 +100,15 @@ bool VtkiCubHand::update(const bool& blocking)
     if (pose_in == nullptr)
         return false;
 
-    bool valid_encoders = false;
     std::unordered_map<std::string, VectorXd> encoders;
-    std::tie(valid_encoders, encoders) = fingers_encoders_->get_encoders(blocking);
+    if (use_fingers_)
+    {
+        bool valid_encoders = false;
+        std::tie(valid_encoders, encoders) = fingers_encoders_->get_encoders(blocking);
 
-    if (!valid_encoders)
-        return false;
+        if (!valid_encoders)
+            return false;
+    }
 
     VectorXd pose = toEigen(*pose_in);
     Transform<double, 3, Affine> transform;
@@ -110,7 +117,10 @@ bool VtkiCubHand::update(const bool& blocking)
 
     /* Palm. */
     for (auto mesh : meshes_)
-        mesh.second.set_pose(transform * forward_kinematics_->map("ee", mesh.first, encoders));
+        if (use_fingers_)
+            mesh.second.set_pose(transform * forward_kinematics_->map("ee", mesh.first, encoders));
+        else
+            mesh.second.set_pose(transform * forward_kinematics_->map("ee", mesh.first));
 
     return true;
 }

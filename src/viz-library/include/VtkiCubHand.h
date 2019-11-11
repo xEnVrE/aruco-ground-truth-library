@@ -28,7 +28,7 @@
 class VtkiCubHand : public VtkContent
 {
 public:
-    VtkiCubHand(const std::string& robot_name, const std::string& laterality, const std::string& port_prefix, const bool& use_analogs, const std::tuple<double, double, double>& color);
+    VtkiCubHand(const std::string& robot_name, const std::string& laterality, const std::string& port_prefix, const bool& use_fingers, const bool& use_analogs, const std::tuple<double, double, double>& bbcolor);
 
     virtual ~VtkiCubHand();
 
@@ -46,6 +46,8 @@ private:
     std::unique_ptr<iCubForwardKinematics> forward_kinematics_;
 
     std::unique_ptr<iCubFingersEncoders> fingers_encoders_;
+
+    const bool use_fingers_;
 
     const std::string log_name_ = "VtkiCubHand";
 };
