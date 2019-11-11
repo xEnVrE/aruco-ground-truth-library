@@ -123,8 +123,7 @@ int main(int argc, char** argv)
 
                    << extrinsic_offset.translation().transpose().format(full_precision) << " "
                    << extrinsic_offset_rotation.axis().transpose().format(full_precision) << " "
-                   << extrinsic_offset_angle.format(full_precision) << " "
-                   << std::endl;
+                   << extrinsic_offset_angle.format(full_precision) << std::endl;
         }
     }
 
