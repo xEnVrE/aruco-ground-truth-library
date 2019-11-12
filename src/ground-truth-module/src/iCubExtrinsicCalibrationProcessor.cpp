@@ -30,8 +30,8 @@ int main(int argc, char** argv)
         data_path += "/";
 
     /* Cameras. */
-    std::shared_ptr<Camera> cam_left = std::make_shared<iCubCamera>(data_path + "left-camera", 640, 480, 468.672, 323.045, 467.73, 245.784, true);
-    std::shared_ptr<Camera> cam_right = std::make_shared<iCubCamera>(data_path + "right-camera", 640, 480, 468.488, 301.274, 467.427, 245.503, true);
+    std::shared_ptr<Camera> cam_left = std::make_shared<iCubCamera>(data_path + "left-camera", "left", 640, 480, 468.672, 323.045, 467.73, 245.784, true);
+    std::shared_ptr<Camera> cam_right = std::make_shared<iCubCamera>(data_path + "right-camera", "right", 640, 480, 468.488, 301.274, 467.427, 245.503, true);
 
     /* Aruco measurements. */
     std::size_t n_x = 2;
