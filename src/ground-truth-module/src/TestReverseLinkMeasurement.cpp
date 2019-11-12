@@ -30,11 +30,12 @@
 class ReverseArucoMeasurement : public bfl::FilteringAlgorithm
 {
 public:
-    ReverseArucoMeasurement(const std::string& type, const std::string& laterality, const bool& use_relative_camera, const bool& use_external_reference) :
+    ReverseArucoMeasurement(const std::string& type, const std::string& laterality, const bool& use_relative_camera, const bool& use_extrinsic_compensation, const std::string& model_path) :
         type_(type),
         laterality_(laterality),
         use_relative_camera_(use_relative_camera),
-        use_external_reference_(use_external_reference)
+        use_extrinsic_compensation_(use_extrinsic_compensation),
+        model_path_(model_path)
     {}
 
 
@@ -55,21 +56,15 @@ protected:
         /* Camera. */
         if (use_relative_camera_)
         {
-            if (use_external_reference_)
-                camera_ = std::unique_ptr<iCubCameraRelativeExternal>
-                (
-                    new iCubCameraRelativeExternal("icub", laterality_, port_prefix, "", "")
-                );
-            else
-                camera_ = std::unique_ptr<iCubCameraRelative>
-                (
-                    new iCubCameraRelative("icub", laterality_, port_prefix, "", "")
-                );
+            camera_ = std::unique_ptr<iCubCameraRelative>
+            (
+                new iCubCameraRelative("icub", laterality_, port_prefix, "", "", use_extrinsic_compensation_, model_path_)
+            );
         }
         else
             camera_ = std::unique_ptr<iCubCamera>
             (
-                new iCubCamera("icub", laterality_, port_prefix, "", "")
+                new iCubCamera("icub", laterality_, port_prefix, "", "", use_extrinsic_compensation_, model_path_)
             );
 
         /* Probes .*/
@@ -162,7 +157,9 @@ private:
 
     const bool& use_relative_camera_ = false;
 
-    const bool& use_external_reference_ = false;
+    const bool& use_extrinsic_compensation_ = false;
+
+    const std::string& model_path_;
 
     std::unique_ptr<ReverseLinkMeasurement> link_measurement_;
 
@@ -178,11 +175,11 @@ private:
 
 int main(int argc, char** argv)
 {
-    if ((argc < 4) || ((std::string(argv[3]) == "true") && argc != 5))
+    if ((argc < 5) || ((std::string(argv[4]) == "true") && argc != 6))
     {
-        std::cout << "Synopsis: test-aruco-measurement <type> <laterality> <use_relative_camera> [<use_external_reference>]"  << std::endl;
+        std::cout << "Synopsis: test-aruco-measurement <type> <laterality> <use_relative_camera> <use_extrinsic_compensation> [<model_path>]"  << std::endl;
         std::cout << "          <type> can be 'marker', 'board_0' or 'board_1'"  << std::endl;
-        std::cout << "          <use_external_reference> is required if <use_relative_camera> = true"  << std::endl;
+        std::cout << "          <model_path> is required if <use_extrinsic_compensation> = true"  << std::endl;
 
         return EXIT_FAILURE;
     }
@@ -190,11 +187,12 @@ int main(int argc, char** argv)
     const std::string type = std::string(argv[1]);
     const std::string laterality = std::string(argv[2]);
     const bool use_relative_camera = (std::string(argv[3]) == "true");
-    bool use_external_reference = false;
-    if (use_relative_camera)
-       use_external_reference = (std::string(argv[4]) == "true");
+    bool use_extrinsic_compensation = (std::string(argv[4]) == "true");
+    std::string model_path = "";
+    if (use_extrinsic_compensation)
+       model_path = std::string(argv[5]);
 
-    ReverseArucoMeasurement test(type, laterality, use_relative_camera, use_external_reference);
+    ReverseArucoMeasurement test(type, laterality, use_relative_camera, use_extrinsic_compensation, model_path);
     test.boot();
     test.run();
     if (!test.wait())
