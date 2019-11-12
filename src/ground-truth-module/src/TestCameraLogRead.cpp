@@ -31,7 +31,7 @@ int main(int argc, char** argv)
     {
         camera = std::unique_ptr<iCubCamera>
         (
-            new iCubCamera(data_path, 640.0, 480.0, 468.672, 323.045, 467.73, 245.784, true)
+            new iCubCamera("laterality", data_path, 640.0, 480.0, 468.672, 323.045, 467.73, 245.784, true)
         );
     }
     else
