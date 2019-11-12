@@ -51,7 +51,8 @@ protected:
             throw(std::runtime_error("ReverseArucoMeasurement::initialization. Error: unknown type " + type_ + "."));
 
         const std::string relative_postfix = use_relative_camera_ ? "_relative" : "";
-        const std::string port_prefix = "test-aruco-measurement/" + type_ + "/" + laterality_ + relative_postfix;
+        const std::string compensated_postfix = use_extrinsic_compensation_ ? "_compensated" : "";
+        const std::string port_prefix = "test-aruco-measurement/" + type_ + "/" + laterality_ + relative_postfix + compensated_postfix;
 
         /* Camera. */
         if (use_relative_camera_)
