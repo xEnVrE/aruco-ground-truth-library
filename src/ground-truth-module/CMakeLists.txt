@@ -7,6 +7,9 @@
 #
 #===============================================================================
 
+find_package(VTK REQUIRED)
+include(${VTK_USE_FILE})
+
 set(EXE_TARGET_NAME test-aruco-measurement)
 
 set(${EXE_TARGET_NAME}_HDR
@@ -81,6 +84,7 @@ target_link_libraries(${EXE_TARGET_NAME}
                       PRIVATE
                       CameraLibrary
                       VisualizationLibrary
+                      ${VTK_LIBRARIES}
                       )
 
 # install(TARGETS ${EXE_TARGET_NAME} DESTINATION bin)
