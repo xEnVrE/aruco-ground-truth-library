@@ -92,8 +92,11 @@ int main(int argc, char** argv)
     Eigen::MatrixXd output = data.bottomRows(7);
 
     /* Initialize SVM machine. */
-    double regularization = 1.0;
+    // double gamma = 1e-3;
+    double gamma = 1e-1;
+    double regularization = 1 / gamma;
     iCub::learningmachine::LSSVMLearner svm(3, 6, regularization);
+    // svm.getKernel()->setGamma(500);
 
     /* Add samples. */
     for (std::size_t i = 0; i < input.cols(); i++)
