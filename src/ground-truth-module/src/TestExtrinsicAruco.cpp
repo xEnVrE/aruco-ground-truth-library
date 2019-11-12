@@ -62,9 +62,18 @@ protected:
         camera_l2r_ = std::shared_ptr<iCubCameraRelative>
         (
             new iCubCameraRelative(std::string("right"), data_path_ + "left-camera", data_path_ + "right-camera", 640, 480,
-                                   468.672, 323.045, 467.73, 245.784, 468.488, 301.274, 467.427, 245.503, true,
-                                   use_calibration_, calibration_model_path_)
+                                   468.672, 323.045, 467.73, 245.784, 468.488, 301.274, 467.427, 245.503, true)
         );
+
+        if (use_calibration_)
+        {
+            camera_l2r_compensated_ = std::shared_ptr<iCubCameraRelative>
+            (
+                new iCubCameraRelative(std::string("right"), data_path_ + "left-camera", data_path_ + "right-camera", 640, 480,
+                                           468.672, 323.045, 467.73, 245.784, 468.488, 301.274, 467.427, 245.503, true,
+                                           true, calibration_model_path_)
+            );
+        }
 
         /* Probes .*/
         pose_l_ = std::unique_ptr<YarpVectorOfProbe<double, Eigen::Transform<double, 3, Eigen::Affine>>>
@@ -76,10 +85,18 @@ protected:
         (
             new YarpVectorOfProbe<double, Eigen::Transform<double, 3, Eigen::Affine>>("/" + port_prefix + "/pose_l2r:o")
         );
+        if (use_calibration_)
+        {
+            pose_l2r_compensated_ = std::unique_ptr<YarpVectorOfProbe<double, Eigen::Transform<double, 3, Eigen::Affine>>>
+            (
+                new YarpVectorOfProbe<double, Eigen::Transform<double, 3, Eigen::Affine>>("/" + port_prefix + "/pose_l2r_compensated:o")
+            );
+        }
 
         /* aruco measurement. */
         std::unique_ptr<ArucoMeasurement> aruco_l;
         std::unique_ptr<ArucoMeasurement> aruco_l2r;
+        std::unique_ptr<ArucoMeasurement> aruco_l2r_compensated;
         std::size_t n_x = 2;
         std::size_t n_y = 2;
         std::size_t dictionary_offset = 0;
@@ -101,6 +118,13 @@ protected:
         (
             new ArucoBoardMeasurement(cv::aruco::DICT_4X4_50, dictionary_offset, n_x, n_y, marker_length, intra_marker, camera_l2r_)
         );
+        if (use_calibration_)
+        {
+            aruco_l2r_compensated = std::unique_ptr<ArucoBoardMeasurement>
+            (
+                new ArucoBoardMeasurement(cv::aruco::DICT_4X4_50, dictionary_offset, n_x, n_y, marker_length, intra_marker, camera_l2r_compensated_)
+            );
+        }
 
         /* Three point reverse link measurement. */
         Eigen::Vector3d point_0(-0.0303521, 0.0243051, 0.0389612);
@@ -122,8 +146,17 @@ protected:
         (
             new ThreePointReverseLinkMeasurement(point_0, point_1, point_2, corner_offset, std::move(aruco_l2r))
         );
+        if (use_calibration_)
+        {
+            link_l2r_compensated_ = std::unique_ptr<ThreePointReverseLinkMeasurement>
+            (
+                new ThreePointReverseLinkMeasurement(point_0, point_1, point_2, corner_offset, std::move(aruco_l2r_compensated))
+            );
+        }
         link_l_->set_probe("pose", std::move(pose_l_));
         link_l2r_->set_probe("pose_w_camera", std::move(pose_l2r_));
+        if (use_calibration_)
+            link_l2r_compensated_->set_probe("pose_w_camera", std::move(pose_l2r_compensated_));
 
         return true;
     }
@@ -144,6 +177,9 @@ protected:
             camera_l_->set_frame(frame_id - 2);
             camera_l2r_->set_frame(frame_id - 2);
 
+            if (use_calibration_)
+                camera_l2r_compensated_->set_frame(frame_id - 2);
+
             execute = true;
         }
         else if (key == "q")
@@ -154,6 +190,9 @@ protected:
         {
             link_l_->freeze();
             link_l2r_->freeze();
+
+            if (use_calibration_)
+                link_l2r_compensated_->freeze();
         }
     }
 
@@ -176,13 +215,19 @@ private:
 
     std::unique_ptr<ReverseLinkMeasurement> link_l2r_;
 
+    std::unique_ptr<ReverseLinkMeasurement> link_l2r_compensated_;
+
     std::shared_ptr<iCubCamera> camera_l_;
 
     std::shared_ptr<iCubCamera> camera_l2r_;
 
+    std::shared_ptr<iCubCamera> camera_l2r_compensated_;
+
     std::unique_ptr<YarpVectorOfProbe<double, Eigen::Transform<double, 3, Eigen::Affine>>> pose_l_;
 
     std::unique_ptr<YarpVectorOfProbe<double, Eigen::Transform<double, 3, Eigen::Affine>>> pose_l2r_;
+
+    std::unique_ptr<YarpVectorOfProbe<double, Eigen::Transform<double, 3, Eigen::Affine>>> pose_l2r_compensated_;
 };
 
 
