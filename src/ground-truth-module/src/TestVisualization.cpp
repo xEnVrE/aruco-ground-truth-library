@@ -19,9 +19,9 @@
 
 int main(int argc, char** argv)
 {
-    if ((argc < 8) || ((std::string(argv[7]) == "true") && (argc != 9)))
+    if ((argc < 9) || ((std::string(argv[8]) == "true") && (argc != 10)))
     {
-        std::cout << "Synopsis: test-visualization <blocking> <robot_name> <use_fingers> <use_analogs> <hand_fk> <hand_aruco> <point_cloud> [<camera>]" << std::endl;
+        std::cout << "Synopsis: test-visualization <blocking> <robot_name> <use_fingers> <use_analogs> <hand_fk> <hand_aruco> <hand_debug> <point_cloud> [<camera>]" << std::endl;
         std::cout << "          Camera name <camera> is required only if <point_cloud> = true." << std::endl;
         return EXIT_FAILURE;
     }
@@ -30,6 +30,7 @@ int main(int argc, char** argv)
     bool use_analogs = false;
     bool show_hand_fk = false;
     bool show_hand_aruco = false;
+    bool show_hand_debug = false;
     bool show_point_cloud = false;
 
     std::string robot_name = std::string(argv[1]);
@@ -44,10 +45,12 @@ int main(int argc, char** argv)
     if (std::string(argv[6]) == "true")
         show_hand_aruco = true;
     if (std::string(argv[7]) == "true")
+        show_hand_debug = true;
+    if (std::string(argv[8]) == "true")
         show_point_cloud = true;
     std::string camera_name = "";
     if (show_point_cloud)
-        camera_name = std::string(argv[8]);
+        camera_name = std::string(argv[9]);
 
     VtkContainer container(30, 600, 600, blocking);
 
@@ -78,6 +81,17 @@ int main(int argc, char** argv)
 
         container.add_content("hand_aruco_left", std::move(hand_left));
         container.add_content("hand_aruco_right", std::move(hand_right));
+    }
+
+    /* Show additional hand for debugging purposes. */
+    if (show_hand_debug)
+    {
+        std::unique_ptr<VtkContent> hand_debug = std::unique_ptr<VtkiCubHand>
+        (
+            new VtkiCubHand(robot_name, "left", "test-visualization/hand_debug", use_fingers, use_analogs, {60.0 / 255.0, 180.0 / 255.0, 60.0 / 255.0}, 1.0)
+        );
+
+        container.add_content("hand_aruco_debug", std::move(hand_debug));
     }
 
     /* Show point cloud. */
