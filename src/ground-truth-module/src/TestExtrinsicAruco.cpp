@@ -30,9 +30,11 @@
 class TestExtrinsicAruco : public bfl::FilteringAlgorithm
 {
 public:
-    TestExtrinsicAruco(const std::string& data_path, const std::string& type) :
+    TestExtrinsicAruco(const std::string& data_path, const std::string& type, const bool& use_calibration, const std::string& calibration_model_path) :
         data_path_(data_path),
-        type_(type)
+        type_(type),
+        use_calibration_(use_calibration),
+        calibration_model_path_(calibration_model_path)
     {
         if (data_path_.back() != '/')
             data_path_ += "/";
@@ -54,13 +56,14 @@ protected:
 
         camera_l_ = std::shared_ptr<iCubCamera>
         (
-            new iCubCamera(data_path_ + "left-camera", 640, 480, 468.672, 323.045, 467.73, 245.784, true)
+            new iCubCamera(data_path_ + "left-camera", "left", 640, 480, 468.672, 323.045, 467.73, 245.784, true)
         );
 
         camera_l2r_ = std::shared_ptr<iCubCameraRelative>
         (
             new iCubCameraRelative(std::string("right"), data_path_ + "left-camera", data_path_ + "right-camera", 640, 480,
-                                   468.672, 323.045, 467.73, 245.784, 468.488, 301.274, 467.427, 245.503, true)
+                                   468.672, 323.045, 467.73, 245.784, 468.488, 301.274, 467.427, 245.503, true,
+                                   use_calibration_, calibration_model_path_)
         );
 
         /* Probes .*/
@@ -165,6 +168,10 @@ private:
 
     std::string data_path_;
 
+    const bool& use_calibration_;
+
+    const std::string calibration_model_path_ = "";
+
     std::unique_ptr<ReverseLinkMeasurement> link_l_;
 
     std::unique_ptr<ReverseLinkMeasurement> link_l2r_;
@@ -181,19 +188,23 @@ private:
 
 int main(int argc, char** argv)
 {
-    if (argc != 3)
+    if (argc < 4 || (std::string(argv[3]) == "true" && argc != 5))
     {
-        std::cout << "Synopsis: test-extrinsic-aruco <data_path> <type>"  << std::endl;
+        std::cout << "Synopsis: test-extrinsic-aruco <data_path> <type> <use_calibration> [<calibration_model>]"  << std::endl;
         std::cout << "          <type> can be 'board_0' or 'board_1'"  << std::endl;
-        std::cout << "          <use_external_reference> is required if <use_relative_camera> = true"  << std::endl;
+        std::cout << "          <calibration_model> is required if <use_calibration> = true"  << std::endl;
 
         return EXIT_FAILURE;
     }
 
     const std::string data_path = std::string(argv[1]);
     const std::string type = std::string(argv[2]);
+    const bool use_calibration = (std::string(argv[3]) == "true");
+    std::string calibration_model_path;
+    if (use_calibration)
+        calibration_model_path = std::string(argv[4]);
 
-    TestExtrinsicAruco test(data_path, type);
+    TestExtrinsicAruco test(data_path, type, use_calibration, calibration_model_path);
     test.boot();
     test.run();
     if (!test.wait())
