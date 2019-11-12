@@ -8,9 +8,15 @@
 #include <iCubCameraRelative.h>
 
 
-iCubCameraRelative::iCubCameraRelative(const std::string& robot_name, const std::string& laterality, const std::string& port_context, const std::string& fallback_context_name, const std::string& fallback_configuration_name, const bool& use_calibration, const std::string& calibration_path) :
-    iCubCamera(robot_name, laterality, port_context, fallback_context_name, fallback_configuration_name, use_calibration, calibration_path)
-{}
+iCubCameraRelative::iCubCameraRelative(const std::string& robot_name, const std::string& laterality, const std::string& port_prefix, const std::string& fallback_context_name, const std::string& fallback_configuration_name, const bool& use_calibration, const std::string& calibration_path) :
+    iCubCamera(robot_name, "right", port_prefix, fallback_context_name, fallback_configuration_name, use_calibration, calibration_path)
+{
+    /* Initialize right camera. */
+    relative_camera_= std::unique_ptr<iCubCamera>
+    (
+        new iCubCamera(robot_name, "left", port_prefix + "_relative", fallback_context_name, fallback_configuration_name)
+    );
+}
 
 
 iCubCameraRelative::iCubCameraRelative(const std::string& laterality, const std::string& data_path_left, const std::string& data_path_right, const std::size_t& width, const std::size_t& height, const double& fx_l, const double& cx_l, const double& fy_l, const double& cy_l, const double& fx_r, const double& cx_r, const double& fy_r, const double& cy_r, const bool& load_encoders_data, const bool& use_calibration, const std::string& calibration_path) :
