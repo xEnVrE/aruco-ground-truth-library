@@ -14,7 +14,7 @@
 using namespace Eigen;
 
 
-VtkMeshOBJ::VtkMeshOBJ(const std::string& mesh_path, const bool& use_mesh_resources, const std::tuple<double, double, double>& color)
+VtkMeshOBJ::VtkMeshOBJ(const std::string& mesh_path, const bool& use_mesh_resources, const std::tuple<double, double, double>& color, const double& opacity)
 {
     /* Initialize mesh reader. */
     reader_ = vtkSmartPointer<vtkOBJResource>::New();
@@ -39,6 +39,7 @@ VtkMeshOBJ::VtkMeshOBJ(const std::string& mesh_path, const bool& use_mesh_resour
     mesh_actor_ = vtkSmartPointer<vtkActor>::New();
     mesh_actor_->SetMapper(mapper_);
     mesh_actor_->GetProperty()->SetColor(std::get<0>(color), std::get<1>(color), std::get<2>(color));
+    mesh_actor_->GetProperty()->SetOpacity(opacity);
 }
 
 

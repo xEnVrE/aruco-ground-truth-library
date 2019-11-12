@@ -1,3 +1,4 @@
+
 /*
  * Copyright (C) 2019 Istituto Italiano di Tecnologia (IIT)
  *
@@ -21,7 +22,7 @@
 class VtkMeshOBJ
 {
 public:
-    VtkMeshOBJ(const std::string& mesh_path, const bool& use_mesh_resources, const std::tuple<double, double, double>& color);
+    VtkMeshOBJ(const std::string& mesh_path, const bool& use_mesh_resources, const std::tuple<double, double, double>& color, const double& opacity);
 
     virtual ~VtkMeshOBJ();
 
