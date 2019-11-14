@@ -64,9 +64,11 @@ if (USE_YARP)
 endif()
 # install(TARGETS ${EXE_TARGET_NAME} DESTINATION bin)
 
-if (USE_VTK AND USE_YARP)
+if (USE_YARP)
     find_package(VTK REQUIRED)
     include(${VTK_USE_FILE})
+
+    find_package(RobotsViz)
 
     set(EXE_TARGET_NAME test-visualization)
 
@@ -89,46 +91,46 @@ if (USE_VTK AND USE_YARP)
     target_link_libraries(${EXE_TARGET_NAME}
                           PRIVATE
                           RobotsIO::RobotsIO
-                          VisualizationLibrary
+                          RobotsViz::RobotsViz
                           ${VTK_LIBRARIES}
                           )
 
     # install(TARGETS ${EXE_TARGET_NAME} DESTINATION bin)
 endif()
 
+
+set(EXE_TARGET_NAME test-superimposition)
+
+find_package(BayesFilters REQUIRED)
 find_package(OpenCV REQUIRED)
+find_package(RobotsViz REQUIRED)
 
-if (USE_SUPERIMPOSE)
-    find_package(BayesFilters REQUIRED)
+set(${EXE_TARGET_NAME}_HDR
+    )
 
-    set(EXE_TARGET_NAME test-superimposition)
+set(${EXE_TARGET_NAME}_SRC
+    src/TestSuperimposition.cpp
+    )
 
-    set(${EXE_TARGET_NAME}_HDR
-        )
+add_executable(${EXE_TARGET_NAME}
+               ${${EXE_TARGET_NAME}_HDR}
+               ${${EXE_TARGET_NAME}_SRC}
+               )
 
-    set(${EXE_TARGET_NAME}_SRC
-        src/TestSuperimposition.cpp
-        )
+target_include_directories(${EXE_TARGET_NAME}
+                           PRIVATE
+                           )
 
-    add_executable(${EXE_TARGET_NAME}
-                   ${${EXE_TARGET_NAME}_HDR}
-                   ${${EXE_TARGET_NAME}_SRC}
-                   )
+target_link_libraries(${EXE_TARGET_NAME}
+                      PRIVATE
+                      BayesFilters::BayesFilters
+                      RobotsIO::RobotsIO
+                      RobotsViz::RobotsViz
+                      ${OpenCV_LIBS}
+                      )
 
-    target_include_directories(${EXE_TARGET_NAME}
-                               PRIVATE
-                               )
+# install(TARGETS ${EXE_TARGET_NAME} DESTINATION bin)
 
-    target_link_libraries(${EXE_TARGET_NAME}
-                          PRIVATE
-                          BayesFilters::BayesFilters
-                          RobotsIO::RobotsIO
-                          VisualizationLibrary
-                          ${OpenCV_LIBS}
-                          )
-
-    # install(TARGETS ${EXE_TARGET_NAME} DESTINATION bin)
-endif()
 
 set(EXE_TARGET_NAME test-camera)
 

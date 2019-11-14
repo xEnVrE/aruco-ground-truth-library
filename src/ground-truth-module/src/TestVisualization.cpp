@@ -9,15 +9,16 @@
 #include <RobotsIO/Camera/iCubCamera.h>
 #include <RobotsIO/Camera/YarpCamera.h>
 
-#include <VtkContainer.h>
-#include <VtkContent.h>
-#include <VtkPointCloud.h>
-#include <VtkiCubHand.h>
+#include <RobotsViz/VtkContainer.h>
+#include <RobotsViz/VtkContent.h>
+#include <RobotsViz/VtkPointCloud.h>
+#include <RobotsViz/VtkiCubHand.h>
 
 #include <iostream>
 #include <string>
 
 using namespace RobotsIO::Camera;
+using namespace RobotsViz;
 
 
 int main(int argc, char** argv)

@@ -12,7 +12,7 @@
 #include <RobotsIO/Camera/iCubCameraRelative.h>
 #include <RobotsIO/Utils/YarpImageOfProbe.hpp>
 
-#include <SIiCubHand.h>
+#include <RobotsViz/SIiCubHand.h>
 
 #include <iostream>
 
@@ -20,6 +20,7 @@
 
 using namespace RobotsIO::Camera;
 using namespace RobotsIO::Utils;
+using namespace RobotsViz;
 
 
 class TestSuperimposition : public bfl::FilteringAlgorithm

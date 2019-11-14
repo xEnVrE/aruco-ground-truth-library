@@ -8,14 +8,9 @@
 #===============================================================================
 
 option(BUILD_MODULES       "Build modules"              OFF)
-option(BUILD_VISUALIZATION "Build visualization libary" OFF)
 option(USE_YARP            "Use YARP"                   OFF)
 
 add_subdirectory(ground-truth-library)
-
-if (BUILD_VISUALIZATION)
-    add_subdirectory(viz-library)
-endif()
 
 if (BUILD_MODULES)
   add_subdirectory(ground-truth-module)
