@@ -12,6 +12,7 @@
 #include <opencv2/aruco.hpp>
 
 using namespace Eigen;
+using namespace RobotsIO::Camera;
 using namespace bfl;
 using namespace cv::aruco;
 

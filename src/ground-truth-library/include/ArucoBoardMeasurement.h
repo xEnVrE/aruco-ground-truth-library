@@ -9,7 +9,10 @@
 #define ARUCOBOARDMEASUREMENT_H
 
 #include <ArucoMeasurement.h>
-#include <Camera.h>
+
+#include <BayesFilters/Data.h>
+
+#include <RobotsIO/Camera/Camera.h>
 
 #include <opencv2/opencv.hpp>
 #include <opencv2/aruco.hpp>
@@ -21,7 +24,7 @@
 class ArucoBoardMeasurement : public ArucoMeasurement
 {
 public:
-    ArucoBoardMeasurement(const int& dictionary, const std::size_t dictionary_offset, const std::size_t number_x, const std::size_t number_y, const double& marker_side, const double& inter_marker_length, std::shared_ptr<Camera> camera);
+    ArucoBoardMeasurement(const int& dictionary, const std::size_t dictionary_offset, const std::size_t number_x, const std::size_t number_y, const double& marker_side, const double& inter_marker_length, std::shared_ptr<RobotsIO::Camera::Camera> camera);
 
     virtual ~ArucoBoardMeasurement();
 
