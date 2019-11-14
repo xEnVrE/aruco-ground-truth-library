@@ -7,12 +7,15 @@
 
 #include <VtkiCubHand.h>
 
+#include <RobotsIO/Hand/iCubHand.h>
+
 #include <unordered_map>
 
 #include <yarp/eigen/Eigen.h>
 
 
 using namespace Eigen;
+using namespace RobotsIO::Hand;
 using namespace yarp::eigen;
 
 
@@ -71,9 +74,9 @@ VtkiCubHand::VtkiCubHand(const std::string& robot_name, const std::string& later
     /* Configure fingers encoders. */
     if (use_fingers_)
     {
-        fingers_encoders_ = std::unique_ptr<iCubFingersEncoders>
+        fingers_encoders_ = std::unique_ptr<iCubHand>
         (
-            new iCubFingersEncoders(robot_name, laterality, port_prefix + "/vtk-icub-hand", "icub-fingers-encoders", use_analogs)
+            new iCubHand(robot_name, laterality, port_prefix + "/vtk-icub-hand", "icub-fingers-encoders", use_analogs)
         );
     }
 }
@@ -104,7 +107,7 @@ bool VtkiCubHand::update(const bool& blocking)
     if (use_fingers_)
     {
         bool valid_encoders = false;
-        std::tie(valid_encoders, encoders) = fingers_encoders_->get_encoders(blocking);
+        std::tie(valid_encoders, encoders) = fingers_encoders_->encoders(blocking);
 
         if (!valid_encoders)
             return false;

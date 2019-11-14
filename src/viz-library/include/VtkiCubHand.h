@@ -10,10 +10,11 @@
 
 #include <Eigen/Dense>
 
-#include <iCubFingersEncoders.h>
 #include <iCubForwardKinematics.h>
 #include <VtkContent.h>
 #include <VtkMeshOBJ.h>
+
+#include <RobotsIO/Hand/iCubHand.h>
 
 #include <memory>
 #include <unordered_map>
@@ -45,7 +46,7 @@ private:
 
     std::unique_ptr<iCubForwardKinematics> forward_kinematics_;
 
-    std::unique_ptr<iCubFingersEncoders> fingers_encoders_;
+    std::unique_ptr<RobotsIO::Hand::iCubHand> fingers_encoders_;
 
     const bool use_fingers_;
 
