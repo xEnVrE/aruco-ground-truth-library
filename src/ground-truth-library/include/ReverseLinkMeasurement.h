@@ -9,18 +9,20 @@
 #define REVERSELINKMEASUREMENT_H
 
 #include <ArucoMeasurement.h>
-#include <ProbeContainer.h>
 
+#include <BayesFilters/Data.h>
 #include <BayesFilters/MeasurementModel.h>
 
 #include <Eigen/Dense>
+
+#include <RobotsIO/Utils/ProbeContainer.h>
 
 #include <memory>
 #include <string>
 
 
 class ReverseLinkMeasurement : public bfl::MeasurementModel,
-                               public ProbeContainer
+                               public RobotsIO::Utils::ProbeContainer
 {
 public:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
