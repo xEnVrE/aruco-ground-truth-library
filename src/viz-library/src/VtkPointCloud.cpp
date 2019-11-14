@@ -12,6 +12,7 @@
 #include <opencv2/opencv.hpp>
 
 using namespace Eigen;
+using namespace RobotsIO::Camera;
 
 
 VtkPointCloud::VtkPointCloud(std::unique_ptr<Camera> camera) :
@@ -36,7 +37,7 @@ VtkPointCloud::VtkPointCloud(std::unique_ptr<Camera> camera) :
 
     /* Cache camera parameters. */
     bool valid_parameters = false;
-    std::tie(valid_parameters, camera_parameters_) = camera_->get_parameters();
+    std::tie(valid_parameters, camera_parameters_) = camera_->parameters();
 
     /* Cache image coordinates. */
     for (std::size_t u = 0; u < camera_parameters_.width; u++)
@@ -65,21 +66,21 @@ bool VtkPointCloud::update(const bool& blocking)
 
     /* Get RGB. */
     cv::Mat rgb;
-    std::tie(valid_data, rgb) = camera_->get_rgb(blocking);
+    std::tie(valid_data, rgb) = camera_->rgb(blocking);
     if (!valid_data)
         return false;
 
     /* Get D. */
     valid_data = false;
     MatrixXf depth;
-    std::tie(valid_data, depth) = camera_->get_depth(blocking);
+    std::tie(valid_data, depth) = camera_->depth(blocking);
     if (!valid_data)
         return false;
 
     /* Get camera pose. */
     valid_data = false;
     Transform<double, 3, Affine> pose;
-    std::tie(valid_data, pose) = camera_->get_pose(blocking);
+    std::tie(valid_data, pose) = camera_->pose(blocking);
     if (!valid_data)
         return false;
 
@@ -103,7 +104,7 @@ bool VtkPointCloud::update(const bool& blocking)
     /* Get deprojection matrix. */
     valid_data = false;
     MatrixXd deprojection_matrix;
-    std::tie(valid_data, deprojection_matrix) = camera_->get_deprojection_matrix();
+    std::tie(valid_data, deprojection_matrix) = camera_->deprojection_matrix();
     if (!valid_data)
         return false;
 

@@ -10,10 +10,10 @@
 
 #include <VtkContent.h>
 
-#include <Camera.h>
-#include <CameraParameters.h>
-
 #include <Eigen/Dense>
+
+#include <RobotsIO/Camera/Camera.h>
+#include <RobotsIO/Camera/CameraParameters.h>
 
 #include <vtkActor.h>
 #include <vtkPointData.h>
@@ -27,7 +27,7 @@
 class VtkPointCloud : public VtkContent
 {
 public:
-    VtkPointCloud(std::unique_ptr<Camera> camera);
+    VtkPointCloud(std::unique_ptr<RobotsIO::Camera::Camera> camera);
 
     virtual ~VtkPointCloud();
 
@@ -52,9 +52,9 @@ private:
 
     vtkSmartPointer<vtkUnsignedCharArray> colors_;
 
-    std::unique_ptr<Camera> camera_;
+    std::unique_ptr<RobotsIO::Camera::Camera> camera_;
 
-    CameraParameters camera_parameters_;
+    RobotsIO::Camera::CameraParameters camera_parameters_;
 
     std::vector<cv::Point> image_coordinates_;
 
