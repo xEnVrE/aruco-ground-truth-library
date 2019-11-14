@@ -9,14 +9,18 @@
 #define ARUCOMARKERMEASUREMENT_H
 
 #include <ArucoMeasurement.h>
-#include <Camera.h>
+
+#include <BayesFilters/Data.h>
+
+#include <RobotsIO/Camera/Camera.h>
 
 #include <memory>
+
 
 class ArucoMarkerMeasurement : public ArucoMeasurement
 {
 public:
-    ArucoMarkerMeasurement(const int& dictionary, const double& marker_length, std::shared_ptr<Camera> camera);
+    ArucoMarkerMeasurement(const int& dictionary, const double& marker_length, std::shared_ptr<RobotsIO::Camera::Camera> camera);
 
     virtual ~ArucoMarkerMeasurement();
 

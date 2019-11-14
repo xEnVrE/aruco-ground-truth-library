@@ -7,6 +7,7 @@
 
 #include <ArucoMarkerMeasurement.h>
 
+using namespace RobotsIO::Camera;
 using namespace bfl;
 using namespace cv::aruco;
 
