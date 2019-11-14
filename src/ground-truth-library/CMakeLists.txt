@@ -20,6 +20,9 @@ find_package(Eigen3 REQUIRED)
 # OpenCV
 find_package(OpenCV REQUIRED)
 
+# RobotsIO
+find_package(RobotsIO REQUIRED)
+
 set(${LIBRARY_TARGET_NAME}_HDR
     include/ArucoBoardMeasurement.h
     include/ArucoMarkerMeasurement.h
@@ -45,8 +48,7 @@ target_include_directories(${LIBRARY_TARGET_NAME} PUBLIC
 
 target_link_libraries(${LIBRARY_TARGET_NAME} PUBLIC
                       BayesFilters::BayesFilters
-                      CameraLibrary
                       Eigen3::Eigen
-                      UtilsLibrary
+                      RobotsIO::RobotsIO
                       ${OpenCV_LIBS}
                       )
