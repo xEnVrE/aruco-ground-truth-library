@@ -13,20 +13,6 @@ project(aruco-ground-truth LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 11)
 
-option(USE_ICUB        "Use ICUB" OFF)
-
-if (USE_ICUB)
-  # iCub contrib
-  find_package(ICUBcontrib REQUIRED)
-
-  list(APPEND CMAKE_MODULE_PATH ${ICUBCONTRIB_MODULE_PATH})
-  include(ICUBcontribHelpers)
-  include(ICUBcontribOptions)
-
-  icubcontrib_set_default_prefix()
-  icubcontrib_add_uninstall_target()
-endif()
-
 # Default build type to Release
 if(NOT CMAKE_CONFIGURATION_TYPES)
     if(NOT CMAKE_BUILD_TYPE)
