@@ -11,16 +11,18 @@
 
 #include <BayesFilters/FilteringAlgorithm.h>
 
-#include <iCubCamera.h>
-
-#include <YarpImageOfProbe.hpp>
-#include <YarpVectorOfProbe.hpp>
+#include <RobotsIO/Camera/iCubCamera.h>
+#include <RobotsIO/Utils/YarpImageOfProbe.hpp>
+#include <RobotsIO/Utils/YarpVectorOfProbe.hpp>
 
 #include <opencv2/aruco.hpp>
 
 #include <cstdlib>
 #include <stdexcept>
 #include <string>
+
+using namespace RobotsIO::Camera;
+using namespace RobotsIO::Utils;
 
 
 class TestArucoMeasurement : public bfl::FilteringAlgorithm

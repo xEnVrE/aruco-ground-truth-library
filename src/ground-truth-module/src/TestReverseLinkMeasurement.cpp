@@ -14,17 +14,18 @@
 
 #include <Eigen/Dense>
 
-#include <iCubCamera.h>
-#include <iCubCameraRelative.h>
-#include <iCubCameraRelativeExternal.h>
-
-#include <YarpImageOfProbe.hpp>
-#include <YarpVectorOfProbe.hpp>
+#include <RobotsIO/Camera/iCubCamera.h>
+#include <RobotsIO/Camera/iCubCameraRelative.h>
+#include <RobotsIO/Utils/YarpImageOfProbe.hpp>
+#include <RobotsIO/Utils/YarpVectorOfProbe.hpp>
 
 #include <opencv2/aruco.hpp>
 
 #include <cstdlib>
 #include <string>
+
+using namespace RobotsIO::Camera;
+using namespace RobotsIO::Utils;
 
 
 class ReverseArucoMeasurement : public bfl::FilteringAlgorithm

@@ -5,22 +5,22 @@
  * GPL-2+ license. See the accompanying LICENSE file for details.
  */
 
-#include <Camera.h>
-#include <iCubCamera.h>
-#include <iCubCameraRelative.h>
-#include <iCubCameraRelativeExternal.h>
-#include <YarpCamera.h>
+#include <RobotsIO/Camera/Camera.h>
+#include <RobotsIO/Camera/iCubCamera.h>
+#include <RobotsIO/Camera/iCubCameraRelative.h>
+#include <RobotsIO/Camera/YarpCamera.h>
 
 #include <Eigen/Dense>
 
 #include <thread>
 
+using namespace RobotsIO::Camera;
 
 int main(int argc, char** argv)
 {
-    if (argc != 6)
+    if (argc != 5)
     {
-        std::cout << "Synopsis: test-camera <robot_name> <camera_name> <laterality> <relative> <external>"  << std::endl;
+        std::cout << "Synopsis: test-camera <robot_name> <camera_name> <laterality> <relative>"  << std::endl;
         std::cout << "          <camera_name> can be {iCubCamera}"  << std::endl;
 
         return EXIT_FAILURE;
@@ -37,16 +37,10 @@ int main(int argc, char** argv)
     {
         if (relative)
         {
-	    if(external)
-	        camera = std::unique_ptr<iCubCamera>
-                (
-                    new iCubCameraRelativeExternal(robot_name, laterality, "test-camera", "", "")
-                );
-	    else
-	        camera = std::unique_ptr<iCubCamera>
-                (
-                    new iCubCameraRelative(robot_name, laterality, "test-camera", "", "")
-                );
+            camera = std::unique_ptr<iCubCamera>
+            (
+                new iCubCameraRelative(robot_name, laterality, "test-camera", "", "")
+            );
 	}
         else
             camera = std::unique_ptr<iCubCamera>
@@ -66,7 +60,7 @@ int main(int argc, char** argv)
         std::this_thread::sleep_for(std::chrono::milliseconds(30));
 
         Eigen::Transform<double, 3, Eigen::Affine> pose;
-        std::tie(std::ignore, pose) = camera->get_pose(true);
+        std::tie(std::ignore, pose) = camera->pose(true);
 
         std::cout << "TestCamera::main. Info: Camera position is" << std::endl;
         std::cout << pose.translation() << std::endl;

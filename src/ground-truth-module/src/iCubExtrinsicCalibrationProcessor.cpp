@@ -7,13 +7,17 @@
  */
 
 #include <ArucoBoardMeasurement.h>
-#include <iCubCamera.h>
-// #include <YarpImageOfProbe.hpp>
+
+#include <RobotsIO/Camera/iCubCamera.h>
+// #include <RobotsIO/Utils/YarpImageOfProbe.hpp>
 
 #include <fstream>
 #include <memory>
 
 // #include <yarp/os/Network.h>
+
+using namespace RobotsIO::Camera;
+// using namespace RobotsIO::Utils;
 
 
 int main(int argc, char** argv)
@@ -75,7 +79,7 @@ int main(int argc, char** argv)
     /* Total number of processed frames. */
     std::size_t counter = 0;
 
-    while (cam_left->get_status() && cam_right->get_status())
+    while (cam_left->status() && cam_right->status())
     {
         /* Estimate poses using AruCo. The Aruco measurement entity will also step the camera frame. */
         bool valid_frame = aruco_left.freeze();
@@ -137,7 +141,7 @@ int main(int argc, char** argv)
             /* Get input configuration (is the same for both cameras of iCub). */
             Eigen::VectorXd torso_head;
             Eigen::VectorXd eyes;
-            std::tie(std::ignore, torso_head) = cam_left->get_auxiliary_data(false);
+            std::tie(std::ignore, torso_head) = cam_left->auxiliary_data(false);
             eyes = torso_head.tail<3>() * M_PI / 180.0;
 
             /* Convert to axis angle. */

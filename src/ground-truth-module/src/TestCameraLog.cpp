@@ -5,12 +5,14 @@
  * GPL-2+ license. See the accompanying LICENSE file for details.
  */
 
-#include <Camera.h>
-#include <iCubCamera.h>
+#include <RobotsIO/Camera/Camera.h>
+#include <RobotsIO/Camera/iCubCamera.h>
 
 #include <Eigen/Dense>
 
 #include <thread>
+
+using namespace RobotsIO::Camera;
 
 
 int main(int argc, char** argv)
@@ -42,7 +44,7 @@ int main(int argc, char** argv)
     }
 
     /* Enable log. */
-    camera->enable_log(".");
+    camera->start_log(".");
     std::cout << "Logger enabled." << std::endl;
 
     for (std::size_t i = 0; i < number_of_frames; i++)

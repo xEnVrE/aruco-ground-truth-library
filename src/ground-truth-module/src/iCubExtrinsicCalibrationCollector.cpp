@@ -5,7 +5,7 @@
  * GPL-2+ license. See the accompanying LICENSE file for details.
  */
 
-#include <iCubCamera.h>
+#include <RobotsIO/Camera/iCubCamera.h>
 
 #include <yarp/dev/IPositionControl.h>
 #include <yarp/dev/PolyDriver.h>
@@ -15,6 +15,7 @@
 #include <cstdlib>
 #include <thread>
 
+using namespace RobotsIO::Camera;
 using namespace yarp::dev;
 using namespace yarp::os;
 using namespace yarp::sig;
@@ -81,8 +82,8 @@ int main(int argc, char** argv)
     }
 
     /* Enable camera logging. */
-    left_camera.enable_log("./left-camera");
-    right_camera.enable_log("./right-camera");
+    left_camera.start_log("./left-camera");
+    right_camera.start_log("./right-camera");
 
     /* Define ranges for head joints (in degrees). */
     const double tilt_min = -12.0;

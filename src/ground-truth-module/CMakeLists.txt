@@ -7,8 +7,7 @@
 #
 #===============================================================================
 
-find_package(VTK REQUIRED)
-include(${VTK_USE_FILE})
+find_package(RobotsIO REQUIRED)
 
 set(EXE_TARGET_NAME test-aruco-measurement)
 
@@ -36,90 +35,100 @@ target_link_libraries(${EXE_TARGET_NAME}
 # install(TARGETS ${EXE_TARGET_NAME} DESTINATION bin)
 
 
-set(EXE_TARGET_NAME test-reverse-link-measurement)
+if (USE_YARP)
+    find_package(YARP COMPONENTS sig)
 
-set(${EXE_TARGET_NAME}_HDR
-    )
+    set(EXE_TARGET_NAME test-reverse-link-measurement)
 
-set(${EXE_TARGET_NAME}_SRC
-    src/TestReverseLinkMeasurement.cpp
-    )
+    set(${EXE_TARGET_NAME}_HDR
+        )
 
-add_executable(${EXE_TARGET_NAME}
-               ${${EXE_TARGET_NAME}_HDR}
-               ${${EXE_TARGET_NAME}_SRC}
-               )
+    set(${EXE_TARGET_NAME}_SRC
+        src/TestReverseLinkMeasurement.cpp
+        )
 
-target_include_directories(${EXE_TARGET_NAME}
-                           PRIVATE
-                           )
+    add_executable(${EXE_TARGET_NAME}
+                   ${${EXE_TARGET_NAME}_HDR}
+                   ${${EXE_TARGET_NAME}_SRC}
+                   )
 
-target_link_libraries(${EXE_TARGET_NAME}
-                      PRIVATE
-                      GroundTruthLibrary
-                      )
+    target_include_directories(${EXE_TARGET_NAME}
+                               PRIVATE
+                               )
 
+    target_link_libraries(${EXE_TARGET_NAME}
+                          PRIVATE
+                          GroundTruthLibrary
+                          YARP::YARP_sig
+                          )
+endif()
 # install(TARGETS ${EXE_TARGET_NAME} DESTINATION bin)
 
+if (USE_VTK AND USE_YARP)
+    find_package(VTK REQUIRED)
+    include(${VTK_USE_FILE})
 
-set(EXE_TARGET_NAME test-visualization)
+    set(EXE_TARGET_NAME test-visualization)
 
-set(${EXE_TARGET_NAME}_HDR
-    )
+    set(${EXE_TARGET_NAME}_HDR
+        )
 
-set(${EXE_TARGET_NAME}_SRC
-    src/TestVisualization.cpp
-    )
+    set(${EXE_TARGET_NAME}_SRC
+        src/TestVisualization.cpp
+        )
 
-add_executable(${EXE_TARGET_NAME}
-               ${${EXE_TARGET_NAME}_HDR}
-               ${${EXE_TARGET_NAME}_SRC}
-               )
+    add_executable(${EXE_TARGET_NAME}
+                   ${${EXE_TARGET_NAME}_HDR}
+                   ${${EXE_TARGET_NAME}_SRC}
+                   )
 
-target_include_directories(${EXE_TARGET_NAME}
-                           PRIVATE
-                           )
+    target_include_directories(${EXE_TARGET_NAME}
+                               PRIVATE
+                               )
 
-target_link_libraries(${EXE_TARGET_NAME}
-                      PRIVATE
-                      CameraLibrary
-                      VisualizationLibrary
-                      ${VTK_LIBRARIES}
-                      )
+    target_link_libraries(${EXE_TARGET_NAME}
+                          PRIVATE
+                          RobotsIO::RobotsIO
+                          VisualizationLibrary
+                          ${VTK_LIBRARIES}
+                          )
 
-# install(TARGETS ${EXE_TARGET_NAME} DESTINATION bin)
+    # install(TARGETS ${EXE_TARGET_NAME} DESTINATION bin)
+endif()
 
 find_package(OpenCV REQUIRED)
 
+if (USE_SUPERIMPOSE)
+    find_package(BayesFilters REQUIRED)
 
-set(EXE_TARGET_NAME test-superimposition)
+    set(EXE_TARGET_NAME test-superimposition)
 
-set(${EXE_TARGET_NAME}_HDR
-    )
+    set(${EXE_TARGET_NAME}_HDR
+        )
 
-set(${EXE_TARGET_NAME}_SRC
-    src/TestSuperimposition.cpp
-    )
+    set(${EXE_TARGET_NAME}_SRC
+        src/TestSuperimposition.cpp
+        )
 
-add_executable(${EXE_TARGET_NAME}
-               ${${EXE_TARGET_NAME}_HDR}
-               ${${EXE_TARGET_NAME}_SRC}
-               )
+    add_executable(${EXE_TARGET_NAME}
+                   ${${EXE_TARGET_NAME}_HDR}
+                   ${${EXE_TARGET_NAME}_SRC}
+                   )
 
-target_include_directories(${EXE_TARGET_NAME}
-                           PRIVATE
-                           )
+    target_include_directories(${EXE_TARGET_NAME}
+                               PRIVATE
+                               )
 
-target_link_libraries(${EXE_TARGET_NAME}
-                      PRIVATE
-                      CameraLibrary
-                      UtilsLibrary
-                      VisualizationLibrary
-                      ${OpenCV_LIBS}
-                      )
+    target_link_libraries(${EXE_TARGET_NAME}
+                          PRIVATE
+                          BayesFilters::BayesFilters
+                          RobotsIO::RobotsIO
+                          VisualizationLibrary
+                          ${OpenCV_LIBS}
+                          )
 
-# install(TARGETS ${EXE_TARGET_NAME} DESTINATION bin)
-
+    # install(TARGETS ${EXE_TARGET_NAME} DESTINATION bin)
+endif()
 
 set(EXE_TARGET_NAME test-camera)
 
@@ -141,7 +150,7 @@ target_include_directories(${EXE_TARGET_NAME}
 
 target_link_libraries(${EXE_TARGET_NAME}
                       PRIVATE
-                      CameraLibrary
+                      RobotsIO::RobotsIO
                       )
 
 # install(TARGETS ${EXE_TARGET_NAME} DESTINATION bin)
@@ -167,7 +176,7 @@ target_include_directories(${EXE_TARGET_NAME}
 
 target_link_libraries(${EXE_TARGET_NAME}
                       PRIVATE
-                      CameraLibrary
+                      RobotsIO::RobotsIO
                       )
 
 # install(TARGETS ${EXE_TARGET_NAME} DESTINATION bin)
@@ -193,45 +202,49 @@ target_include_directories(${EXE_TARGET_NAME}
 
 target_link_libraries(${EXE_TARGET_NAME}
                       PRIVATE
-                      CameraLibrary
+                      RobotsIO::RobotsIO
                       )
 
 # install(TARGETS ${EXE_TARGET_NAME} DESTINATION bin)
 
 
-set(EXE_TARGET_NAME icub-extr-calib-collector)
+option(USE_ICUB        "Use iCub" OFF)
 
-find_package(YARP CONFIG REQUIRED
-             COMPONENTS
-             dev
-             )
-find_package(ICUB REQUIRED)
+if (USE_YARP AND USE_ICUB)
 
-set(${EXE_TARGET_NAME}_HDR
-    )
+    set(EXE_TARGET_NAME icub-extr-calib-collector)
 
-set(${EXE_TARGET_NAME}_SRC
-    src/iCubExtrinsicCalibrationCollector.cpp
-    )
+    find_package(YARP CONFIG REQUIRED
+                 COMPONENTS
+                 dev
+                 )
+    find_package(ICUB REQUIRED)
 
-add_executable(${EXE_TARGET_NAME}
-               ${${EXE_TARGET_NAME}_HDR}
-               ${${EXE_TARGET_NAME}_SRC}
-               )
+    set(${EXE_TARGET_NAME}_HDR
+        )
 
-target_include_directories(${EXE_TARGET_NAME}
-                           PRIVATE
-                           )
+    set(${EXE_TARGET_NAME}_SRC
+        src/iCubExtrinsicCalibrationCollector.cpp
+        )
 
-target_link_libraries(${EXE_TARGET_NAME}
-                      PRIVATE
-                      CameraLibrary
-                      YARP::YARP_dev
-                      ${ICUB_LIBRARIES}
-                      )
+    add_executable(${EXE_TARGET_NAME}
+                   ${${EXE_TARGET_NAME}_HDR}
+                   ${${EXE_TARGET_NAME}_SRC}
+                   )
 
-# install(TARGETS ${EXE_TARGET_NAME} DESTINATION bin)
+    target_include_directories(${EXE_TARGET_NAME}
+                               PRIVATE
+                               )
 
+    target_link_libraries(${EXE_TARGET_NAME}
+                          PRIVATE
+                          RobotsIO::RobotsIO
+                          YARP::YARP_dev
+                          ${ICUB_LIBRARIES}
+                          )
+
+    # install(TARGETS ${EXE_TARGET_NAME} DESTINATION bin)
+endif()
 
 set(EXE_TARGET_NAME icub-extr-calib-processor)
 
@@ -259,7 +272,7 @@ target_include_directories(${EXE_TARGET_NAME}
 
 target_link_libraries(${EXE_TARGET_NAME}
                       PRIVATE
-                      CameraLibrary
+                      RobotsIO::RobotsIO
                       GroundTruthLibrary
                       )
 
@@ -292,7 +305,7 @@ target_include_directories(${EXE_TARGET_NAME}
 
 target_link_libraries(${EXE_TARGET_NAME}
                       PRIVATE
-                      CameraLibrary
+                      RobotsIO::RobotsIO
                       GroundTruthLibrary
                       )
 

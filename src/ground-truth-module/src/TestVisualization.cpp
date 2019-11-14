@@ -5,8 +5,9 @@
  * GPL-2+ license. See the accompanying LICENSE file for details.
  */
 
-#include <iCubCamera.h>
-#include <YarpCamera.h>
+#include <RobotsIO/Camera/Camera.h>
+#include <RobotsIO/Camera/iCubCamera.h>
+#include <RobotsIO/Camera/YarpCamera.h>
 
 #include <VtkContainer.h>
 #include <VtkContent.h>
@@ -15,6 +16,8 @@
 
 #include <iostream>
 #include <string>
+
+using namespace RobotsIO::Camera;
 
 
 int main(int argc, char** argv)

@@ -7,17 +7,19 @@
 
 #include <BayesFilters/FilteringAlgorithm.h>
 
-#include <Camera.h>
-#include <iCubCamera.h>
-#include <iCubCameraRelative.h>
+#include <RobotsIO/Camera/Camera.h>
+#include <RobotsIO/Camera/iCubCamera.h>
+#include <RobotsIO/Camera/iCubCameraRelative.h>
+#include <RobotsIO/Utils/YarpImageOfProbe.hpp>
 
 #include <SIiCubHand.h>
-
-#include <YarpImageOfProbe.hpp>
 
 #include <iostream>
 
 #include <opencv2/opencv.hpp>
+
+using namespace RobotsIO::Camera;
+using namespace RobotsIO::Utils;
 
 
 class TestSuperimposition : public bfl::FilteringAlgorithm
@@ -79,7 +81,7 @@ protected:
 
         /* Get image from camera. */
         cv::Mat image_in;
-        std::tie(std::ignore, image_in) = camera_->get_rgb(true);
+        std::tie(std::ignore, image_in) = camera_->rgb(true);
 
         /* Render pose of hand. */
         bool valid_hand_rendering;

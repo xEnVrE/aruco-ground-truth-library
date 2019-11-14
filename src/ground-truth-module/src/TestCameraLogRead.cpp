@@ -5,12 +5,14 @@
  * GPL-2+ license. See the accompanying LICENSE file for details.
  */
 
-#include <Camera.h>
-#include <iCubCamera.h>
+#include <RobotsIO/Camera/Camera.h>
+#include <RobotsIO/Camera/iCubCamera.h>
 
 #include <Eigen/Dense>
 
 #include <opencv2/opencv.hpp>
+
+using namespace RobotsIO::Camera;
 
 
 int main(int argc, char** argv)
@@ -45,40 +47,40 @@ int main(int argc, char** argv)
     {
         bool valid_rgb = false;
         cv::Mat rgb;
-        std::tie(valid_rgb, rgb) = camera->get_rgb(false);
+        std::tie(valid_rgb, rgb) = camera->rgb(false);
         if (!valid_rgb)
         {
-            std::cout << "Cannot get camera rgb image for frame " << camera->get_frame() << std::endl;
+            std::cout << "Cannot get camera rgb image for frame " << camera->frame_index() << std::endl;
             return EXIT_FAILURE;
         }
 
         bool valid_pose = false;
         Eigen::Transform<double, 3, Eigen::Affine> pose;
-        std::tie(valid_pose, pose) = camera->get_pose(false);
+        std::tie(valid_pose, pose) = camera->pose(false);
         if (!valid_pose)
         {
-            std::cout << "Cannot get camera pose for frame " << camera->get_frame() << std::endl;
+            std::cout << "Cannot get camera pose for frame " << camera->frame_index() << std::endl;
             return EXIT_FAILURE;
         }
 
         bool valid_aux_data = false;
         Eigen::VectorXd aux_data;
-        std::tie(valid_aux_data, aux_data) = camera->get_auxiliary_data(false);
+        std::tie(valid_aux_data, aux_data) = camera->auxiliary_data(false);
         if (!valid_aux_data)
         {
             std::cout << "Cannot retrieve auxiliary data." << std::endl;
             return EXIT_FAILURE;
         }
 
-        if (aux_data.size() != camera->get_auxiliary_data_size())
+        if (aux_data.size() != camera->auxiliary_data_size())
         {
-            std::cout << "Auxiliary data size is different from expected. Expected " << camera->get_auxiliary_data_size()
+            std::cout << "Auxiliary data size is different from expected. Expected " << camera->auxiliary_data_size()
                       << ", obtained " << aux_data.size() << std::endl;
             return EXIT_FAILURE;
         }
 
         Eigen::AngleAxisd angle_axis(pose.rotation());
-        std::cout << "Frame: " << camera->get_frame() << std::endl;
+        std::cout << "Frame: " << camera->frame_index() << std::endl;
         std::cout << "Camera pose:" << std::endl << pose.translation().transpose() << " " << angle_axis.axis().transpose() << " " << angle_axis.angle() << std::endl;
         std::cout << "Auxiliary data" << aux_data.transpose() << std::endl << std::endl;
 
