@@ -8,6 +8,7 @@
 #===============================================================================
 
 option(USE_SUPERIMPOSE "Use SuperimposeMesh" OFF)
+option(USE_VTK         "Use VTK"             OFF)
 
 project("VisualizationLibrary")
 
@@ -21,9 +22,14 @@ find_package(Eigen3 REQUIRED)
 # OpenCV
 find_package(OpenCV REQUIRED)
 
-# VTK
-find_package(VTK REQUIRED)
-include(${VTK_USE_FILE})
+# RobotsIO
+find_package(RobotsIO REQUIRED)
+
+if (USE_VTK)
+    # VTK
+    find_package(VTK REQUIRED)
+    include(${VTK_USE_FILE})
+endif()
 
 if (USE_SUPERIMPOSE)
   # Superimposemesh
@@ -31,56 +37,64 @@ if (USE_SUPERIMPOSE)
 endif()
 
 if (USE_YARP)
-# YARP
-find_package(YARP CONFIG REQUIRED
-             COMPONENTS
-             cv
-             dev
-             eigen
-             os
-             sig
-             )
+    # YARP
+    find_package(YARP CONFIG REQUIRED
+                 COMPONENTS
+                 eigen
+                 os
+                 sig
+                 )
 endif()
 
 set(${LIBRARY_TARGET_NAME}_HDR
-    include/MeshResources.h
-    include/VtkContainer.h
-    include/VtkContent.h
-    include/VtkMeshOBJ.h
-    include/VtkPointCloud.h
-    include/VtkUpdateHandler.h
-    include/vtkOBJResource.h
+    include/iCubForwardKinematics.h
     )
 
 set(${LIBRARY_TARGET_NAME}_SRC
-    src/MeshResources.cpp
-    src/VtkContainer.cpp
-    src/VtkContent.cpp
-    src/VtkMeshOBJ.cpp
-    src/VtkPointCloud.cpp
-    src/VtkUpdateHandler.cpp
-    src/vtkOBJResource.cpp
+    src/iCubForwardKinematics.cpp
     )
 
-if (USE_SUPERIMPOSE AND USE_YARP AND USE_ICUB)
-  list(APPEND ${LIBRARY_TARGET_NAME}_HDR
-    include/SIiCubHand.h
+if (USE_VTK)
+    list(APPEND ${LIBRARY_TARGET_NAME}_HDR
+        include/MeshResources.h
+        include/VtkContainer.h
+        include/VtkContent.h
+        include/VtkMeshOBJ.h
+        include/VtkPointCloud.h
+        include/VtkUpdateHandler.h
+        include/iCubForwardKinematics.h
+        include/vtkOBJResource.h
     )
 
-  list(APPEND ${LIBRARY_TARGET_NAME}_SRC
-    src/SIiCubHand.cpp
+    list(APPEND ${LIBRARY_TARGET_NAME}_SRC
+        src/MeshResources.cpp
+        src/VtkContainer.cpp
+        src/VtkContent.cpp
+        src/VtkMeshOBJ.cpp
+        src/VtkPointCloud.cpp
+        src/VtkUpdateHandler.cpp
+        src/iCubForwardKinematics.cpp
+        src/vtkOBJResource.cpp
     )
 endif()
 
-if (USE_YARP AND USE_ICUB)
-  list(APPEND ${LIBRARY_TARGET_NAME}_HDR
-    include/iCubForwardKinematics.h
-    include/VtkiCubHand.h
+if (USE_SUPERIMPOSE AND USE_YARP)
+    list(APPEND ${LIBRARY_TARGET_NAME}_HDR
+         include/SIiCubHand.h
     )
 
-  list(APPEND ${LIBRARY_TARGET_NAME}_SRC
-    src/iCubForwardKinematics.cpp
-    src/VtkiCubHand.cpp
+    list(APPEND ${LIBRARY_TARGET_NAME}_SRC
+         src/SIiCubHand.cpp
+    )
+endif()
+
+if (USE_VTK AND USE_YARP)
+    list(APPEND ${LIBRARY_TARGET_NAME}_HDR
+         include/VtkiCubHand.h
+    )
+
+    list(APPEND ${LIBRARY_TARGET_NAME}_SRC
+         src/VtkiCubHand.cpp
     )
 endif()
 
@@ -109,7 +123,7 @@ cmrc_add_resource_library(${LIBRARY_TARGET_NAME}_RCShader
     meshes/full_LeftLittleFinger1.obj
     meshes/full_LeftLittleFinger2.obj
     meshes/full_LeftLittleFingerTip_b.obj
-   )
+)
 
 add_library(${LIBRARY_TARGET_NAME} ${${LIBRARY_TARGET_NAME}_HDR} ${${LIBRARY_TARGET_NAME}_SRC})
 
@@ -120,27 +134,29 @@ target_include_directories(${LIBRARY_TARGET_NAME} PUBLIC
 target_link_libraries(${LIBRARY_TARGET_NAME}
                       PUBLIC
                       Eigen3::Eigen
-                      CameraLibrary
+                      RobotsIO::RobotsIO
                       ${OpenCV_LIBS}
-                      ${VTK_LIBRARIES}
                       PRIVATE
                       VisualizationLibrary::RCShader
                       )
 
-if (USE_YARP AND USE_ICUB)
-  target_link_libraries(${LIBRARY_TARGET_NAME} PUBLIC
-                        iCubFingersEncoders
-                        YARP::YARP_cv
-                        YARP::YARP_dev
-                        YARP::YARP_eigen
-                        YARP::YARP_init
-                        YARP::YARP_os
-                        YARP::YARP_sig
-                        )
+if (USE_VTK)
+    target_link_libraries(${LIBRARY_TARGET_NAME} PUBLIC
+                          ${VTK_LIBRARIES}
+                          )
 endif()
 
 if (USE_SUPERIMPOSE)
-  target_link_libraries(${LIBRARY_TARGET_NAME} PUBLIC
-                       SI::SuperimposeMesh
-                       )
+    target_link_libraries(${LIBRARY_TARGET_NAME} PUBLIC
+                          SI::SuperimposeMesh
+                          )
+endif()
+
+if (USE_YARP)
+    target_link_libraries(${LIBRARY_TARGET_NAME} PUBLIC
+                          YARP::YARP_eigen
+                          YARP::YARP_init
+                          YARP::YARP_os
+                          YARP::YARP_sig
+                          )
 endif()
