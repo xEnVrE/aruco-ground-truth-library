@@ -6,13 +6,15 @@
  */
 
 #include <ArucoMeasurement.h>
-#include <CameraParameters.h>
+
+#include <RobotsIO/Camera/CameraParameters.h>
 
 #include <iostream>
 
 #include <opencv2/core/eigen.hpp>
 
 using namespace Eigen;
+using namespace RobotsIO::Camera;
 using namespace bfl;
 using namespace cv::aruco;
 
@@ -26,7 +28,7 @@ ArucoMeasurement::ArucoMeasurement(const int& dictionary, std::shared_ptr<Camera
     /* Get camera parameters. */
     bool valid_camera_parameters = false;
     CameraParameters parameters;
-    std::tie(valid_camera_parameters, parameters) = camera_->get_parameters();
+    std::tie(valid_camera_parameters, parameters) = camera_->parameters();
     if (!valid_camera_parameters)
         throw(std::runtime_error(log_name_ + "::ctor. Error: cannot get camera parameters."));
 
@@ -68,13 +70,13 @@ bool ArucoMeasurement::freeze(const Data& data)
 
     /* Freeze camera image. */
     bool valid_rgb = false;
-    std::tie(valid_rgb, camera_rgb_image_) = camera_->get_rgb(true);
+    std::tie(valid_rgb, camera_rgb_image_) = camera_->rgb(true);
     if (!valid_rgb)
         return false;
 
     /* Freeze camera pose. */
     bool valid_pose = false;
-    std::tie(valid_pose, camera_pose_) = camera_->get_pose(true);
+    std::tie(valid_pose, camera_pose_) = camera_->pose(true);
     if (!valid_pose)
         return false;
 

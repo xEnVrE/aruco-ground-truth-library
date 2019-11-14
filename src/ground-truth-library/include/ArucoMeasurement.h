@@ -8,10 +8,11 @@
 #ifndef ARUCOMEASUREMENT_H
 #define ARUCOMEASUREMENT_H
 
+#include <BayesFilters/Data.h>
 #include <BayesFilters/LinearMeasurementModel.h>
 
-#include <Camera.h>
-#include <ProbeContainer.h>
+#include <RobotsIO/Camera/Camera.h>
+#include <RobotsIO/Utils/ProbeContainer.h>
 
 #include <Eigen/Dense>
 
@@ -23,12 +24,12 @@
 
 
 class ArucoMeasurement : public bfl::MeasurementModel,
-                         public ProbeContainer
+                         public RobotsIO::Utils::ProbeContainer
 {
 public:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 
-    ArucoMeasurement(const int& dictionary, std::shared_ptr<Camera> camera);
+    ArucoMeasurement(const int& dictionary, std::shared_ptr<RobotsIO::Camera::Camera> camera);
 
     virtual ~ArucoMeasurement();
 
@@ -66,7 +67,7 @@ private:
 
     /* Camera. */
 
-    std::shared_ptr<Camera> camera_;
+    std::shared_ptr<RobotsIO::Camera::Camera> camera_;
 
     cv::Mat cam_intrinsic_;
 
