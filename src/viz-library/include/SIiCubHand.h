@@ -8,11 +8,12 @@
 #ifndef SIICUBHAND_H
 #define SIICUBHAND_H
 
-#include <Camera.h>
 #include <Eigen/Dense>
 
-#include <iCubFingersEncoders.h>
 #include <iCubForwardKinematics.h>
+
+#include <RobotsIO/Camera/Camera.h>
+#include <RobotsIO/Hand/iCubHand.h>
 
 #include <SuperimposeMesh/SICAD.h>
 
@@ -28,7 +29,7 @@
 class SIiCubHand
 {
 public:
-    SIiCubHand(const std::string& robot_name, const std::string& laterality, const std::string& port_prefix, const bool& use_analogs, const bool& use_camera_pose, std::shared_ptr<Camera> camera);
+    SIiCubHand(const std::string& robot_name, const std::string& laterality, const std::string& port_prefix, const bool& use_analogs, const bool& use_camera_pose, std::shared_ptr<RobotsIO::Camera::Camera> camera);
 
     virtual ~SIiCubHand();
 
@@ -47,9 +48,9 @@ private:
 
     std::unique_ptr<iCubForwardKinematics> forward_kinematics_;
 
-    std::unique_ptr<iCubFingersEncoders> fingers_encoders_;
+    std::unique_ptr<RobotsIO::Hand::iCubHand> fingers_encoders_;
 
-    std::shared_ptr<Camera> camera_;
+    std::shared_ptr<RobotsIO::Camera::Camera> camera_;
 
     const bool use_camera_pose_ = false;
 

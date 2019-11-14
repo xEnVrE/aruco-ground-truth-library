@@ -9,11 +9,15 @@
 
 #include <MeshResources.h>
 
+#include <RobotsIO/Hand/iCubHand.h>
+
 #include <sstream>
 
 #include <yarp/eigen/Eigen.h>
 
 using namespace Eigen;
+using namespace RobotsIO::Camera;
+using namespace RobotsIO::Hand;
 using namespace yarp::eigen;
 
 
@@ -93,7 +97,7 @@ SIiCubHand::SIiCubHand(const std::string& robot_name, const std::string& lateral
 
     /* Get camera parameters. */
     CameraParameters parameters;
-    std::tie(std::ignore, parameters) = camera_->get_parameters();
+    std::tie(std::ignore, parameters) = camera_->parameters();
 
     /* Initialize rendering engine. */
     renderer_ = std::unique_ptr<SICAD>
@@ -109,9 +113,9 @@ SIiCubHand::SIiCubHand(const std::string& robot_name, const std::string& lateral
     );
 
     /* Configure fingers encoders. */
-    fingers_encoders_ = std::unique_ptr<iCubFingersEncoders>
+    fingers_encoders_ = std::unique_ptr<iCubHand>
     (
-        new iCubFingersEncoders(robot_name, laterality, port_prefix, "icub-fingers-encoders", use_analogs)
+        new iCubHand(robot_name, laterality, port_prefix, "icub-fingers-encoders", use_analogs)
     );
 }
 
@@ -131,7 +135,7 @@ std::pair<bool, cv::Mat> SIiCubHand::render_image(const bool& blocking)
 
     bool valid_encoders = false;
     std::unordered_map<std::string, VectorXd> encoders;
-    std::tie(valid_encoders, encoders) = fingers_encoders_->get_encoders(blocking);
+    std::tie(valid_encoders, encoders) = fingers_encoders_->encoders(blocking);
 
     if (!valid_encoders)
         return std::make_pair(false, cv::Mat());
@@ -153,7 +157,7 @@ std::pair<bool, cv::Mat> SIiCubHand::render_image(const bool& blocking)
     {
         bool valid_pose = false;
         Transform<double, 3, Affine> pose;
-        std::tie(valid_pose, pose) = camera_->get_pose(true);
+        std::tie(valid_pose, pose) = camera_->pose(true);
         if (!valid_pose)
             std::make_pair(false, cv::Mat());
 
