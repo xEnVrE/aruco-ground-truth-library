@@ -7,7 +7,7 @@
 #
 #===============================================================================
 
-set(LIBRARY_TARGET_NAME ArucoGroundTruthLibary)
+set(LIBRARY_TARGET_NAME ArucoGroundTruthLibrary)
 
 # BayesFilters
 find_package(BayesFilters REQUIRED)
