@@ -5,7 +5,7 @@
  * GPL-2+ license. See the accompanying LICENSE file for details.
  */
 
-#include <ArucoMeasurement.h>
+#include <ArucoGroundTruthLibrary/ArucoMeasurement.h>
 
 #include <RobotsIO/Camera/CameraParameters.h>
 
@@ -13,6 +13,7 @@
 
 #include <opencv2/core/eigen.hpp>
 
+using namespace ArucoGroundTruthLibrary;
 using namespace Eigen;
 using namespace RobotsIO::Camera;
 using namespace bfl;

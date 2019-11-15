@@ -5,8 +5,8 @@
  * GPL-2+ license. See the accompanying LICENSE file for details.
  */
 
-#ifndef ARUCOMEASUREMENT_H
-#define ARUCOMEASUREMENT_H
+#ifndef ARUCOGROUNDTRUTHLIBRARY_ARUCOMEASUREMENT_H
+#define ARUCOGROUNDTRUTHLIBRARY_ARUCOMEASUREMENT_H
 
 #include <BayesFilters/Data.h>
 #include <BayesFilters/LinearMeasurementModel.h>
@@ -22,9 +22,13 @@
 #include <opencv2/opencv.hpp>
 #include <opencv2/aruco.hpp>
 
+namespace ArucoGroundTruthLibrary {
+    class ArucoMeasurement;
+}
 
-class ArucoMeasurement : public bfl::MeasurementModel,
-                         public RobotsIO::Utils::ProbeContainer
+
+class ArucoGroundTruthLibrary::ArucoMeasurement : public bfl::MeasurementModel,
+                                                  public RobotsIO::Utils::ProbeContainer
 {
 public:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
@@ -100,4 +104,4 @@ private:
     const std::string log_name_ = "ArucoMeasurement";
 };
 
-#endif /* ARUCOMEASUREMENT_H */
+#endif /* ARUCOGROUNDTRUTHLIBRARY_ARUCOMEASUREMENT_H */

@@ -5,9 +5,9 @@
  * GPL-2+ license. See the accompanying LICENSE file for details.
  */
 
-#include <ThreePointReverseLinkMeasurement.h>
-#include "ReverseLinkMeasurement.h"
+#include <ArucoGroundTruthLibrary/ThreePointReverseLinkMeasurement.h>
 
+using namespace ArucoGroundTruthLibrary;
 using namespace Eigen;
 
 

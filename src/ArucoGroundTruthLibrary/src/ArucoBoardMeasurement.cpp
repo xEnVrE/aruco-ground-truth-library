@@ -5,12 +5,13 @@
  * GPL-2+ license. See the accompanying LICENSE file for details.
  */
 
-#include <ArucoBoardMeasurement.h>
+#include <ArucoGroundTruthLibrary/ArucoBoardMeasurement.h>
 
 #include <Eigen/Dense>
 
 #include <opencv2/aruco.hpp>
 
+using namespace ArucoGroundTruthLibrary;
 using namespace Eigen;
 using namespace RobotsIO::Camera;
 using namespace bfl;

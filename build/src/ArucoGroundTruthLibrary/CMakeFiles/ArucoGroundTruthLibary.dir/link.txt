@@ -1,0 +1,2 @@
+/usr/bin/ar qc ../../lib/libArucoGroundTruthLibary.a  CMakeFiles/ArucoGroundTruthLibary.dir/src/ArucoBoardMeasurement.cpp.o CMakeFiles/ArucoGroundTruthLibary.dir/src/ArucoMarkerMeasurement.cpp.o CMakeFiles/ArucoGroundTruthLibary.dir/src/ArucoMeasurement.cpp.o CMakeFiles/ArucoGroundTruthLibary.dir/src/ReverseLinkMeasurement.cpp.o CMakeFiles/ArucoGroundTruthLibary.dir/src/ThreePointReverseLinkMeasurement.cpp.o
+/usr/bin/ranlib ../../lib/libArucoGroundTruthLibary.a

@@ -7,11 +7,4 @@
 #
 #===============================================================================
 
-option(BUILD_MODULES       "Build modules"              OFF)
-option(USE_YARP            "Use YARP"                   OFF)
-
-add_subdirectory(ground-truth-library)
-
-if (BUILD_MODULES)
-  add_subdirectory(ground-truth-module)
-endif()
+add_subdirectory(ArucoGroundTruthLibrary)

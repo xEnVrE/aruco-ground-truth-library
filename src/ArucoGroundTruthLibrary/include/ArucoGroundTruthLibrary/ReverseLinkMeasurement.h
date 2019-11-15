@@ -5,10 +5,10 @@
  * GPL-2+ license. See the accompanying LICENSE file for details.
  */
 
-#ifndef REVERSELINKMEASUREMENT_H
-#define REVERSELINKMEASUREMENT_H
+#ifndef ARUCOGROUNDTRUTHLIBRARY_REVERSELINKMEASUREMENT_H
+#define ARUCOGROUNDTRUTHLIBRARY_REVERSELINKMEASUREMENT_H
 
-#include <ArucoMeasurement.h>
+#include <ArucoGroundTruthLibrary/ArucoMeasurement.h>
 
 #include <BayesFilters/Data.h>
 #include <BayesFilters/MeasurementModel.h>
@@ -20,9 +20,13 @@
 #include <memory>
 #include <string>
 
+namespace ArucoGroundTruthLibrary{
+    class ReverseLinkMeasurement;
+}
 
-class ReverseLinkMeasurement : public bfl::MeasurementModel,
-                               public RobotsIO::Utils::ProbeContainer
+
+class ArucoGroundTruthLibrary::ReverseLinkMeasurement : public bfl::MeasurementModel,
+                                                        public RobotsIO::Utils::ProbeContainer
 {
 public:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
@@ -62,4 +66,4 @@ private:
     const std::string log_name_ = "ReverseLinkMeasurement";
 };
 
-#endif /* REVERSELINKMEASUREMENT_H */
+#endif /* ARUCOGROUNDTRUTHLIBRARY_REVERSELINKMEASUREMENT_H */

@@ -5,19 +5,22 @@
  * GPL-2+ license. See the accompanying LICENSE file for details.
  */
 
-#ifndef THREEPOINTREVERSELINKMEASUREMENT_H
-#define THREEPOINTREVERSELINKMEASUREMENT_H
+#ifndef ARUCOGROUNDTRUTHLIBRARY_THREEPOINTREVERSELINKMEASUREMENT_H
+#define ARUCOGROUNDTRUTHLIBRARY_THREEPOINTREVERSELINKMEASUREMENT_H
 
-#include <ReverseLinkMeasurement.h>
-
-#include <ArucoMeasurement.h>
+#include <ArucoGroundTruthLibrary/ArucoMeasurement.h>
+#include <ArucoGroundTruthLibrary/ReverseLinkMeasurement.h>
 
 #include <Eigen/Dense>
 
 #include <memory>
 
+namespace ArucoGroundTruthLibrary {
+    class ThreePointReverseLinkMeasurement;
+}
 
-class ThreePointReverseLinkMeasurement : public ReverseLinkMeasurement
+
+class ArucoGroundTruthLibrary::ThreePointReverseLinkMeasurement : public ReverseLinkMeasurement
 {
 public:
     ThreePointReverseLinkMeasurement(const Eigen::Vector3d& point_0, const Eigen::Vector3d& point_1, const Eigen::Vector3d& point_2, const Eigen::Vector3d& corner_offset, std::unique_ptr<ArucoMeasurement> aruco_measurement);
@@ -38,4 +41,4 @@ protected:
     const std::string log_name_ = "ThreePointReverseLinkMeasurement";
 };
 
-#endif /* THREEPOINTREVERSELINKMEASUREMENT_H */
+#endif /* ARUCOGROUNDTRUTHLIBRARY_THREEPOINTREVERSELINKMEASUREMENT_H */

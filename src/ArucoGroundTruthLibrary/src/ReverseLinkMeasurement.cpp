@@ -5,12 +5,13 @@
  * GPL-2+ license. See the accompanying LICENSE file for details.
  */
 
-#include <ReverseLinkMeasurement.h>
+#include <ArucoGroundTruthLibrary/ReverseLinkMeasurement.h>
 
 #include <BayesFilters/Data.h>
 
 #include <iostream>
 
+using namespace ArucoGroundTruthLibrary;
 using namespace Eigen;
 using namespace bfl;
 

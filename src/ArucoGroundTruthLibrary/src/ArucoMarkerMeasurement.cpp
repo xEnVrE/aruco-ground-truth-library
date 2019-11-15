@@ -5,8 +5,9 @@
  * GPL-2+ license. See the accompanying LICENSE file for details.
  */
 
-#include <ArucoMarkerMeasurement.h>
+#include <ArucoGroundTruthLibrary/ArucoMarkerMeasurement.h>
 
+using namespace ArucoGroundTruthLibrary;
 using namespace RobotsIO::Camera;
 using namespace bfl;
 using namespace cv::aruco;

@@ -5,10 +5,10 @@
  * GPL-2+ license. See the accompanying LICENSE file for details.
  */
 
-#ifndef ARUCOBOARDMEASUREMENT_H
-#define ARUCOBOARDMEASUREMENT_H
+#ifndef ARUCOGROUNDTRUTHLIBRARY_ARUCOBOARDMEASUREMENT_H
+#define ARUCOGROUNDTRUTHLIBRARY_ARUCOBOARDMEASUREMENT_H
 
-#include <ArucoMeasurement.h>
+#include <ArucoGroundTruthLibrary/ArucoMeasurement.h>
 
 #include <BayesFilters/Data.h>
 
@@ -20,8 +20,12 @@
 #include <memory>
 #include <string>
 
+namespace ArucoGroundTruthLibrary {
+    class ArucoBoardMeasurement;
+}
 
-class ArucoBoardMeasurement : public ArucoMeasurement
+
+class ArucoGroundTruthLibrary::ArucoBoardMeasurement : public ArucoGroundTruthLibrary::ArucoMeasurement
 {
 public:
     ArucoBoardMeasurement(const int& dictionary, const std::size_t dictionary_offset, const std::size_t number_x, const std::size_t number_y, const double& marker_side, const double& inter_marker_length, std::shared_ptr<RobotsIO::Camera::Camera> camera);
@@ -43,4 +47,4 @@ private:
     const std::string log_name_ = "ArucoBoardMeasurement";
 };
 
-#endif /* ARUCOBOARDMEASUREMENT_H */
+#endif /* ARUCOGROUNDTRUTHLIBRARY_ARUCOBOARDMEASUREMENT_H */
