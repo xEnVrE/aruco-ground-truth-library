@@ -70,6 +70,6 @@ install_basic_package_files(${PROJECT_NAME}
                             NO_SET_AND_CHECK_MACRO
                             VARS_PREFIX ${PROJECT_NAME}
                             NO_CHECK_REQUIRED_COMPONENTS_MACRO
-                            DEPENDENCIES "BayesFilters" "Eigen3")
+                            DEPENDENCIES "BayesFilters" "Eigen3" "OpenCV" "RobotsIO")
 
 include(AddUninstallTarget)
