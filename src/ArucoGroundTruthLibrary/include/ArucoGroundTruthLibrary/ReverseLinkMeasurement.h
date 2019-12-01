@@ -18,6 +18,7 @@
 #include <RobotsIO/Utils/ProbeContainer.h>
 
 #include <memory>
+#include <mutex>
 #include <string>
 
 namespace ArucoGroundTruthLibrary{
@@ -60,6 +61,8 @@ private:
     Eigen::Transform<double, 3, Eigen::Affine> reverse_transform_;
 
     Eigen::Transform<double, 3, Eigen::Affine> camera_pose_;
+
+    std::mutex reverse_transform_mutex_;
 
     bool valid_pose_ = false;
 

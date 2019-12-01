@@ -41,7 +41,9 @@ bool ReverseLinkMeasurement::freeze(const Data& data)
     camera_pose_ = poses.first;
 
     /* Transform the pose. */
+    reverse_transform_mutex_.lock();
     pose_ = poses.second * reverse_transform_;
+    reverse_transform_mutex_.unlock();
     pose_w_camera_ = camera_pose_ * pose_;
 
     /* Set data for probe. */
@@ -81,7 +83,9 @@ std::pair<std::size_t, std::size_t> ReverseLinkMeasurement::getOutputSize() cons
 
 void ReverseLinkMeasurement::initialize()
 {
+    reverse_transform_mutex_.lock();
     reverse_transform_ = evaluate_reverse_transform();
+    reverse_transform_mutex_.unlock();
 
     /* Log final. */
     std::cout << log_name_ << "::ctor. Reverse transform translation is " << reverse_transform_.translation() << std::endl;
