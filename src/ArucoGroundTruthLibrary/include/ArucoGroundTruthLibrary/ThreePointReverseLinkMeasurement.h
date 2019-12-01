@@ -20,10 +20,10 @@ namespace ArucoGroundTruthLibrary {
 }
 
 
-class ArucoGroundTruthLibrary::ThreePointReverseLinkMeasurement : public ReverseLinkMeasurement
+class ArucoGroundTruthLibrary::ThreePointReverseLinkMeasurement : public ArucoGroundTruthLibrary::ReverseLinkMeasurement
 {
 public:
-    ThreePointReverseLinkMeasurement(const Eigen::Vector3d& point_0, const Eigen::Vector3d& point_1, const Eigen::Vector3d& point_2, const Eigen::Vector3d& corner_offset, std::unique_ptr<ArucoMeasurement> aruco_measurement);
+    ThreePointReverseLinkMeasurement(const Eigen::Vector3d& point_0, const Eigen::Vector3d& point_1, const Eigen::Vector3d& point_2, const Eigen::Vector3d& corner_offset, std::unique_ptr<ArucoGroundTruthLibrary::ArucoMeasurement> aruco_measurement);
 
     virtual ~ThreePointReverseLinkMeasurement();
 
