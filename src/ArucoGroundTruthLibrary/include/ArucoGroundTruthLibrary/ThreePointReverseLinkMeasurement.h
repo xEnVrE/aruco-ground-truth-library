@@ -30,6 +30,7 @@ public:
 protected:
     Eigen::Transform<double, 3, Eigen::Affine> evaluate_reverse_transform() override;
 
+private:
     const Eigen::Vector3d point_0_;
 
     const Eigen::Vector3d point_1_;
