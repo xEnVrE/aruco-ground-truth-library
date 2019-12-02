@@ -81,6 +81,12 @@ void TunableReverseLinkMeasurement::rotate_z(const double& angle)
 }
 
 
+Eigen::Transform<double, 3, Eigen::Affine> TunableReverseLinkMeasurement::current_transform() const
+{
+    return current_transform_;
+}
+
+
 Eigen::Transform<double, 3, Eigen::Affine> TunableReverseLinkMeasurement::evaluate_reverse_transform()
 {
     return current_transform_;

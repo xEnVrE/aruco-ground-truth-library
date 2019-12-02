@@ -42,6 +42,8 @@ public:
 
     virtual void rotate_z(const double& angle);
 
+    virtual Eigen::Transform<double, 3, Eigen::Affine> current_transform() const;
+
 protected:
     Eigen::Transform<double, 3, Eigen::Affine> evaluate_reverse_transform() override;
 
