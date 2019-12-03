@@ -85,7 +85,10 @@ bool ArucoBoardMeasurement::freeze(const Data& data)
 
         if (outcome > 0)
         {
+            set_pose_validity(true);
+
             set_pose(position, orientation);
+
             return true;
         }
 

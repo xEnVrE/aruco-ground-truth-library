@@ -66,6 +66,8 @@ protected:
 
     void set_pose(cv::Vec3d position, cv::Vec3d orientation);
 
+    void set_pose_validity(const bool& validity);
+
 private:
     cv::Ptr<cv::aruco::Dictionary> dictionary_;
 

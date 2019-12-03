@@ -63,11 +63,11 @@ ArucoMeasurement::~ArucoMeasurement()
 bool ArucoMeasurement::freeze(const Data& data)
 {
     /* Reset pose validity. */
-    valid_pose_ = false;
+    set_pose_validity(false);
 
     /* Step frame in case of an offline camera. */
-    if (!camera_->step_frame())
-        return false;
+    // if (!camera_->step_frame())
+    //     return false;
 
     /* Freeze camera image. */
     bool valid_rgb = false;
@@ -76,9 +76,9 @@ bool ArucoMeasurement::freeze(const Data& data)
         return false;
 
     /* Freeze camera pose. */
-    bool valid_pose = false;
-    std::tie(valid_pose, camera_pose_) = camera_->pose(true);
-    if (!valid_pose)
+    bool valid_camera_pose = false;
+    std::tie(valid_camera_pose, camera_pose_) = camera_->pose(true);
+    if (!valid_camera_pose)
         return false;
 
     return true;
@@ -186,4 +186,10 @@ void ArucoMeasurement::set_pose(cv::Vec3d position, cv::Vec3d orientation)
 
     if(is_probe("pose_w_camera"))
         get_probe("pose_w_camera").set_data(pose_w_camera_);
+}
+
+
+void ArucoMeasurement::set_pose_validity(const bool& validity)
+{
+    valid_pose_ = validity;
 }

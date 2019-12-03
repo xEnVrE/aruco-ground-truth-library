@@ -57,7 +57,10 @@ bool ArucoMarkerMeasurement::freeze(const bfl::Data& data)
 
         if ((position.size() != 0) && (orientation.size() != 0))
         {
+            set_pose_validity(true);
+
             set_pose(position.at(0), orientation.at(0));
+
             return true;
         }
 
