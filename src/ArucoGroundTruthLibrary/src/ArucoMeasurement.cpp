@@ -34,15 +34,15 @@ ArucoMeasurement::ArucoMeasurement(const int& dictionary, std::shared_ptr<Camera
         throw(std::runtime_error(log_name_ + "::ctor. Error: cannot get camera parameters."));
 
     /* Populate image size. */
-    width_ = parameters.width;
-    height_ = parameters.height;
+    width_ = parameters.width();
+    height_ = parameters.height();
 
     /* Populate intrinsic parameters. */
     cam_intrinsic_ = cv::Mat(3, 3, CV_64F, 0.0);
-    cam_intrinsic_.at<double>(0, 0) = parameters.fx;
-    cam_intrinsic_.at<double>(0, 2) = parameters.cx;
-    cam_intrinsic_.at<double>(1, 1) = parameters.fy;
-    cam_intrinsic_.at<double>(1, 2) = parameters.cy;
+    cam_intrinsic_.at<double>(0, 0) = parameters.fx();
+    cam_intrinsic_.at<double>(0, 2) = parameters.cx();
+    cam_intrinsic_.at<double>(1, 1) = parameters.fy();
+    cam_intrinsic_.at<double>(1, 2) = parameters.cy();
     cam_intrinsic_.at<double>(2, 2) = 1.0;
 
     /* Set zero distortion. */
